@@ -1,0 +1,172 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/*  fb  */
+
+.fb-pop {
+    z-index: 4;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    text-align: center;
+    padding: 2px;
+}
+
+.fb-pop-up {
+    background-color: #191919bb;
+    color: azure;
+    border-radius: 5px;
+    padding: 3px 7px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.fb-none {
+    display: none;
+}
+
+
+/*  fb  */
+
+
+/*  start loader  */
+
+#loader {
+    position: fixed;
+    background-color: #0f0f0f;
+    color: azure;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    text-align: center;
+    padding: 25%;
+}
+
+
+/*  end loader  */
+
+.fb-container {
+    display: grid;
+    grid-gap: 1vw;
+    padding: 1vw;
+}
+
+.fb-navbar {
+    display: flex;
+    justify-content: flex-end;
+    height: 8vh;
+    align-items: center;
+}
+
+.fb-nav-logo {
+    margin-right: auto;
+    margin-left: 1vw;
+    vertical-align: middle;
+    font-weight: bold;
+    letter-spacing: .15rem;
+}
+
+.fb-nav {
+    display: flex;
+    justify-content: space-evenly;
+    li {
+        margin-right: 1vw;
+    }
+}
+
+.fb-header {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.fb-grid {
+    display: grid;
+    grid-auto-rows: minmax(150px, auto);
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 1vw;
+    padding: 1vw;
+}
+
+.fb-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    border-radius: 5px;
+}
+
+.fb-card {
+    display: flex;
+    border-radius: .5rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    padding: 6px 12px;
+    min-width: 10vw;
+    min-height: 10vw;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.fb-card .fb-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    padding: 1rem;
+}
+
+.fb-card .fb-card-content .fb-card-title {
+    text-align: center;
+    font-size: 1.4rem;
+    line-height: 2.8rem;
+}
+
+.fb-card .fb-card-content .fb-card-body {
+    margin-top: 5px;
+    padding: 2px;
+}
+
+.fb-card .fb-card-content .fb-card-btn {
+    display: inline-block;
+    padding: .25em .5em;
+    border-radius: .4em;
+    cursor: pointer;
+}
+
+.fb-footer {
+    height: 4vh;
+    text-align: center;
+}
+
+@media (orientation: portrait) {
+    .fb-nav-logo {
+        font-size: 200%;
+    }
+    .fb-container {
+        grid-template-columns: 1fr;
+    }
+    .fb-main {
+        display: grid;
+        grid-auto-rows: minmax(10vw, auto);
+        grid-template-columns: repeat(2, 1fr);
+        flex-wrap: wrap;
+        grid-gap: 1vw;
+        padding: 1vw;
+    }
+}
+
+
+/* store style begain */
