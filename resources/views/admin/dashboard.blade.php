@@ -12,6 +12,7 @@
                             </div>
                         @endif
                             {{ __('You are logged in!') }}
+                        {{ App::getLocale() }}
                     </div>
                 </div>
             </div>

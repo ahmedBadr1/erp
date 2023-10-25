@@ -1,9 +1,9 @@
-<nav id="full-screen-example"
-     class="fixed left-0 top-0 z-[1035] h-screen w-60 -translate-x-full overflow-hidden bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] dark:bg-zinc-800 md:data-[te-sidenav-hidden='false']:translate-x-0 sidenav-dark"
+<nav id="full-screen-example" dir="{{ $localeDirs[App::getLocale()] }}"
+     class="fixed left-0 top-0 z-[1035] h-screen w-60 -translate-x-full overflow-hidden bg-gray-200 shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] dark:bg-zinc-800 md:data-[te-sidenav-hidden='false']:translate-x-0 sidenav-dark"
      data-te-sidenav-init="" data-te-sidenav-mode-breakpoint-over="0" data-te-sidenav-mode-breakpoint-side="sm"
      data-te-sidenav-hidden="false" data-te-sidenav-color="dark" data-te-sidenav-content="#content"
      data-te-sidenav-scroll-container="#scrollContainer"
-     style="width: 240px; height: 100vh; position: fixed; transition: all 0.3s linear 0s; transform: translateX(0%);">
+     style="{{ $localeDirs[App::getLocale()] === 'rtl' ? 'right:0;' : '' }} width: 240px; height: 100vh; position: fixed;  transition: all 0.3s linear 0s; transform: translateX(0%);">
     <div class="pt-6 text-center">
         <x-logo></x-logo>
         {{ config('app.name') }}
@@ -14,7 +14,7 @@
             <li class="relative">
                 <a class="group flex h-12 cursor-pointer items-center truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 relative overflow-hidden inline-block align-bottom"
                    href="#!" data-te-sidenav-link-ref="" tabindex="0">
-                    <i class="bx bx-accessibility bx-sm"></i>
+                    <i class="bx bxs-dashboard bx-sm"></i>
                     <span>{{ __('Dashbaord') }}</span>
                     <span
                         class="mr-4 [&amp;>svg]:h-3.5 [&amp;>svg]:w-3.5 [&amp;>svg]:fill-gray-700 dark:[&amp;>svg]:fill-gray-300">
@@ -23,21 +23,27 @@
 
                 </a>
             </li>
+            <li class="relative">
+                <a class="group flex h-12 cursor-pointer items-center truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 relative overflow-hidden inline-block align-bottom"
+                   href="#!" data-te-sidenav-link-ref="" tabindex="0">
+                    <i class="bx bxs-report bx-sm"></i>
+                    <span>{{ __('Reports') }}</span>
+                    <span
+                        class="mr-4 [&amp;>svg]:h-3.5 [&amp;>svg]:w-3.5 [&amp;>svg]:fill-gray-700 dark:[&amp;>svg]:fill-gray-300">
 
+          </span>
+
+                </a>
+            </li>
         </ul>
         <hr class="border-gray-300">
         <ul class="relative m-0 list-none px-[0.2rem]">
 
-            <li class="relative">
-                <a class="group flex h-12 cursor-pointer items-center truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10" data-te-sidenav-link-ref="" data-te-collapse-init="" href="#sidenav-collapse-549319-0-0" role="button" data-te-collapse-collapsed="" aria-expanded="false" tabindex="0">
-          <span class="mr-4 [&amp;>svg]:h-3.5 [&amp;>svg]:w-3.5 [&amp;>svg]:fill-gray-700 dark:[&amp;>svg]:fill-gray-300">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. -->
-              <path d="M96 0C60.7 0 32 28.7 32 64V448c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H96zM208 288h64c44.2 0 80 35.8 80 80c0 8.8-7.2 16-16 16H144c-8.8 0-16-7.2-16-16c0-44.2 35.8-80 80-80zm96-96c0 35.3-28.7 64-64 64s-64-28.7-64-64s28.7-64 64-64s64 28.7 64 64zM512 80c0-8.8-7.2-16-16-16s-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V80zM496 192c-8.8 0-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm16 144c0-8.8-7.2-16-16-16s-16 7.2-16 16v64c0 8.8 7.2 16 16 16s16-7.2 16-16V336z"></path>
-            </svg>
-          </span>
+            <li class="relative" >
+                <a class="group flex h-12 cursor-pointer justify-between truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10" data-te-sidenav-link-ref="" data-te-collapse-init="" href="#sidenav-collapse-549319-0-0" role="button" data-te-collapse-collapsed="" aria-expanded="false" tabindex="0">
+
                     <span>{{ __('Settings') }}</span>
-                    <span class="absolute right-0 ml-auto mr-[0.8rem] transition-all duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:h-3 [&amp;>svg]:w-3 [&amp;>svg]:fill-gray-600 dark:[&amp;>svg]:fill-gray-300" data-te-sidenav-rotate-icon-ref="">
+                    <span  data-te-sidenav-rotate-icon-ref="">
                         <i class="bx bx-chevron-up bx-sm"></i>
                        </span>
                 </a>
@@ -86,7 +92,7 @@
     </div>
     <div class="absolute bottom-0 h-24 w-full bg-inherit text-center">
         <hr class="mb-6 border-gray-300">
-        <p>tailwind-elements.com</p>
+        <p>Erp System</p>
     </div>
 </nav>
 

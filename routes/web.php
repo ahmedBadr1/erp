@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,3 +23,7 @@ Route::get('/dashboard', function () {
 Route::get('/login', function () {
     return redirect('/admin/login');
 });
+
+
+Route::get('lang/{lang}', [LanguageController::class , 'switchLang'])->name('lang.switch');
+

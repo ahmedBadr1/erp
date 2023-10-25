@@ -27,7 +27,7 @@
     :class="{ 'sidebar-expanded': sidebarExpanded }"
     x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebar-expanded') == 'true' }"
     x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value))"
-    dir="{{ App::getLocale() === 'ar' ? 'rtl' : 'ltr' }}"
+    dir="{{ $dir }}"
 >
 
 <script>

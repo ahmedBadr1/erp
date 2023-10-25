@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Models\User;
 
@@ -29,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             'users' => User::class,
         ]);
+
+        $localeDirs = config('languages.localeDirs');
+        $langs = config('languages.langs');
+        View::share('localeDirs', $localeDirs);
+        View::share('langs', $langs);
 
     }
 }
