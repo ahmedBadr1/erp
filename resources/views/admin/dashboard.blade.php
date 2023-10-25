@@ -5,7 +5,7 @@
                 {{ session('status') }}
             </x-alert>
         @endif
-        <x-alert >
+        <x-alert type="success">
             {{ __('You are logged in!') }}
         </x-alert>
         <div class="mx-auto w-3/5 overflow-hidden">

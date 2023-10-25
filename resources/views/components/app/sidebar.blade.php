@@ -296,8 +296,8 @@
                 tabindex="0" style="top: 0px; height: 545px;"></div>
         </div>
     </div>
-    <div class="absolute bottom-0 h-24 w-full bg-inherit text-center">
-        <hr class="mb-6 border-gray-300">
+    <div class="absolute bottom-0 h-12 w-full bg-inherit text-center">
+        <hr class="mb-3 border-gray-300">
         <p>Erp System</p>
     </div>
 </nav>

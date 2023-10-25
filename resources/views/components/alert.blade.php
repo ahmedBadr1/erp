@@ -1,21 +1,36 @@
 @props([
-    'type' => 'success',
-    'color' => 'success',
+    'type' => null,
+     'bg' => null,
+    'color' => null,
     ])
 <div
-    class="mb-3 inline-flex w-full items-center rounded-lg bg-{{$type}}-100 px-6 py-5 text-base text-{{$type}}-700"
-    role="alert">
-  <span class="mr-2">
-    <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="h-5 w-5">
-      <path
-          fill-rule="evenodd"
-          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-          clip-rule="evenodd" />
-    </svg>
-  </span>
-    {{ $slot }}
+@if($type === 'success')
+    class="mb-4 rounded-lg  bg-[#D6FAE4] px-6 py-5 text-base text-[#094621] "
+@elseif($type === 'error')
+    class="mb-4 rounded-lg  bg-[#FAE5E9] px-6 py-5 text-base text-[#6A1523] "
+@elseif($type === 'info')
+    class="mb-4 rounded-lg  bg-[#E7F4F9] px-6 py-5 text-base text-[#1A5265] "
+@elseif($type === 'primary')
+    class="mb-4 rounded-lg  bg-[#E3EBF7] px-6 py-5 text-base text-[#183058] "
+@else
+    class="mb-4 rounded-lg  bg-{{$bg}}-100 px-6 py-5 text-base text-{{$color}}-700 dark:bg-{{$bg}}-900 dark:text-{{$color}}-600 "
+@endif
+
+    role="alert"
+    data-te-alert-init
+    data-te-alert-show
+>
+ <span class="flex justify-start items-center">
+    @if($type === 'success')
+         <i class='bx bx-check-circle bx-sm'></i>
+    @elseif($type === 'error')
+         <i class='bx bx-error-circle bx-sm'></i>
+     @elseif($type === 'info')
+         <i class='bx bx-info-circle bx-sm'></i>
+    @endif
+    <span class="mx-2">
+             {{ $slot }}
+    </span>
+
+    </span>
 </div>

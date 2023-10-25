@@ -9,8 +9,8 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import { Datepicker, Input,Sidenav,Collapse,Dropdown,Chart, initTE } from "tw-elements";
-initTE({ Datepicker, Input,Sidenav ,Collapse,Dropdown,Chart});
+import { Datepicker, Input,Sidenav,Collapse,Dropdown,Chart,Alert, initTE } from "tw-elements";
+initTE({ Datepicker, Input,Sidenav ,Collapse,Dropdown,Chart,Alert});
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
