@@ -35,8 +35,7 @@
         >
     </a>
     <!-- First dropdown menu -->
-    <ul
-        class="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
+    <ul class="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-slate-700 [&[data-te-dropdown-show]]:block"
         aria-labelledby="dropdownMenuButton1"
         data-te-dropdown-menu-ref>
         <!-- First dropdown menu items -->
