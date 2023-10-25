@@ -26,9 +26,13 @@
     <body  dir="{{ $localeDirs[App::getLocale()] }}"
         class="font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
         :class="{ 'sidebar-expanded': sidebarExpanded }"
-        x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebar-expanded') == 'true' }"
-        x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value))"
-    >
+        x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebar-expanded') == 'true' ,darkMode: false }"
+        x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value));
+    if (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      localStorage.setItem('darkMode', JSON.stringify(true));
+    }
+    darkMode = JSON.parse(localStorage.getItem('darkMode'));
+    $watch('darkMode', value => localStorage.setItem('darkMode', JSON.stringify(value)))" x-cloak>
         <script>
             if (localStorage.getItem('sidebar-expanded') == 'true') {
                 document.querySelector('body').classList.add('sidebar-expanded');
@@ -57,5 +61,43 @@
         </div>
 
         @livewireScripts
+
+        <script type="module">
+            // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            };
+
+            function setDarkTheme() {
+                document.documentElement.classList.add("dark");
+                localStorage.theme = "dark";
+            };
+
+            function setLightTheme() {
+                document.documentElement.classList.remove("dark");
+                localStorage.theme = "light";
+            };
+
+            function onThemeSwitcherItemClick(event) {
+                const theme = event.target.dataset.theme;
+
+                if (theme === "system") {
+                    localStorage.removeItem("theme");
+                    setSystemTheme();
+                } else if (theme === "dark") {
+                    setDarkTheme();
+                } else {
+                    setLightTheme();
+                }
+            };
+
+            const themeSwitcherItems = document.querySelectorAll("#theme-switcher");
+            themeSwitcherItems.forEach((item) => {
+                item.addEventListener("click", onThemeSwitcherItemClick);
+            });
+        </script>
+        @yield('scripts')
     </body>
 </html>

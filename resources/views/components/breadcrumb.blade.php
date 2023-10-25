@@ -16,7 +16,8 @@
                 <span class="mx-2 text-neutral-500 dark:text-neutral-400">/</span>
             </li>
         @endforeach
-        <li class="text-neutral-500 dark:text-neutral-400" aria-current="page">@if(!empty($current))
+        <li class="text-neutral-500 dark:text-neutral-400" aria-current="page">
+            @if(!empty($current))
                 {{__('names.'.$current)}}
             @endif @if(!empty($name))
                 {{$name}}

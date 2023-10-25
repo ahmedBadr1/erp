@@ -1,5 +1,5 @@
 <nav id="full-screen-example" dir="{{ $localeDirs[App::getLocale()] }}"
-     class="fixed left-0 top-0 z-[1035] h-screen w-60 -translate-x-full overflow-hidden bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-zinc-800"
+     class="fixed left-0 top-0 z-[1035] h-screen w-60 -translate-x-full overflow-hidden bg-white shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-slate-800"
      data-te-sidenav-init="" data-te-sidenav-mode-breakpoint-over="0" data-te-sidenav-mode-breakpoint-side="sm"
      data-te-sidenav-hidden="false" data-te-sidenav-color="dark" data-te-sidenav-content="#content"
      data-te-sidenav-scroll-container="#scrollContainer"
@@ -13,7 +13,7 @@
         <ul class="relative m-0 list-none px-[0.2rem]" data-te-sidenav-menu-ref="">
             <li class="relative">
                 <a class="group flex h-12 cursor-pointer items-center truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 relative overflow-hidden inline-block align-bottom"
-                   href="#!" data-te-sidenav-link-ref="" tabindex="0">
+                   href="{{ route('admin.dashboard') }}" data-te-sidenav-link-ref="" tabindex="0">
                     <i class="bx bxs-dashboard bx-sm"></i>
                     <span>{{ __('Dashbaord') }}</span>
                     <span
@@ -25,7 +25,7 @@
             </li>
             <li class="relative">
                 <a class="group flex h-12 cursor-pointer items-center truncate rounded-[5px] px-6 py-4 text-[0.875rem] text-gray-700 outline-none transition duration-300 ease-linear hover:bg-gray-300/30 hover:text-inherit hover:outline-none focus:bg-gray-300/30 focus:text-inherit focus:outline-none active:bg-gray-300/30 active:text-inherit active:outline-none data-[te-sidenav-state-active]:text-inherit data-[te-sidenav-state-focus]:outline-none motion-reduce:transition-none dark:text-gray-300 dark:hover:bg-white/10 dark:focus:bg-white/10 dark:active:bg-white/10 relative overflow-hidden inline-block align-bottom"
-                   href="#!" data-te-sidenav-link-ref="" tabindex="0">
+                   href="{{ route('admin.reports') }}" data-te-sidenav-link-ref="" tabindex="0">
                     <i class="bx bxs-report bx-sm"></i>
                     <span>{{ __('Reports') }}</span>
                     <span
@@ -47,7 +47,7 @@
                         {{ __('Humans Resources') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -82,7 +82,7 @@
                         {{ __('Clients Management') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -112,7 +112,7 @@
                         {{ __('Inventory') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -146,7 +146,7 @@
                         {{ __('Accounting') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -180,7 +180,7 @@
                         {{ __('Purchases') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -214,7 +214,7 @@
                         {{ __('Sales') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
@@ -255,7 +255,7 @@
                         {{ __('Setting') }}
                     </span>
                     <span
-                        class="absolute right-0 ml-auto mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
+                        class=" mr-[0.8rem] transition-transform duration-300 ease-linear motion-reduce:transition-none [&amp;>svg]:text-gray-600 dark:[&amp;>svg]:text-gray-300"
                         data-te-sidenav-rotate-icon-ref="">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
                 <path fill-rule="evenodd"
