@@ -28,9 +28,9 @@
     <x-validation-errors class="mt-4" />
     <!-- Footer -->
     <div class="pt-5 mt-6 border-t border-slate-200">
-        <div class="text-sm">
-            {{ __('Don\'t you have an account?') }} <a class="font-medium text-indigo-500 hover:text-indigo-600" href="{{ route('admin.register') }}">{{ __('Sign Up') }}</a>
-        </div>
+{{--        <div class="text-sm">--}}
+{{--            {{ __('Don\'t you have an account?') }} <a class="font-medium text-indigo-500 hover:text-indigo-600" href="{{ route('admin.register') }}">{{ __('Sign Up') }}</a>--}}
+{{--        </div>--}}
         <!-- Warning -->
         <div class="mt-5">
             <x-note color="amber" >
