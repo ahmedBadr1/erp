@@ -13,16 +13,16 @@
             <x-input.inner-label  type="password" name="password" :value="old('password')" required="true" auto label="{{ __('Password') }}" />
         </div>
         <div class="flex items-center justify-between mt-6">
-            @if (Route::has('password.request'))
+            @if (Route::has('admin.password.request'))
                 <div class="mr-1">
                     <a class="text-sm underline hover:no-underline" href="{{ route('password.request') }}">
                         {{ __('Forgot Password?') }}
                     </a>
                 </div>
             @endif
-            <x-button class="ml-3" type="submit">
+            <x-input.button class="ml-3" type="submit">
                 {{ __('Sign in') }}
-            </x-button>
+            </x-input.button>
         </div>
     </form>
     <x-validation-errors class="mt-4" />
@@ -33,10 +33,9 @@
 {{--        </div>--}}
         <!-- Warning -->
         <div class="mt-5">
-            <x-note color="amber" >
+            <x-alert type="error" closeable="0" >
                 To support you during the pandemic super pro features are free until March 31st.
-            </x-note>
-
+            </x-alert>
         </div>
     </div>
 </x-authentication-layout>

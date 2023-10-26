@@ -26,15 +26,15 @@
             <!-- Header: Right side -->
             <div class="flex items-center space-x-3">
                 <!-- Lang Switch -->
-                <x-lang-switch />
+                <x-dropdown.lang-switch />
                 <!-- Search Button with Modal -->
                 <x-modal-search/>
 
                 <!-- Notifications button -->
-                <x-dropdown-notifications align="right"/>
+                <x-dropdown.notifications align="right"/>
 
                 <!-- Info button -->
-                <x-dropdown-help align="right"/>
+                <x-dropdown.help align="right"/>
 
                 <!-- Dark mode toggle -->
                 <x-theme-toggle/>
@@ -43,7 +43,7 @@
                 <hr class="w-px h-6 bg-slate-200 dark:bg-slate-700 border-none"/>
 
                 <!-- User button -->
-                <x-dropdown-profile align="right"/>
+                <x-dropdown.profile align="right"/>
 
             </div>
 

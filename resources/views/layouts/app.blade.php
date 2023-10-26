@@ -10,6 +10,7 @@
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
 
+        @livewireStyles
 
         <!-- Scripts -->
         @vite(['resources/sass/app.scss', 'resources/js/app.js'])
@@ -59,8 +60,6 @@
             </div>
 
         </div>
-
-        @livewireScripts
 
         <script type="module">
             // On page load or when changing themes, best to add inline in `head` to avoid FOUC

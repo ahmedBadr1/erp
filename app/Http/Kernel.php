@@ -2,8 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Active;
 use App\Http\Middleware\CheckLocale;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Spatie\Permission\Middlewares\PermissionMiddleware;
+use Spatie\Permission\Middlewares\RoleMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -67,6 +70,11 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'permission' =>  PermissionMiddleware::class,
+        'role' =>  RoleMiddleware::class,
+//        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'locale' => CheckLocale::class,
+        'active' => Active::class,
+        'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
     ];
 }

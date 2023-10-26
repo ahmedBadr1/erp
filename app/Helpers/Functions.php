@@ -1,13 +1,17 @@
 <?php
 
 use App\Models\Permission;
-use App\Models\System\Tag;
+use App\Models\Tag;
+use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Request;
-use Intervention\Image\Facades\Image as ResizeImage;
 use Stevebauman\Location\Facades\Location;
 use Vectorface\Whip\Whip;
+use Intervention\Image\Facades\Image as ResizeImage;
+use Intervention\Image\ImageManagerStatic as ImageResize;
 
 
 function validSiteUrl($site_referer, $url)
@@ -2600,28 +2604,29 @@ function uploadFile($file, $modelName, $model_id, $column, $delete_old = false, 
         $id = $model_id;
     }
     try {
+
         $file->storeAs('public/' . $path, $filename);
         if (!empty($sizes)) {
-            $filePath = 'storage/' . $path ;
+            $filePath = 'storage/' . $path;
             if (!is_dir($filePath)) {
-                if (!mkdir($filePath, 777, true) && !is_dir($filePath)) {
+                if (!mkdir($filePath, 0777, true) && !is_dir($filePath)) {
                     throw new \RuntimeException(sprintf('Directory "%s" was not created', $filePath));
                 }
             }
             foreach ($sizes as $size) {
                 $img = ResizeImage::make($file->getRealPath());
-                $img->resize($size['width'], $size['height'],function ($constraint) {
+                $img->resize($size['width'], $size['height'], function ($constraint) {
                     $constraint->aspectRatio();
                 });
                 $img->save($filePath . $column . '_' . $size['name'] . '.' . $extension);
-                \App\Models\System\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
-                    'attachable_type' => $modelName, 'path' =>  $path . $column . '_' . $size['name'] . '.' . $extension, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column .'_'. $size['name']]);
+                \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
+                    'attachable_type' => $modelName, 'path' => $path . $column . '_' . $size['name'] . '.' . $extension, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column . '_' . $size['name']]);
             }
         }
     } catch (Exception $e) {
         return $e->getMessage();
     }
-    \App\Models\System\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
+    \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
     $file = null;
     return $path . $filename;
 }
@@ -2650,7 +2655,7 @@ function testuploadFile($file, $modelName, $model_id, $column, $delete_old = fal
     }
     try {
         $file->storeAs('public/' . $path, $filename);
-        \App\Models\System\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
+        \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
         if (!empty($sizes)) {
             $filePath = $path . 'conversions/';
             if (!file_exists($filePath)) {
@@ -2662,7 +2667,7 @@ function testuploadFile($file, $modelName, $model_id, $column, $delete_old = fal
 //                ResizeImage::make($file)
 //                    ->resize($size['width'], $size['height'])
 //                    ->insert('storage/' . $filePath . $column . '_' . $size['name'] . '.' . $extension);
-                \App\Models\System\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
+                \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
                     'attachable_type' => $modelName, 'path' => 'storage/' . $filePath . 'conversions/' . $column . '_' . $size['name'] . '.' . $extension, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
             }
         }
@@ -2746,4 +2751,69 @@ function havePermissionTo($permission)
             return false;
         }
     }
+}
+
+function sendOtpSms($phoneNumber, $code, $sender = 'Vision Dim')
+{
+    // date time format  YYYY-MM-DD HH:MM:SS
+    $smsApiToken = config('app.sms_api_token');
+    $smsUsername = config('app.sms_username');
+//    'https://www.mora-sa.com/api/v1/sendsms?api_key=Your%20Verification%20Code%20is%20523684&sender=Vision%20Dim&numbers=966538500542&response=text'
+    $smsProviderUrl = 'https://www.mora-sa.com/api/v1/sendsms?api_key=&username=';
+//&message=Your%20Verification%20Code%20is%20' . $code . '&sender=Vision%20Dim&numbers=' . $phoneNumber . '&response=json';
+
+    $response = Http::post($smsProviderUrl, [
+        'numbers' => $phoneNumber,
+        'message' => 'Your OTP is ' . $code . ' , valid until ' . Date('d-m-Y h:i A', strtotime("+15 minutes")),
+        'sender' => $sender,
+        'response' => 'json'
+    ]);
+
+    if ($response->getStatusCode() === 200) {
+        // Successful API request
+        return response()->json(['message' => 'OTP sent successfully','response'=>$response]);
+    } else {
+        // Failed API request
+        return response()->json(['error' => 'Failed to send OTP', 'response'=>$response->getStatusCode()], 500);
+    }
+}
+
+function sendSms($phoneNumber, $message, $sender = 'Vision Dim', $datetime = null, $return = 'text')
+{
+    // date time format  YYYY-MM-DD HH:MM:SS
+    $smsApiToken = config('app.sms_api_token');
+    $smsUsername = config('app.sms_username');
+    $smsProviderUrl = 'https://www.mora-sa.com/api/v1/sendsms?
+api_key='.$smsApiToken.'&username='.$smsUsername.'
+&message=' . $message . '&sender='.$sender.'&numbers=' . $phoneNumber . '&response=' . $return;
+
+    $client = new Client();
+    $response = $client->post($smsProviderUrl, [
+        'numbers' => $phoneNumber,
+        'message' => $message,
+        'sender' => $sender,
+        'datetime' => $datetime,
+        'return' => $return
+    ]);
+
+    if ($response->getStatusCode() === 200) {
+        // Successful API request
+        return response()->json(['message' => 'Message sent successfully']);
+    }
+    // Failed API request
+    return response()->json(['error' => 'Failed to send Message'], 500);
+
+}
+
+
+function secondsToHours($seconds)
+{
+//    $carbon = Carbon::now()->addSeconds($seconds);
+//    $hours = $carbon->hour;
+//    $minutes = $carbon->minute;
+
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds % 3600) / 60);
+
+    return " س $hours :  $minutes ق ";
 }

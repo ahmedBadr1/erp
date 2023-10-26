@@ -18,7 +18,7 @@ Route::group(['prefix'=>'admin','as'=>'admin.'],function (){
     Route::post('login',[\App\Http\Controllers\Admin\Auth\LoginController::class,'login']);
     Route::get('register',[\App\Http\Controllers\Admin\Auth\LoginController::class,'register'])->name('register');
 
-    Route::group(['middleware'=>'auth'],function (){
+    Route::group(['middleware'=>['auth','active']],function (){
         Route::get('/',[\App\Http\Controllers\Admin\DashboardController::class,'dashboard'])->name('dashboard');
         Route::post('logout',[\App\Http\Controllers\Admin\Auth\LoginController::class,'logout'])->name('logout');
         Route::get('/profile',[\App\Http\Controllers\Admin\DashboardController::class,'profile'])->name('profile');
@@ -27,9 +27,23 @@ Route::group(['prefix'=>'admin','as'=>'admin.'],function (){
         Route::get('/reports',[\App\Http\Controllers\Admin\DashboardController::class,'reports'])->name('reports');
 
 
-        Route::group(['prefix'=>'admin','as'=>'admin.'],function (){
-            Route::get('/',[\App\Http\Controllers\Admin\DashboardController::class,'dashboard'])->name('dashboard');
+            Route::group([
+                'prefix' => 'users',
+                'as' => 'users.',
+            ], function () {
+                Route::get('/', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Admin\UserController::class, 'create'])->name('create');
+                Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
+            });
 
-        }) ;
+            Route::group([
+                'prefix' => 'roles',
+                'as' => 'roles.',
+            ], function () {
+                Route::get('/index', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])->name('create');
+                Route::get('/edit/{role_id}', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])->name('edit');
+            });
+
     }) ;
 }) ;

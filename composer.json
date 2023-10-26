@@ -22,6 +22,7 @@
         "staudenmeir/laravel-adjacency-list": "^1.13"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.9",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
@@ -40,7 +41,11 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "app/Helpers/Functions.php",
+            "app/Helpers/RequestHelper.php"
+        ]
     },
     "scripts": {
         "post-autoload-dump": [
