@@ -31,15 +31,15 @@
             <x-input.date :model="'start_date'" :label="__('names.date-start')"></x-input.date>
         </div>
         <div class="">
-            <x-input.label :value="__('names.date-end')"></x-input.label>
-            <input type="date" wire:model="end_date" class="form-control"/>
+            <x-input.date :model="'end_date'" :label="__('names.date-end')"></x-input.date>
         </div>
 
         <div class="">
-            <x-input.label :value="__('names.status')"></x-input.label>
-            <select wire:model="status_id" class="form-select">
+            <x-input.select model="status_id" :multiple="true"  :label="__('names.status')" selected="2">
                 <option value="">{{ __('names.all') }}</option>
-            </select>
+                <option value="1">{{ __('names.all') }}</option>
+                <option value="2">{{ __('names.all') }}</option>
+            </x-input.select>
         </div>
         <div class="">
             <x-input.label :value="__('names.order-by')"></x-input.label>
