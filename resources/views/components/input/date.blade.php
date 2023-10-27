@@ -13,7 +13,7 @@
         'model' => null
 ])
 <div dir="ltr"
-    class="relative mb-3"
+    class="relative m-2 w-full "
     data-te-datepicker-init
     data-te-inline="true"
     data-te-input-wrapper-init>

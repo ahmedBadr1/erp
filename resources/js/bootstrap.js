@@ -9,8 +9,15 @@ window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-import { Select,Datepicker, Input,Sidenav,Collapse,Dropdown,Chart,Alert,PerfectScrollbar, initTE } from "tw-elements";
-initTE({ Select,Datepicker, Input,Sidenav ,Collapse,Dropdown,Chart,Alert,PerfectScrollbar});
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import Clipboard from '@ryangjchandler/alpine-clipboard'
+
+Alpine.plugin(Clipboard)
+window.Alpine = Alpine
+Livewire.start()
+
+// import { Select,Datepicker, Input,Sidenav,Collapse,Dropdown,Chart,Alert,PerfectScrollbar, initTE } from "tw-elements";
+// initTE({ Select,Datepicker, Input,Sidenav ,Collapse,Dropdown,Chart,Alert,PerfectScrollbar});
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

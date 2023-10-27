@@ -1,24 +1,25 @@
 @props([
-    'h' => 1
+    'h' => 1,
+    'class' => ''
 ])
 @if($h == 1)
-    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary">
+    <h1 class="mb-2 mt-0 text-5xl font-medium leading-tight text-primary {{ $class }}">
         {{$slot}}
     </h1>
 @elseif($h == 2)
-    <h2 class="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">
+    <h2 class="mb-2 mt-0 text-4xl font-medium leading-tight text-primary {{ $class }}">
         {{$slot}}
     </h2>
 @elseif($h == 3)
-    <h3 class="mb-2 mt-0 text-3xl font-medium leading-tight text-primary">
+    <h3 class="mb-2 mt-0 text-3xl font-medium leading-tight text-primary {{ $class }}">
         {{$slot}}
     </h3>
 @elseif($h == 4)
-    <h4 class="mb-2 mt-0 text-2xl font-medium leading-tight text-primary">
+    <h4 class="mb-2 mt-0 text-2xl font-medium leading-tight text-primary {{ $class }}">
         {{$slot}}
     </h4>
 @elseif($h == 5)
-    <h5 class="mb-2 mt-0 text-xl font-medium leading-tight text-primary">
+    <h5 class="mb-2 mt-0 text-xl font-medium leading-tight text-primary {{ $class }}">
         {{$slot}}
     </h5>
 @elseif($h == 6)

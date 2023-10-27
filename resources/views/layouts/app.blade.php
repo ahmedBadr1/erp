@@ -12,7 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
-        
+
         @livewireStyles
 
         <!-- Scripts -->
@@ -63,7 +63,7 @@
             </div>
 
         </div>
-        @livewireScripts
+        @livewireScriptConfig
         <script type="module">
             // On page load or when changing themes, best to add inline in `head` to avoid FOUC
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -99,7 +99,10 @@
             themeSwitcherItems.forEach((item) => {
                 item.addEventListener("click", onThemeSwitcherItemClick);
             });
+
+
+
         </script>
-        @yield('scripts')
+        @stack('scripts')
     </body>
 </html>

@@ -20,5 +20,5 @@ export default {
         },
     },
 
-    plugins: [scroll,twElements],
+    plugins: [scroll],
 };
