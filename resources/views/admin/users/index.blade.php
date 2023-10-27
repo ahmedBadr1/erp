@@ -1,5 +1,6 @@
 <x-app-layout>
-    <div >
+    @section('breadcrumb')
+        <x-breadcrumb :tree="$tree" current="usersgit"/>
+    @endsection
     <livewire:users.users-table />
-    </div>
 </x-app-layout>
