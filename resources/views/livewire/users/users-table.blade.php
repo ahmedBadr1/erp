@@ -3,9 +3,9 @@
         {{ __('Users Data') }}
     </x-h>
     <div class="flex justify-between" >
-        <div class="">
-            <x-input.search />
-            <!-- <x-input.float model="search"  :label="__('Search')"></x-input.float> -->
+        <div class="w-3/4	">
+{{--            <x-input type="search" />--}}
+          <x-input.float model="search"  :label="__('Search')"></x-input.float>
         </div>
 
         <div class="col d-flex flex-row-reverse ">
@@ -30,39 +30,33 @@
             <x-input.date :model="'start_date'" :label="__('names.date-start')"></x-input.date>
         </div>
         <div class="">
-            <x-input.label :value="__('names.date-end')"></x-input.label>
-            <input type="date" wire:model="end_date" class="form-control"/>
+            <x-input.date :model="'end_date'" :label="__('names.date-end')"></x-input.date>
         </div>
 
         <div class="">
-            <x-input.label :value="__('names.status')"></x-input.label>
-            <select wire:model="status_id" class="form-select">
-                <option value="">{{ __('names.all') }}</option>
-            </select>
+            <x-input.select model="status_id" :multiple="true"  :label="__('names.status')" placeholder="status" >
+            </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.order-by')"></x-input.label>
-            <select wire:model="orderBy" class="form-select">
+            <x-input.select model="orderBy"   :label="__('names.order-by')">
                 <option value="name">{{ __('names.name') }}</option>
                 <option value="created_at">{{ __('names.created-at') }}</option>
-            </select>
+            </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.order-desc')"></x-input.label>
-            <select wire:model="orderDesc" class="form-select">
+            <x-input.select model="orderDesc"  :label="__('names.order-desc')" >
                 <option value="1">{{ __('names.desc') }}</option>
                 <option value="0">{{ __('names.asc') }}</option>
-            </select>
+            </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.per-page')"></x-input.label>
-            <select wire:model="perPage" class="form-select">
+            <x-input.select model="perPage" :label="__('names.per-page')" >
                 <option>5</option>
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>
                 <option>100</option>
-            </select>
+            </x-input.select>
         </div>
     </div>
 

@@ -1,5 +1,7 @@
 <x-app-layout>
-    <x-breadcrumb :tree="$tree" current="roles"/>
+    @section('breadcrumb')
+        <x-breadcrumb :tree="$tree" current="roles"/>
+    @endsection
     <div >
         <livewire:roles.roles-table />
     </div>

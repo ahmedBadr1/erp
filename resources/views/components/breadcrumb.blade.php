@@ -7,7 +7,7 @@
 ])
 
 <!-- Breadcrumb -->
-<nav class="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
+
   <ol class="inline-flex items-center space-x-1 md:space-x-3">
       @foreach($tree as $href => $title)
             <li class="inline-flex items-center">
@@ -34,11 +34,11 @@
                 </a>
             </li>
         @endforeach
-   
-    
+
+
     <li aria-current="page">
       <div class="flex items-center">
-        
+
 
       @if( $localeDirs[App::getLocale()] == 'rtl' )
         <svg class="w-3 h-3 mx-1 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 8 14">
@@ -59,4 +59,4 @@
       </div>
     </li>
   </ol>
-</nav>
+
