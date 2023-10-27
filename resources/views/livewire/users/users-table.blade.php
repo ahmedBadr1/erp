@@ -41,28 +41,25 @@
             </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.order-by')"></x-input.label>
-            <select wire:model="orderBy" class="form-select">
+            <x-input.select model="orderBy" :multiple="true"  :label="__('names.order-by')" selected="2">
                 <option value="name">{{ __('names.name') }}</option>
                 <option value="created_at">{{ __('names.created-at') }}</option>
-            </select>
+            </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.order-desc')"></x-input.label>
-            <select wire:model="orderDesc" class="form-select">
+            <x-input.select model="orderDesc" :multiple="true"  :label="__('names.order-desc')" selected="2">
                 <option value="1">{{ __('names.desc') }}</option>
                 <option value="0">{{ __('names.asc') }}</option>
-            </select>
+            </x-input.select>
         </div>
         <div class="">
-            <x-input.label :value="__('names.per-page')"></x-input.label>
-            <select wire:model="perPage" class="form-select">
+            <x-input.select model="perPage" :multiple="true"  :label="__('names.per-page')" selected="2">
                 <option>5</option>
                 <option>10</option>
                 <option>25</option>
                 <option>50</option>
                 <option>100</option>
-            </select>
+            </x-input.select>
         </div>
     </div>
 
