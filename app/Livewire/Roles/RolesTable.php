@@ -3,11 +3,17 @@
 namespace App\Livewire\Roles;
 
 use Livewire\Component;
+use Spatie\Permission\Models\Role;
 
-class RolesTable extends Component
+use App\Livewire\Basic\BasicTable;
+
+class RolesTable extends BasicTable
 {
+
     public function render()
     {
-        return view('livewire.roles.roles-table');
+        return view('livewire.roles.roles-table', [
+            'roles' => Role::get()
+        ]);
     }
 }
