@@ -247,7 +247,6 @@
     <script defer>
         document.addEventListener('alpine:init', () => {
             // Stores variable globally
-            console.log('loaded');
             Alpine.store('sidebar', {
                 active: 'dashboard',
             });

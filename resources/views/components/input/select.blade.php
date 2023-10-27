@@ -13,7 +13,7 @@
     <select
         @if($multiple) multiple @endif
     wire:model.lazy="{{ $model }}"
-        class=" w-full px-4 py-2 appearance-none bg-gray-50 dark:bg-slate-800 border border-slate-500 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
+        class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
     name="{{ $name }}">
     @if($placeholder)
         <option value="">{{ __('message.select',['model'=>__('names.'.$placeholder)] ) }}</option>

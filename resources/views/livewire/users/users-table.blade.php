@@ -2,13 +2,6 @@
     <x-h h="3" class="text-center">
         {{ __('Users Data') }}
     </x-h>
-
-    <div x-data="{ show: false }">
-        <button @click="show = !show">Show</button>
-        <h1 x-show="show">Alpine Js is working !</h1>
-    </div>
-    <hr>
-
     <div class="flex justify-between">
         <div class="w-3/4	">
             <x-input.text type="search" model="search" :label="__('Search')" :placeholder="__('Search')"/>
@@ -31,7 +24,7 @@
         </div>
     </div>
 
-    <div class=" flex justify-between" id="filter" data-te-collapse-item wire:ignore>
+    <div class=" hidden flex justify-between" id="filter" wire:ignore x-data="collapse">
 
         <x-input.date :model="'start_date'" :label="__('names.date-start')"></x-input.date>
 

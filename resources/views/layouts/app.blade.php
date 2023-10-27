@@ -101,7 +101,20 @@
             });
 
 
-
+        </script>
+        <script defer >
+            document.addEventListener('alpine:init', () => {
+                // Creating component Dropdown
+                Alpine.data('collapse', () => ({
+                    open: false,
+                    toggle(id) {
+                        this.open = !this.open;
+                       var target = document.getElementById(id)
+                        target.classList.toggle("hidden")
+                    },
+                    activeClass: 'bg-gray-800 text-gray-200',
+                }));
+            })
         </script>
         @stack('scripts')
     </body>
