@@ -3,9 +3,9 @@
         {{ __('Users Data') }}
     </x-h>
     <div class="flex justify-between" >
-        <div class="">
-            <x-input.search />
-            <!-- <x-input.float model="search"  :label="__('Search')"></x-input.float> -->
+        <div class="w-3/4	">
+{{--            <x-input type="search" />--}}
+          <x-input.float model="search"  :label="__('Search')"></x-input.float>
         </div>
 
         <div class="col d-flex flex-row-reverse ">
@@ -34,26 +34,23 @@
         </div>
 
         <div class="">
-            <x-input.select model="status_id" :multiple="true"  :label="__('names.status')" selected="2">
-                <option value="">{{ __('names.all') }}</option>
-                <option value="1">{{ __('names.all') }}</option>
-                <option value="2">{{ __('names.all') }}</option>
+            <x-input.select model="status_id" :multiple="true"  :label="__('names.status')" placeholder="status" >
             </x-input.select>
         </div>
         <div class="">
-            <x-input.select model="orderBy" :multiple="true"  :label="__('names.order-by')" selected="2">
+            <x-input.select model="orderBy"   :label="__('names.order-by')">
                 <option value="name">{{ __('names.name') }}</option>
                 <option value="created_at">{{ __('names.created-at') }}</option>
             </x-input.select>
         </div>
         <div class="">
-            <x-input.select model="orderDesc" :multiple="true"  :label="__('names.order-desc')" selected="2">
+            <x-input.select model="orderDesc"  :label="__('names.order-desc')" >
                 <option value="1">{{ __('names.desc') }}</option>
                 <option value="0">{{ __('names.asc') }}</option>
             </x-input.select>
         </div>
         <div class="">
-            <x-input.select model="perPage" :multiple="true"  :label="__('names.per-page')" selected="2">
+            <x-input.select model="perPage" :label="__('names.per-page')" >
                 <option>5</option>
                 <option>10</option>
                 <option>25</option>

@@ -4,11 +4,13 @@
     'name' => '',
     'class' => '',
         'model' => '',
-        'placeholder' => '',
+        'placeholder' => null,
         'multiple' => false,
-        'label' => '',
+        'label' => null,
 ])
-<select data-te-select-init @if($multiple) multiple @endif
+<div class="" dir="ltr">
+<select data-te-select-init
+        @if($multiple) multiple @endif
     wire:model.lazy="{{ $model }}"
     class=" {{ $class }}" name="{{ $name }}">
     @if($placeholder)
@@ -23,6 +25,6 @@
     @endif
         {{$slot}}
 </select>
-@if($label)<label data-te-select-label-ref>{{ __($label) }}</label> @endif
-
+@if($label)<x-input.label >{{ __($label) }}</x-input.label> @endif
+</div>
 
