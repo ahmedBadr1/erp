@@ -12,7 +12,7 @@
         'autocomplete' => true,
         'model' => null
 ])
-<div
+<div dir="ltr"
     class="relative mb-3"
     data-te-datepicker-init
     data-te-inline="true"
