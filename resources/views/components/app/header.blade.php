@@ -19,7 +19,8 @@
                 </button>
                 <!-- Toggler -->
 
-                <x-breadcrumb/>
+               
+               
 
             </div>
 
