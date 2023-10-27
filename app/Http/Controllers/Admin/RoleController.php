@@ -17,19 +17,19 @@ class RoleController extends MainController
     }
 
     public function index() {
-        return view('admin.roles.index')->with('tree' , $this->tree);
+        return view('admin.roles.roles_table')->with('tree' , $this->tree);
     }
 
     public function create() {
         $tree = array_merge($this->tree,[route('admin.roles.index') => 'roles'] , [route('admin.roles.create')
         => 'role-create']);
-        return view('admin.roles.form')->with('tree',$tree);
+        return view('admin.roles.roles_form')->with('tree',$tree);
     }
 
     public function edit($role_id) {
          $tree = array_merge($this->tree,[route('admin.roles.index') => 'roles'] , [route('admin.roles.edit',$role_id)
          => 'role-edit']);
-        return view('admin.roles.form')->with(['role_id'=> $role_id,'tree'=>$tree]);
+        return view('admin.roles.roles_form')->with(['role_id'=> $role_id,'tree'=>$tree]);
     }
 
 }

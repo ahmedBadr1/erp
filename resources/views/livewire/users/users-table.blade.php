@@ -5,8 +5,7 @@
     <div class="flex justify-between" >
         <div class="">
             <x-input.search />
-            <x-input.float model="search"  :label="__('Search')"></x-input.float>
-{{--            <input type="search" wire:model.lazy="search">--}}
+            <!-- <x-input.float model="search"  :label="__('Search')"></x-input.float> -->
         </div>
 
         <div class="col d-flex flex-row-reverse ">
