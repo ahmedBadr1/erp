@@ -35,7 +35,7 @@ class BasicTable extends Component {
 
     public function delete($id)
     {
-        $this->dispatchBrowserEvent('showDeleteConfirmation', [
+        $this->dispatch('showDeleteConfirmation', [
             'id' => $id,
         ]);
     }

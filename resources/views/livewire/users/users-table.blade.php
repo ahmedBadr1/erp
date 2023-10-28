@@ -4,7 +4,7 @@
     </x-h>
     <div class="flex justify-between">
         <div class="w-3/4	">
-            <x-input.text type="search" model="search" :label="__('Search')" :placeholder="__('Search')"/>
+            <x-input.text type="search" model="search" :placeholder="__('Search')"/>
         </div>
 
         <div class="col d-flex flex-row-reverse ">
@@ -31,7 +31,7 @@
         <x-input.date :model="'end_date'" :label="__('names.date-end')"></x-input.date>
 
 
-        <x-input.select model="status_id"  :label="__('names.status')" placeholder="status">
+        <x-input.select model="status_id" :label="__('names.status')" placeholder="status">
         </x-input.select>
 
 
@@ -65,16 +65,27 @@
                 <th scope="col" class="px-6 py-4">{{ __('Phone') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Language') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Status') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Setting') }}</th>
             </tr>
         </x-slot>
         @forelse($users as $key => $user)
             <x-tr>
-                <x-td medium="true">{{ $key }}</x-td>
+                <x-td medium="true">{{ $user->id }}</x-td>
                 <x-td>{{ $user->name }}</x-td>
                 <x-td>{{ $user->email }}</x-td>
                 <x-td>{{ $user->phone }}</x-td>
                 <x-td>{{ __($langs[$user->lang]) }}</x-td>
                 <x-td>{{ $user->active }}</x-td>
+                <x-td>
+                    <div class="limit-2">
+                        <a href="{{ route('admin.users.edit',$user->id) }}" class="px-1">
+                            <x-i name=" bxs-edit" class="text-gray-500"></x-i>
+                        </a>
+                        <a href="#" class="px-1" wire:click.prevent="delete(1)">
+                            <x-i name="bx-trash" class="text-red-800"></x-i>
+                        </a>
+                    </div>
+                </x-td>
             </x-tr>
         @empty
             <x-tr>

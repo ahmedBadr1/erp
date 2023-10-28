@@ -100,6 +100,24 @@
                 item.addEventListener("click", onThemeSwitcherItemClick);
             });
 
+            window.addEventListener('showDeleteConfirmation', event => {
+                console.log('delete')
+                Swal.fire({
+                    title: 'هل أنت متأكد',
+                    text: 'سيتم الحذف نهائياً',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'إلغاء',
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#004693',
+                    confirmButtonText: 'تأكيد الحذف'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Livewire.emit('confirmDelete', event.detail.id);
+                    }
+                });
+            });
+
 
         </script>
         <script defer >

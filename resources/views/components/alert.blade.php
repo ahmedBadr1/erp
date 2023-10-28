@@ -6,7 +6,7 @@
     ])
 <div
 @if($type === 'success')
-    class="mb-4 rounded-lg  bg-[#D6FAE4] px-6 py-5 text-base text-[#094621]  flex justify-between"
+    class="mb-4 rounded-lg  bg-emerald-200 px-6 py-5 text-base text-emerald-800 dark:bg-emerald-800 dark:text-white flex justify-between"
 @elseif($type === 'error')
     class="mb-4 rounded-lg  bg-[#FAE5E9] px-6 py-5 text-base text-[#6A1523] "
 @elseif($type === 'info')
