@@ -14,7 +14,7 @@
         'model' => null,
         'icon' => null
 ])
-@if($label) <label class="text-xs">{{ $label }}</label> @endif
+@if($label) <label class="mx-2">{{ $label }}</label> @endif
 
 <div class="my-2 relative rounded-md shadow-sm">
     @if($icon)
