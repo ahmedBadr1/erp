@@ -61,7 +61,7 @@
                 </main>
 
             </div>
-
+            <x-toast />
         </div>
         @livewireScriptConfig
         <script type="module">
@@ -101,7 +101,6 @@
             });
 
             window.addEventListener('showDeleteConfirmation', event => {
-                console.log('delete')
                 Swal.fire({
                     title: 'هل أنت متأكد',
                     text: 'سيتم الحذف نهائياً',
@@ -117,6 +116,15 @@
                     }
                 });
             });
+            window.addEventListener('swal', event => {
+                Swal.fire({
+                    position: event.detail.position,
+                    icon: event.detail.type,
+                    title: event.detail.message,
+                    showConfirmButton: false,
+                    timer: 1000
+                })
+            });
 
 
         </script>
@@ -131,6 +139,27 @@
                         target.classList.toggle("hidden")
                     },
                     activeClass: 'bg-gray-800 text-gray-200',
+                }));
+                Alpine.data('noticesHandler', () => ({
+                    notices: [],
+                    visible: [],
+                    add(notice) {
+                        notice.id = Date.now()
+                        this.notices.push(notice)
+                        this.fire(notice.id)
+                    },
+                    fire(id) {
+                        this.visible.push(this.notices.find(notice => notice.id == id))
+                        const timeShown = 2000 * this.visible.length
+                        setTimeout(() => {
+                            this.remove(id)
+                        }, timeShown)
+                    },
+                    remove(id) {
+                        const notice = this.visible.find(notice => notice.id == id)
+                        const index = this.visible.indexOf(notice)
+                        this.visible.splice(index, 1)
+                    },
                 }));
             })
 

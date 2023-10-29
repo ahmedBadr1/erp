@@ -4,7 +4,7 @@
     </x-h>
     <div class="flex justify-between">
         <div class="w-3/4	">
-            <x-input.text type="search" model="search" :placeholder="__('Search')" :label="__('Search')"/>
+            <x-input.text type="search" model="search" :placeholder="__('Search')" />
         </div>
 
         <div class="col d-flex flex-row-reverse ">

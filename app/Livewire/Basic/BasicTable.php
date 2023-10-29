@@ -6,7 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 class BasicTable extends Component {
-
+    use Toast;
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
@@ -47,5 +47,4 @@ class BasicTable extends Component {
             'id' => $id,
         ]);
     }
-
 }
