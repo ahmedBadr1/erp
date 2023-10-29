@@ -3,7 +3,7 @@
 namespace Database\Factories\System;
 
 use App\Models\Crm\Company;
-use App\Models\Purchases\Vendor;
+use App\Models\Purchases\Supplier;
 use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

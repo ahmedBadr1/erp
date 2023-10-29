@@ -16,7 +16,7 @@ return new class extends Migration
             $table->dateTime('paid_at');
             $table->string('amount');
             $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Vendor::class)->nullable();
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bills', function (Blueprint $table) {
+        Schema::create('purchase_returns', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Accounting\Account::class); // 1
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
@@ -25,10 +25,10 @@ return new class extends Migration
             $table->dateTime('billed_at');
             $table->dateTime('due_at');
             $table->foreignId('responsible_id')
+                ->nullable()
                 ->references('id')
                 ->on('employees')
-                ->onUpdate('cascade')
-                ->nullable();
+                ->onUpdate('cascade');
             $table->decimal('paid',15,2)->nullable();
             $table->decimal('sub_total',15,2);
             $table->decimal('tax_total',15,2)->default(0);
@@ -46,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bills');
+        Schema::dropIfExists('purchase_returns');
     }
 };

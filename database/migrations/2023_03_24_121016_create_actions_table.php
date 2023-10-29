@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Employee\Employee::class);
             $table->foreignIdFor(\App\Models\User::class);
             $table->foreignIdFor(\App\Models\Sales\Client::class)->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Vendor::class)->nullable();
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->timestamps();
         });
     }

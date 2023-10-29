@@ -39,7 +39,7 @@ return new class extends Migration
             $table->foreignId('tax2_id')->nullable()->references('id')->on('taxes');
             $table->foreignIdFor(\App\Models\Inventory\Unit::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Brand::class)->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Vendor::class)->nullable();
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->foreignIdFor(App\Models\Employee\Employee::class)->nullable();
 
             $table->decimal('weight', 10, 2)->nullable();

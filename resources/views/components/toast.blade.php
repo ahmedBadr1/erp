@@ -14,20 +14,14 @@
             x-transition:leave-end="transform translate-x-full opacity-0"
             @click="remove(notice.id)"
             class="inline-flex items-center justify-center flex-shrink-0 w-1/6 h-1/8 mt-3 max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
-            :class="{
-				'bg-green-500': notice.type === 'success',
-				'bg-blue-500': notice.type === 'info',
-				'bg-orange-500': notice.type === 'warning',
-				'bg-red-500': notice.type === 'error',
-			 }"
             style="pointer-events:all">
             <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ">
                 <i class="bx  bx-sm p-1 rounded-lg "
                    :class="{
 				'bx-check-circle text-emerald-500 bg-emerald-100 dark:bg-emerald-800 dark:text-emerald-200': notice.type === 'success',
 				'bx-info-circle text-indigo-500 bg-indigo-100 dark:bg-indigo-800 dark:text-indigo-200': notice.type === 'info',
-				'bx-message-alt-error text-orange-500 bg-orange-100 dark:bg-orange-800 dark:text-orange-200': notice.type === 'warning',
-				'bx-error-circle text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200': notice.type === 'error',
+				'bx-error-circle text-orange-500 bg-orange-100 dark:bg-orange-800 dark:text-orange-200': notice.type === 'warning',
+				'bx-x-circle text-red-500 bg-red-100 dark:bg-red-800 dark:text-red-200': notice.type === 'error',
 			 }"
 
                 ></i>
