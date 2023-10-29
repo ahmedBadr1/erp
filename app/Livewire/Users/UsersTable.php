@@ -13,7 +13,7 @@ class UsersTable extends BasicTable
 
     public function render()
     {
-//        $this->start_date = now()->format('d/m/Y');
+//        $this->start_date = now()->addDays(7)->format('d/m/Y');
         $service = new UserService();
         return view('livewire.users.users-table', [
             'users' => $service->search($this->search)

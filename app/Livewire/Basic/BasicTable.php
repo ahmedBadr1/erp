@@ -31,6 +31,11 @@ class BasicTable extends Component {
     {
         dd($value);
     }
+
+    public function updatedEndDate($value)
+    {
+        dd($value);
+    }
     public function updatedPerPage()
     {
         $this->resetPage();

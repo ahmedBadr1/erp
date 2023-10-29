@@ -26,7 +26,7 @@
 
     <div class=" hidden flex justify-between" id="filter" wire:ignore x-data="collapse">
 
-        <x-input.date wire:model.lazy="start_date" :label="__('names.date-start')"></x-input.date>
+        <x-input.date wire:model="start_date" :label="__('names.date-start')"></x-input.date>
 
         <x-input.date wire:model.lazy="end_date" :label="__('names.date-end')"></x-input.date>
 

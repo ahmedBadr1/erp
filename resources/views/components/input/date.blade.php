@@ -12,17 +12,18 @@
         'autocomplete' => true,
         'model' => null
 ])
-<div class="w-full m-2 relative rounded-md shadow-sm" x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak >
+<div class="w-full m-2 relative rounded-md shadow-sm" x-data="date()" x-init="[initDate(), getNoOfDays()]" x-cloak >
             @if($label)
                 <label for="datepicker" class="text-sm mb-1 text-gray-700 dark:text-gray-300 block">{{$label}}</label>
             @endif
             <div class="relative" dir="ltr">
-                <input type="hidden" name="date" :value="datepickerValue" {{ $attributes->wire('model') }}
-                />
-                <input type="text" x-on:click="showDatepicker = !showDatepicker" x-model="datepickerValue" x-on:keydown.escape="showDatepicker = false"
+{{--                <input type="hidden" name="date" :value="datepickerValue"--}}
+{{--                />--}}
+                <input type="text"  {{ $attributes->wire('model') }} x-on:click="showDatepicker = !showDatepicker" x-model="datepickerValue" x-on:keydown.escape="showDatepicker = false"
                        class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
-                />
 
+                />
+        <span x-text="$wire.start_date" ></span>
                 <div class="absolute top-0 right-0 px-3 py-2"  x-on:click="showDatepicker = !showDatepicker">
                     <i class='bx bx-calendar bx-sm '></i>
                 </div>
@@ -84,3 +85,4 @@
                 </div>
             </div>
 </div>
+

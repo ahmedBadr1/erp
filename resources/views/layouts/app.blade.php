@@ -165,7 +165,7 @@
             ];
             const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-            function app() {
+            function date() {
                 return {
                     showDatepicker: false,
                     datepickerValue: "",
@@ -230,6 +230,8 @@
                         this.datepickerValue = this.formatDateForDisplay(
                             selectedDate
                         );
+
+                        // $wire.set('start_date', selectedDate);
                         // this.$refs.date.value = selectedDate.getFullYear() + "-" + ('0' + formattedMonthInNumber).slice(-2) + "-" + ('0' + selectedDate.getDate()).slice(-2);
                         this.isSelectedDate(date);
                         this.showDatepicker = false;
