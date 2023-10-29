@@ -2,12 +2,12 @@
 
 namespace App\Models\Sales;
 
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Revenue extends Model
+class Revenue extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['paid_at','amount','invoice_id','client_id'];
 

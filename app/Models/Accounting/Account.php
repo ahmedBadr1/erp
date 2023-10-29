@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\MainModelSoft;
 use App\Models\System\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,9 +11,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Account extends Model
+class Account extends MainModelSoft
 {
-    use HasFactory , LogsActivity , SoftDeletes;
+    use LogsActivity ;
 
     protected $fillable = ['code', 'name', 'type', 'description','opening_balance','opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
 

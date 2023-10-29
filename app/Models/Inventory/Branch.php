@@ -3,12 +3,12 @@
 namespace App\Models\Inventory;
 
 use App\Models\Employee\Employee;
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Branch extends Model
+class Branch extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['name' ,'manager_id'];
 

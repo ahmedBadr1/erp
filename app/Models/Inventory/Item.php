@@ -3,6 +3,7 @@
 namespace App\Models\Inventory;
 
 use App\Models\Element;
+use App\Models\MainModelSoft;
 use App\Models\ProductionOrder;
 use App\Models\Purchases\Bill;
 use App\Models\User;
@@ -10,10 +11,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Prunable;
 
-class Item extends Model
+class Item extends MainModelSoft
 {
-    use HasFactory , Prunable;
-    use \Znck\Eloquent\Traits\BelongsToThrough;
+    use Prunable;
 
     protected $fillable= [
         'name', 'sku', 'quantity', 'description', 'price', 'tax_exclusive', 'tax_inclusive', 'type', 'cost', 'expire_at' ,

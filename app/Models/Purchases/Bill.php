@@ -5,13 +5,13 @@ namespace App\Models\Purchases;
 use App\Models\Inventory\Branch;
 use App\Models\Inventory\Item;
 use App\Models\Inventory\Warehouse;
+use App\Models\MainModelSoft;
 use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bill extends Model
+class Bill extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['code','vendor_id', 'status_id', 'billed_at', 'due_at','number','tax_id','tax_total','discount','sub_total','total', 'notes','parent_id'];
 

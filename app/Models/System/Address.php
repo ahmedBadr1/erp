@@ -8,7 +8,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Address extends MainModelSoft
 {
-    use HasFactory , BelongsToThrough ;
     protected $fillable = [
         'name',
         'area_id',

@@ -2,14 +2,14 @@
 
 namespace App\Models\System;
 
+use App\Models\MainModelSoft;
 use App\Models\Purchases\Bill;
 use App\Models\Sales\Invoice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tax extends Model
+class Tax extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['name','rate','exclusive','active'];
     protected $casts = ['exclusive'=> 'boolean','active'=>'boolean'];

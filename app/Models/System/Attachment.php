@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Attachment extends MainModelSoft
 {
-    use HasFactory;
-
     protected $table = 'attachments';
     protected $fillable = [ 'user_id', 'attachable_id', 'attachable_type','type', 'path','size','original_name','extension'];
 

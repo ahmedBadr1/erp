@@ -3,8 +3,8 @@
 namespace App\Models\Inventory;
 
 use App\Models\Accounting\Category;
-use App\Models\Formula;
 use App\Models\Employee\Employee;
+use App\Models\MainModelSoft;
 use App\Models\System\Tax;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +12,9 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-class Product extends Model
+class Product extends MainModelSoft
 {
-    use HasFactory ,BelongsToThrough , LogsActivity;
+    use LogsActivity;
 
     protected $fillable = [
         'name', 'name_2', 'code', 'warehouse_id', 'origin_number', 'type', 'name_2', 'price', 'd_price', 'sd_price', 'min_price', 'ref_price',
@@ -56,11 +56,6 @@ class Product extends Model
     public function unit()
     {
         return $this->belongsTo(Unit::class);
-    }
-
-    public function scopeActive($query)
-    {
-        return $query->where('active', true);
     }
 
     public function getActivitylogOptions(): LogOptions

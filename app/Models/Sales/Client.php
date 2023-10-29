@@ -2,6 +2,7 @@
 
 namespace App\Models\Sales;
 
+use App\Models\MainModelSoft;
 use App\Models\System\Country;
 use App\Models\System\State;
 use App\Models\System\Status;
@@ -11,9 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-class Client extends Model
+class Client extends MainModelSoft
 {
-    use HasFactory ,softDeletes , BelongsToThrough , Taggable;
 
     protected $fillable = [
         'name',

@@ -9,7 +9,6 @@ use Nwidart\Modules\Facades\Module;
 
 class Message extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['from_id','to_id', 'content' ,'public', 'messageable_id' , 'messageable_type'];
 

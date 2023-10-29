@@ -2,15 +2,16 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Entry extends Model
+class Entry extends MainModelSoft
 {
-    use HasFactory , LogsActivity , SoftDeletes;
+    use  LogsActivity ;
 
     protected $fillable = ['debit','credit','description','account_id','transaction_id'];
 

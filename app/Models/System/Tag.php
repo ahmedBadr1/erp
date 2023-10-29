@@ -3,13 +3,12 @@
 namespace App\Models\System;
 
 use App\Models\Hr\JobGrade;
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
+class Tag extends MainModelSoft
 {
-    use HasFactory;
-
 
     protected $table = 'tags';
     public $fillable = ['type','name'];

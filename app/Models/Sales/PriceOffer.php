@@ -3,14 +3,14 @@
 namespace App\Models\Sales;
 
 use App\Models\Inventory\Product;
+use App\Models\MainModelSoft;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-class PriceOffer extends Model
+class PriceOffer extends MainModelSoft
 {
-    use  BelongsToThrough;
 
     protected $fillable = ['client_id', 'user_id','offered_at'];
 

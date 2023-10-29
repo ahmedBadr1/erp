@@ -3,15 +3,16 @@
 namespace App\Models\Accounting;
 
 use App\Models\Inventory\Product;
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Traits\HasAdjacencyList;
 
 
-class Category extends Model
+class Category extends MainModelSoft
 {
-    use HasFactory  , HasRecursiveRelationships;
+    use  HasRecursiveRelationships;
 
     public static $types = ['account','product'];
 

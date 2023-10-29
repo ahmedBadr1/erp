@@ -2,12 +2,12 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Brand extends Model
+class Brand extends MainModelSoft
 {
-    use HasFactory;
 
     protected $fillable = ['name' ];
 

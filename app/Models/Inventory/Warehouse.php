@@ -4,15 +4,16 @@ namespace App\Models\Inventory;
 
 
 use App\Models\Employee\Employee;
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Warehouse extends Model
+class Warehouse extends MainModelSoft
 {
-    use HasFactory ,softDeletes ,LogsActivity;
+    use LogsActivity;
 
     protected $fillable = [
         'name',

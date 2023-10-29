@@ -2,16 +2,18 @@
 
 namespace App\Models\System;
 
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
-class Invitation extends Model
+class Invitation extends MainModelSoft
 {
-    use HasFactory;
 
-    protected $fillable = ['email', 'invitation_token', 'registered_at', 'sent_by'];
+    protected $fillable = ['email', 'invitation_token','expire_at', 'registered_at', 'sent_by','role_id'];
     protected $casts = [
-'registered_at' => 'datetime'
+        'expire_at' => 'datetime',
+        'registered_at' => 'datetime'
     ] ;
 
     public function generateInvitationToken()
@@ -28,6 +30,11 @@ class Invitation extends Model
     public function sender()
     {
         return $this->belongsTo(User::class,'sent_by');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class,'sent_by');
     }
     public function getRegisteredAttribute()
     {

@@ -2,12 +2,12 @@
 
 namespace App\Models\System;
 
+use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Profile extends Model
+class Profile extends MainModelSoft
 {
-    use HasFactory;
     /**
      * The attributes that are mass assignable.
      *
