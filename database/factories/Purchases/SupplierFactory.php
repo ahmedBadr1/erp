@@ -26,10 +26,11 @@ class SupplierFactory extends Factory
             'tax_number' => $this->faker->randomNumber(),
             'registration_number' => $this->faker->randomNumber(),
             'payment_method' => $this->faker->creditCardNumber(),
-            'responsible_id'  => Employee::all()->random(1)->value('id'),
+//            'responsible_id'  => Employee::all()->random()->value('id'),
             'warranty' => $this->faker->month(),
 //            'business_name', 'name', 'code', 'responsible_id', 'credit_limit', 'tax_number',
 //        'registration_number', 'payment_method', 'phone', 'telephone', 'email', 'active'
+        'account_id' => 2
         ];
     }
 }

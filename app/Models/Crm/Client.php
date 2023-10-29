@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Models\Sales;
+namespace App\Models\Crm;
 
 use App\Models\MainModelSoft;
+use App\Models\Sales\Invoice;
+use App\Models\Sales\Revenue;
 use App\Models\System\Country;
 use App\Models\System\State;
 use App\Models\System\Status;
-use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Client extends MainModelSoft
 {
@@ -52,7 +51,7 @@ class Client extends MainModelSoft
                 ->orWhere('phone', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%')
                 ->orWhereHas('state', fn($q) => $q->where('name','like', '%'.$search.'%'));
-              //  ->orWhere('address', 'like', '%' . $search . '%');
+        //  ->orWhere('address', 'like', '%' . $search . '%');
     }
 
 }

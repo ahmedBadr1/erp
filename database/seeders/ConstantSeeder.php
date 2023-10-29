@@ -6,7 +6,7 @@ namespace Database\Seeders;
 use App\Models\Accounting\Category;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
-use App\Models\Sales\Client;
+use App\Models\Crm\Client;
 use App\Models\System\City;
 use App\Models\System\Country;
 use App\Models\System\Currency;

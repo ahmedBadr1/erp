@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->dateTime('due_at');
             $table->dateTime('done_at')->nullable();
-            $table->foreignIdFor(\App\Models\Employee\Employee::class);
+            $table->foreignIdFor(\App\Models\Employee\Employee::class)->nullable();
             $table->foreignIdFor(\App\Models\User::class);
-            $table->foreignIdFor(\App\Models\Sales\Client::class)->nullable();
+            $table->foreignIdFor(\App\Models\Crm\Client::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->timestamps();
         });

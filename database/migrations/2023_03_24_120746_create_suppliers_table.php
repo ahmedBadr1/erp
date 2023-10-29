@@ -17,11 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('code');
             $table->foreignIdFor(\App\Models\Accounting\Account::class);
-            $table->foreignId('responsible_id')
-                ->references('id')
-                ->on('employees')
-                ->onUpdate('cascade')
-                ->nullable();
             $table->decimal('credit_limit',10)->nullable();
             $table->string('warranty')->nullable();
             $table->string('tax_number')->nullable();

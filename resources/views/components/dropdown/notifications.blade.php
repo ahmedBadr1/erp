@@ -41,12 +41,24 @@
 {{--                    </a>--}}
 {{--                </li>--}}
 {{--            @endforeach--}}
+            @forelse(Auth::user()->notifications()->limit(5)->get() as $notification )
                 <li>
                     <a class="block w-full  whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-                       href="#" @click="open = false" @focus="open = true" @focusout="open = false">
-                        <span>  Action</span>
+                       href="{{ $notification['url'] ?? '#' }}" @click="open = false" @focus="open = true" @focusout="open = false">
+                        <div class="text-bold"> {{ $notification['from'] }}</div>
+                        <span>{{ $notification['message'] }}</span>
+                        <small class="text-gray-500">{{ $notification->created_at->diffForHumans() }}</small>
                     </a>
                 </li>
+            @empty
+                <li>
+                    <a class="block w-full  whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-400 dark:hover:bg-white/30"
+                       href="#" @click="open = false" @focus="open = true" @focusout="open = false">
+                        <span>{{ __('No New Notifications') }}</span>
+                    </a>
+                </li>
+            @endforelse
+
 
         </ul>
     </div>

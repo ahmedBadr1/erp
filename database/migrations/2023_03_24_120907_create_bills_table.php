@@ -25,10 +25,10 @@ return new class extends Migration
             $table->dateTime('billed_at');
             $table->dateTime('due_at');
             $table->foreignId('responsible_id')
+                ->nullable()
                 ->references('id')
                 ->on('employees')
-                ->onUpdate('cascade')
-                ->nullable();
+                ->onUpdate('cascade');
             $table->decimal('paid',15,2)->nullable();
             $table->decimal('sub_total',15,2);
             $table->decimal('tax_total',15,2)->default(0);

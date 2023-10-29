@@ -4,7 +4,7 @@ namespace App\Models\Crm;
 
 use App\Models\Employee\Employee;
 use App\Models\MainModelSoft;
-use App\Models\Sales\Client;
+use App\Models\Crm\Client;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
