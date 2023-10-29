@@ -5,14 +5,13 @@
     'class' => '',
         'model' => '',
         'placeholder' => null,
-        'multiple' => false,
+
         'label' => null,
 ])
 <div class="w-full m-2 relative rounded-md shadow-sm" >
     @if($label)<x-input.label >{{ __($label) }}</x-input.label> @endif
     <select
-        @if($multiple) multiple @endif
-    wire:model.lazy="{{ $model }}"
+    {{ $attributes }}
         class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
     name="{{ $name }}">
     @if($placeholder)

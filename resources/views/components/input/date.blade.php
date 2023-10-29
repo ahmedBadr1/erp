@@ -12,19 +12,75 @@
         'autocomplete' => true,
         'model' => null
 ])
-<div dir="ltr"
-    class="relative m-2 w-full "
-    data-te-datepicker-init
-    data-te-inline="true"
-    data-te-input-wrapper-init>
-    <input
-@if($model)
-    wire:model.lazy="{{$model}}"
-@endif
-        type="text"
-        class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
-        placeholder="Select a date" />
-    <label for="floatingInput"
-        class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
-    >{{$label}}</label>
+<div class="w-full m-2 relative rounded-md shadow-sm" x-data="app()" x-init="[initDate(), getNoOfDays()]" x-cloak >
+            @if($label)
+                <label for="datepicker" class="text-sm mb-1 text-gray-700 dark:text-gray-300 block">{{$label}}</label>
+            @endif
+            <div class="relative" dir="ltr">
+                <input type="hidden" name="date" :value="datepickerValue" {{ $attributes->wire('model') }}
+                />
+                <input type="text" x-on:click="showDatepicker = !showDatepicker" x-model="datepickerValue" x-on:keydown.escape="showDatepicker = false"
+                       class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
+                />
+
+                <div class="absolute top-0 right-0 px-3 py-2"  x-on:click="showDatepicker = !showDatepicker">
+                    <i class='bx bx-calendar bx-sm '></i>
+                </div>
+
+                <!-- <div x-text="no_of_days.length"></div>
+                              <div x-text="32 - new Date(year, month, 32).getDate()"></div>
+                              <div x-text="new Date(year, month).getDay()"></div> -->
+
+                <div class="bg-gray-100 dark:bg-slate-800 mt-12 rounded-lg shadow p-4 absolute top-0 left-0" style="width: 17rem" x-show.transition="showDatepicker" @click.away="showDatepicker = false">
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <span x-text="MONTH_NAMES[month]" class="text-lg font-bold text-gray-800 dark:text-gray-400"></span>
+                            <span x-text="year" class="ml-1 text-lg text-gray-600 dark:text-gray-500 font-normal"></span>
+                        </div>
+                        <div>
+                            <button type="button" class="focus:outline-none focus:shadow-outline transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-100 p-1 rounded-full" @click="if (month == 0) {
+												year--;
+												month = 12;
+											} month--; getNoOfDays()">
+                                <svg class="h-6 w-6 text-gray-400 dark:text-gray-200 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <button type="button" class="focus:outline-none focus:shadow-outline transition ease-in-out duration-100 inline-flex cursor-pointer hover:bg-gray-100 p-1 rounded-full" @click="if (month == 11) {
+												month = 0;
+												year++;
+											} else {
+												month++;
+											} getNoOfDays()">
+                                <svg class="h-6 w-6 text-gray-400 dark:text-gray-200 inline-flex" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap mb-3 -mx-1">
+                        <template x-for="(day, index) in DAYS" :key="index">
+                            <div style="width: 14.26%" class="px-0.5">
+                                <div x-text="day" class="text-gray-800 dark:text-gray-400 font-medium text-center text-xs"></div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="flex flex-wrap -mx-1">
+                        <template x-for="blankday in blankdays">
+                            <div style="width: 14.28%" class="text-center border p-1 border-transparent text-sm"></div>
+                        </template>
+                        <template x-for="(date, dateIndex) in no_of_days" :key="dateIndex">
+                            <div style="width: 14.28%" class="px-1 mb-1">
+                                <div @click="getDateValue(date)" x-text="date" class="cursor-pointer text-center text-sm leading-none rounded-full leading-loose transition ease-in-out duration-100" :class="{
+                      'bg-indigo-200': isToday(date) == true,
+                      'text-gray-600 dark:text-gray-200 hover:bg-indigo-200': isToday(date) == false && isSelectedDate(date) == false,
+                      'bg-indigo-500 text-white hover:bg-opacity-75': isSelectedDate(date) == true
+                    }"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
 </div>

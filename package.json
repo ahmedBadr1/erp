@@ -23,6 +23,7 @@
         "boxicons": "^2.1.4",
         "sweetalert2": "^11.7.32",
         "toastr": "^2.1.4",
-        "tw-elements": "^1.0.0"
+        "tw-elements": "^1.0.0",
+        "vanilla-picker": "^2.12.2"
     }
 }

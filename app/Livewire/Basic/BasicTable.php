@@ -27,7 +27,10 @@ class BasicTable extends Component {
         // Relations ()
     }
 
-
+    public function updatedStartDate($value)
+    {
+        dd($value);
+    }
     public function updatedPerPage()
     {
         $this->resetPage();

@@ -29,10 +29,8 @@
            value="{{ $value }}"
            {{ $disabled ? 'disabled' : '' }}  {{ $autofocus ? 'autofocus' : '' }} {{ $autocomplete ? 'autocomplete' : '' }}
            {{ $required ? 'required' : '' }} placeholder="{{ $placeholder }}" name="{{ $name }}"
-           @if($id)id="{{ $id }}" @endif
+           @if($id) id="{{ $id }}" @endif
            @if($aria_label) aria-label="{{$aria_label}}" @endif
-           @if($model)
-               wire:model.lazy="{{$model}}"
-        @endif
+        {{ $attributes->wire('model') }}
     >
 </div>

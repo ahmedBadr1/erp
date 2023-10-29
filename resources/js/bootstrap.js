@@ -11,6 +11,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 import Clipboard from '@ryangjchandler/alpine-clipboard'
+import Picker from 'vanilla-picker';
 
 Alpine.plugin(Clipboard)
 window.Alpine = Alpine

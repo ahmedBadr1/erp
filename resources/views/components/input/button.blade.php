@@ -14,9 +14,6 @@ class=" flex items-center middle none center rounded-lg bg-{{$color}}-500  py-3 
         x-data="collapse"
         @click="toggle('{{$target}}')"
 @endif
-
-        x-data="{ expanded: false }"
-        @click="expanded = ! expanded"
 >
     @if($icon)  <x-i  name="{{$icon}}"></x-i> @endif
     {{ $slot }}
