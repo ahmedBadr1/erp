@@ -38,4 +38,10 @@ class AccountsController extends MainController
         $tree = array_merge($this->tree, [route('admin.accounting.accounts.index') => 'accounts']);
         return view('admin.accounting.accounts.create', compact('tree','id'));
     }
+
+    public function charts()
+    {
+        $tree = array_merge($this->tree, [route('admin.accounting.accounts.index') => 'accounts']);
+        return view('admin.accounting.accounts.charts', compact('tree'));
+    }
 }

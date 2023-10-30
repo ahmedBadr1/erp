@@ -65,6 +65,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('/', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'index'])->name('index');
                 Route::get('/create', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'create'])->name('create');
                 Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'edit'])->name('edit');
+                Route::get('/charts', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'charts'])->name('charts');
+
             });
 
             Route::get('/cash-in', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashIn'])->name('cash-in');

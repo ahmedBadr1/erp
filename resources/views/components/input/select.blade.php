@@ -8,7 +8,7 @@
 
         'label' => null,
 ])
-<div class="my-2 relative rounded-md shadow-sm">
+<div class="w-full my-2 relative rounded-md shadow-sm">
     @if($label)<x-input.label >{{ __($label) }}</x-input.label> @endif
     <select
     {{ $attributes }}

@@ -19,7 +19,7 @@
 <div class="my-2 relative rounded-md shadow-sm">
     @if($icon)
         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-600">
-                             <x-i name="{{$icon}}"> </x-i>
+            <x-i name="{{$icon}}"> </x-i>
         </span>
     @endif
 
