@@ -43,8 +43,6 @@ class BasicTable extends Component {
 
     public function delete($id)
     {
-        $this->dispatch('showDeleteConfirmation', [
-            'id' => $id,
-        ]);
+        $this->dispatch('showDeleteConfirmation', id : $id);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Accounting\Category;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Crm\Client;
+use App\Models\Purchases\Supplier;
 use App\Models\System\City;
 use App\Models\System\Country;
 use App\Models\System\Currency;
@@ -33,32 +34,31 @@ class ConstantSeeder extends Seeder
 
         $admin_models =
             [
-                "activity_logs",
-                "users",
-                "experiences",
-                "grades",
-                "groups",
-                "roles",
-                "contacts",
-                "categories",
-                "pages",
-                "sections",
-                "tags",
-                "review",
-                "message",
-                "posts",
                 "logs",
+                "users",
+                "roles",
+                "clients",
+                "clients.actions",
+                "accounting.accounts",
+                "accounting.entries",
+                "purchases.bills",
+                "purchases.suppliers",
+                "purchases.payments",
+                "purchases.returns",
+                "sales.invoices",
+                "sales.revenues",
+                "sales.returns",
             ];
 
         $permissions = [];
 
 
-         foreach ($permissions as  $name => $method) {
-                Permission::Create([
-                    'name' => $method,
-                    'guard_name' =>"web",
-                ]);
-            }
+        foreach ($permissions as $name => $method) {
+            Permission::Create([
+                'name' => $method,
+                'guard_name' => "web",
+            ]);
+        }
 
         $this->addModelsCrud($admin_models);
         $this->addModelsNotCrud();
@@ -81,7 +81,7 @@ class ConstantSeeder extends Seeder
 
         foreach ($roles as $key => $value) {
             $role = Role::create($value);
-            if($role['id'] == 1){
+            if ($role['id'] == 1) {
                 $pers = Permission::pluck('id', 'id')->toArray();
                 $role->permissions()->sync($pers);
             }
@@ -103,41 +103,38 @@ class ConstantSeeder extends Seeder
             'location' => 'factory',
         ]);
 
-//        Client::factory()->create([
-//            'name' => 'Client1',
-//            'phone' => '01098281638',
-//            'code' => 'cls1',
-//            'status_id' => 1,
-//        ]);
-
-
         Tax::factory()->create([
             'name' => 'VAT',
             'rate' => '14',
             'active' => true
         ]);
+
         $this->seedCategories();
 
         $key = $this->seedCurrencies();
 
         $this->seedUnits();
 
+        \App\Models\Crm\Client::factory(10)->create();
+        \App\Models\Crm\Action::factory(10)->create();
+        Supplier::factory(10)->create();
+
     }
 
-    public function addModelsCrud($models,$guard = 'web')
+    public function addModelsCrud($models, $guard = 'web')
     {
         foreach ($models as $model) {
             $permission_methods = [
-                "{$model}.index" => "view" ,
-                "{$model}.create,{$model}.store" => "create",
-                "{$model}.edit,{$model}.update" => "edit",
+                "{$model}.index" => "view",
+                "{$model}.create" => "create",
+                "{$model}.edit" => "edit",
                 "{$model}.show" => "show",
                 "{$model}.delete" => "delete",
             ];
-            foreach ($permission_methods as  $name => $method) {
+            foreach ($permission_methods as $name => $method) {
                 Permission::Create([
                     'name' => $name,
-                    'guard_name' =>$guard,
+                    'guard_name' => $guard,
                 ]);
             }
         }
@@ -145,15 +142,22 @@ class ConstantSeeder extends Seeder
 
     public function addModelsNotCrud()
     {
-        Permission::Create([
-            'name' => 'translations.index' ,
-            'guard_name' =>"web",
-        ]);
-
-        Permission::Create([
-            'name' => 'dashboard' ,
-            'guard_name' =>"web",
-        ]);
+        $permissions = [
+            'dashboard',
+            "accounting.chart",
+            "accounting.cash_in",
+            "accounting.cash_out",
+            "accounting.posting",
+            "accounting.unposting",
+            "accounting.reports",
+            "purchases.reports",
+        ];
+        foreach ($permissions as $permission) {
+            Permission::Create([
+                'name' => $permission,
+                'guard_name' => "web",
+            ]);
+        }
     }
 
     /**
@@ -524,19 +528,19 @@ class ConstantSeeder extends Seeder
         $clientStatuses = ['Lead', 'Contacted', 'Sample Requested', 'Sample Submitted', 'Order', 'Manufacturing', 'Rejected', 'Done', 'InActive'];
         $orderStatuses = ['pending', 'Manufacturing', 'done'];
         $paidStatuses = ['unpaid', 'partial', 'paid'];
-        $jopStatuses = [ "full-time", "part-time", "partial", "casual", "temporary agency"];
+        $jopStatuses = ["full-time", "part-time", "partial", "casual", "temporary agency"];
         $invoiceStatuses = ['published', 'draft', 'pending'];
 
-        $statuses = ['accepted'=>'active','denied'=>'stopped','pending'=>'late'];
+        $statuses = ['accepted' => 'active', 'denied' => 'stopped', 'pending' => 'late'];
 
-        foreach ($statuses as $status => $color){
-            Status::create(['name'=>$status,'type'=>'requests','color'=>$color]);
+        foreach ($statuses as $status => $color) {
+            Status::create(['name' => $status, 'type' => 'requests', 'color' => $color]);
         }
 
-        $ticketStatuses = ['resolved'=>'active','denied'=>'stopped','pending'=>'late'];
+        $ticketStatuses = ['resolved' => 'active', 'denied' => 'stopped', 'pending' => 'late'];
 
-        foreach ($ticketStatuses as $stat => $color){
-            Status::create(['name'=>$stat,'type'=>'tickets','color'=>$color]);
+        foreach ($ticketStatuses as $stat => $color) {
+            Status::create(['name' => $stat, 'type' => 'tickets', 'color' => $color]);
         }
 
         foreach ($clientStatuses as $status) {
@@ -793,6 +797,6 @@ class ConstantSeeder extends Seeder
             'email' => 'emp@erp.com',
             'password' => $password,
         ]);
-        $user3->assignRole(Role::where('name', 'manager')->value('id'));
+        $user3->assignRole(Role::where('name', 'employee')->value('id'));
     }
 }

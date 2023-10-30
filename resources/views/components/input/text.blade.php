@@ -25,7 +25,7 @@
 
     <input type="{{$type}}"
            placeholder="{{$placeholder}}"
-           class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 {{ $class }}"
+           class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 dark:active:bg-slate-600 focus:bg-gray-200  dark:focus:bg-slate-600 {{ $class }}"
            value="{{ $value }}"
            {{ $disabled ? 'disabled' : '' }}  {{ $autofocus ? 'autofocus' : '' }} {{ $autocomplete ? 'autocomplete' : '' }}
            {{ $required ? 'required' : '' }} placeholder="{{ $placeholder }}" name="{{ $name }}"

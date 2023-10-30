@@ -18,7 +18,7 @@ class ClientFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'code' => $this->faker->countryCode() .  $this->faker->numerify(5),
+            'code' => $this->faker->countryCode() .  $this->faker->randomNumber(5),
             'email' => $this->faker->email(),
             'phone' => $this->faker->e164PhoneNumber(),
             'status_id' => 1,

@@ -8,7 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 class BasicForm extends Component {
-
+    use Toast ;
     public $title = 'create' ;
     public $button = 'create' ;
     public $color = 'primary';

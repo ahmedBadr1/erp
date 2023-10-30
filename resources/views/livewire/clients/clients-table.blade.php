@@ -1,27 +1,25 @@
 <div>
     <x-h h="3" class="text-center">
-        {{ __('Users Data') }}
+        {{ __('Clients Data') }}
     </x-h>
     <div class="flex justify-between">
         <div class="w-3/4	">
-            <x-input.text type="search" model="search" :placeholder="__('Search')" />
+            <x-input.text type="search" wire:model.lazy="search" :placeholder="__('Search')"/>
         </div>
 
-        <div class="col d-flex flex-row-reverse ">
-            <x-input.button collapse="1" target="filter">
-                <i class='bx bx-filter-alt bx-sm'></i>
-                {{ __('names.filter') }}
-            </x-input.button>
+        @if (havePermissionTo('clients.create'))
 
-            @if (havePermissionTo('users.create'))
-                <a href="{{ route('admin.users.create') }}">
-                    <x-input.button disabled="true">
-                        <i class='bx bx-plus-circle bx-sm'></i>
-                        {{ __('message.add', ['model' => __('names.user')]) }}
-                    </x-input.button>
-                </a>
-            @endif
-        </div>
+            <x-a  href="{{ route('admin.clients.create') }}" >
+                    <i class='bx bx-plus-circle bx-sm'></i>
+                    {{ __('message.add', ['model' => __('names.client')]) }}
+            </x-a>
+        @endif
+        <x-input.button collapse="1" target="filter">
+            <i class='bx bx-filter-alt bx-sm'></i>
+            {{ __('names.filter') }}
+        </x-input.button>
+
+
     </div>
 
     <div class=" hidden flex justify-between" id="filter" wire:ignore x-data="collapse">
@@ -46,7 +44,7 @@
             <option value="0">{{ __('names.asc') }}</option>
         </x-input.select>
 
-        <x-input.select wire:model.lazy="perPage" placeholder="per-page" >
+        <x-input.select wire:model.lazy="perPage" placeholder="per-page">
             <option>5</option>
             <option>10</option>
             <option>25</option>
@@ -63,8 +61,8 @@
                 <th scope="col" class="px-6 py-4">{{ __('Name') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Email') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Phone') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Code') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Address') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Code') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Status') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Setting') }}</th>
             </tr>
@@ -77,13 +75,13 @@
                 <x-td>{{ $client->phone }}</x-td>
                 <x-td>{{ Str::limit($client->address,40) }}</x-td>
                 <x-td>{{ __($client->code) }}</x-td>
-                <x-td>{{ $client->active }}</x-td>
+                <x-td>{{ $client->status?->name }}</x-td>
                 <x-td>
                     <div class="limit-2">
                         <a href="{{ route('admin.clients.edit',$client->id) }}" class="px-1">
                             <x-i name=" bxs-edit" class="text-gray-500"></x-i>
                         </a>
-                        <a href="#" class="px-1" wire:click.prevent="delete(1)">
+                        <a href="#" class="px-1" wire:click.prevent="delete({{$client->id}})">
                             <x-i name="bx-trash" class="text-red-800"></x-i>
                         </a>
                     </div>

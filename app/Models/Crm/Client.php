@@ -18,8 +18,12 @@ class Client extends MainModelSoft
         'name',
         'phone',
         'code',
+        'email',
         'status_id',
-        'balance',
+        'address',
+        'type',
+        'credit_limit',
+        'image',
     ];
 
     public function state()

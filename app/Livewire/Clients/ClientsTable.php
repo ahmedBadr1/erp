@@ -5,11 +5,12 @@ namespace App\Livewire\Clients;
 use App\Livewire\Basic\BasicTable;
 use App\Models\Crm\Client;
 use App\Services\ClientService;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ClientsTable extends BasicTable
 {
-    protected $listeners = ['refreshClients' => '$refresh', 'confirmDelete'];
+    protected $listeners = ['refreshClients' => '$refresh'];
 
     public function render()
     {
@@ -23,7 +24,7 @@ class ClientsTable extends BasicTable
                 ->when($this->end_date, function ($query) {
                     $query->where('created_at', $this->end_date);
                 })
-//                ->with(['employee' => fn($q) => $q->select('employees.id','employees.first_name')])
+                ->with(['status' => fn($q) => $q->select('statuses.id','statuses.name')])
                 ->orderBy($this->orderBy, $this->orderDesc ? 'desc' : 'asc')
                 ->paginate($this->perPage),
         ]);
@@ -37,7 +38,7 @@ class ClientsTable extends BasicTable
         $this->toast(__('message.updated', ['model' => __('names.user')]));
         return;
     }
-
+    #[On('confirmDelete')]
     public function confirmDelete($id)
     {
         $client = Client::find($id);
@@ -45,6 +46,9 @@ class ClientsTable extends BasicTable
             $this->toast( __('message.still-has', ['model' => __('names.user'), 'relation' => __('names.employee')]));
             return;
         }
+        $client->delete();
+        $this->toast( __('message.deleted', ['model' => __('names.client')]));
+        return;
 
     }
 }

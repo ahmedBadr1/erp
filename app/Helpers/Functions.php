@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Permission;
+use App\Models\System\Attachment;
 use App\Models\Tag;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -2619,14 +2620,14 @@ function uploadFile($file, $modelName, $model_id, $column, $delete_old = false, 
                     $constraint->aspectRatio();
                 });
                 $img->save($filePath . $column . '_' . $size['name'] . '.' . $extension);
-                \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
+                Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
                     'attachable_type' => $modelName, 'path' => $path . $column . '_' . $size['name'] . '.' . $extension, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column . '_' . $size['name']]);
             }
         }
     } catch (Exception $e) {
         return $e->getMessage();
     }
-    \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
+   Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
     $file = null;
     return $path . $filename;
 }
@@ -2655,7 +2656,7 @@ function testuploadFile($file, $modelName, $model_id, $column, $delete_old = fal
     }
     try {
         $file->storeAs('public/' . $path, $filename);
-        \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
+        Attachment::create(['user_id' => $id, 'attachable_id' => $model_id, 'attachable_type' => $modelName, 'path' => $path . $filename, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
         if (!empty($sizes)) {
             $filePath = $path . 'conversions/';
             if (!file_exists($filePath)) {
@@ -2667,7 +2668,7 @@ function testuploadFile($file, $modelName, $model_id, $column, $delete_old = fal
 //                ResizeImage::make($file)
 //                    ->resize($size['width'], $size['height'])
 //                    ->insert('storage/' . $filePath . $column . '_' . $size['name'] . '.' . $extension);
-                \App\Models\Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
+               Attachment::create(['user_id' => $id, 'attachable_id' => $model_id,
                     'attachable_type' => $modelName, 'path' => 'storage/' . $filePath . 'conversions/' . $column . '_' . $size['name'] . '.' . $extension, 'size' => $fileSize, 'original_name' => $originalName, 'extension' => $extension, 'type' => $column]);
             }
         }

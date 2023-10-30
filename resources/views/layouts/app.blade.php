@@ -112,7 +112,7 @@
                     confirmButtonText: 'تأكيد الحذف'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        Livewire.emit('confirmDelete', event.detail.id);
+                        Livewire.dispatch('confirmDelete', {id : event.detail.id});
                     }
                 });
             });

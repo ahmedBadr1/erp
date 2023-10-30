@@ -23,7 +23,9 @@ class ClientService extends MainService
             : Client::query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('phone', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%')
-                ->orWhereHas('state', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+                ->orWhere('email', 'like', '%' . $search . '%')
+                ->orWhere('address', 'like', '%' . $search . '%')
+                ->orWhereHas('status', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
     public function store(array $data)

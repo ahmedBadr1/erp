@@ -1,6 +1,6 @@
 @props([
-    'options' => null,
-    'selected' => '',
+    'options' => [],
+    'selected' => 0,
     'name' => '',
     'class' => '',
         'model' => '',
@@ -8,7 +8,7 @@
 
         'label' => null,
 ])
-<div class="w-full m-2 relative rounded-md shadow-sm" >
+<div class="my-2 relative rounded-md shadow-sm">
     @if($label)<x-input.label >{{ __($label) }}</x-input.label> @endif
     <select
     {{ $attributes }}
@@ -19,7 +19,7 @@
     @endif
     @if ($options)
         @foreach ($options as $key => $option)
-            <option value="{{ $key }}" {{ intValue($selected) == $key ? 'selected' : '' }}>
+            <option value="{{ $key }}" @if($selected) {{ intValue($selected) == $key ? 'selected' : '' }} @endif>
                 {{ $option }}
             </option>
         @endforeach

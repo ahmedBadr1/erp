@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('type')->nullable();
+            $table->string('image')->nullable();
             $table->decimal('credit_limit',15)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class);
             $table->dateTime('last_action_at')->nullable();
