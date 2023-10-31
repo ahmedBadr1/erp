@@ -1,12 +1,12 @@
 <ul class="flex flex-wrap justify-center sm:justify-start mb-8 sm:mb-0 -space-x-3 -ml-px">
     <li>
         <a class="block" href="#0">
-            <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-01.jpg') }}" width="36" height="36" alt="User 01" />
+            <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-03.jpg') }}" width="36" height="36" alt="User 01" />
         </a>
     </li>
     <li>
         <a class="block" href="#0">
-            <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-02.jpg') }}" width="36" height="36" alt="User 02" />
+            <img class="w-9 h-9 rounded-full" src="{{ asset('images/user-36-04.jpg') }}" width="36" height="36" alt="User 02" />
         </a>
     </li>
     <li>

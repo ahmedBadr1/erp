@@ -19,6 +19,9 @@
              @case(6)
    xl:grid-cols-6 lg:grid-cols-3 md:grid-cols-2
         @break
+                     @case(12)
+   xl:grid-cols-12 lg:grid-cols-6 md:grid-cols-3
+        @break
     @default
         grid-cols-2
 @endswitch

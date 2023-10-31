@@ -14,12 +14,13 @@ class DashboardController extends MainController
    public function __construct()
    {
        parent::__construct();
-//       $this->middleware('permission:admin');
+       $this->middleware('permission:admin');
    }
 
    public function dashboard()
    {
-       return view('admin.dashboard');
+
+       return view('admin.dashboard')->with('tree',$this->tree);
    }
 
     public function profile()
