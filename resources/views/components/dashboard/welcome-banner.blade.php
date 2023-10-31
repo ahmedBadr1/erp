@@ -1,7 +1,7 @@
 <div class="relative bg-indigo-200 dark:bg-indigo-500 p-4 sm:p-6 rounded-sm overflow-hidden mb-8">
 
     <!-- Background illustration -->
-    <div class="absolute right-0 top-0 -mt-4 mr-16 pointer-events-none hidden xl:block" aria-hidden="true">
+    <div class="absolute @if($localeDirs[App::getLocale()] === 'ltr')  right-0 @else left-0 @endif top-0 -mt-4 mr-16 pointer-events-none hidden xl:block" aria-hidden="true">
         <svg width="319" height="198" xmlns:xlink="http://www.w3.org/1999/xlink">
             <defs>
                 <path id="welcome-a" d="M64 0l64 128-64-20-64 20z" />

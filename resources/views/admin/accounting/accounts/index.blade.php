@@ -2,5 +2,5 @@
     @section('breadcrumb')
         <x-breadcrumb :tree="$tree" current="accounts"/>
     @endsection
-    <livewire:users.users-table />
+    <livewire:accounts.accounts-table />
 </x-app-layout>
