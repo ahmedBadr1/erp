@@ -9,9 +9,9 @@
 
         @if (havePermissionTo('clients.create'))
 
-            <x-a  href="{{ route('admin.clients.create') }}" >
-                    <i class='bx bx-plus-circle bx-sm'></i>
-                    {{ __('message.add', ['model' => __('names.client')]) }}
+            <x-a href="{{ route('admin.clients.create') }}">
+                <i class='bx bx-plus-circle bx-sm'></i>
+                {{ __('message.add', ['model' => __('names.client')]) }}
             </x-a>
         @endif
         <x-input.button collapse="1" target="filter">
@@ -22,7 +22,7 @@
 
     </div>
 
-        <x-grid cols="6" gap="2" id="filter" wire:ignore x-data="collapse" hidden="1">
+    <x-grid cols="6" gap="2" id="filter" wire:ignore x-data="collapse" hidden="1">
 
         <x-input.date wire:model="start_date" :label="__('names.date-start')"></x-input.date>
 
@@ -40,14 +40,14 @@
             <option value="1">{{ __('names.desc') }}</option>
             <option value="0">{{ __('names.asc') }}</option>
         </x-input.select>
-        <x-input.select wire:model.lazy="perPage" label="Per Page"  placeholder="per-page">
+        <x-input.select wire:model.lazy="perPage" label="Per Page" placeholder="per-page">
             <option>5</option>
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
         </x-input.select>
-        </x-grid>
+    </x-grid>
 
     <x-table>
         <x-slot name="thead">
@@ -96,5 +96,8 @@
             </x-tr>
         @endforelse
     </x-table>
-    {{ $clients->links() }}
+    <div class="" dir="ltr">
+        {{ $clients->links() }}
+    </div>
+
 </div>

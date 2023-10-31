@@ -4,57 +4,50 @@
     </x-h>
     <div class="flex justify-between">
         <div class="w-3/4	">
-            <x-input.text type="search" model="search" :placeholder="__('Search')" />
+            <x-input.text type="search" wire:model.lazy="search" :placeholder="__('Search')"/>
         </div>
 
-        <div class="col d-flex flex-row-reverse ">
-            <x-input.button collapse="1" target="filter">
-                <i class='bx bx-filter-alt bx-sm'></i>
-                {{ __('names.filter') }}
-            </x-input.button>
+        @if (havePermissionTo('users.create'))
 
-            @if (havePermissionTo('users.create'))
-                <a href="{{ route('admin.users.create') }}">
-                    <x-input.button disabled="true">
-                        <i class='bx bx-plus-circle bx-sm'></i>
-                        {{ __('message.add', ['model' => __('names.user')]) }}
-                    </x-input.button>
-                </a>
-            @endif
-        </div>
+            <x-a  href="{{ route('admin.users.create') }}" >
+                <i class='bx bx-plus-circle bx-sm'></i>
+                {{ __('message.add', ['model' => __('names.user')]) }}
+            </x-a>
+        @endif
+        <x-input.button collapse="1" target="filter">
+            <i class='bx bx-filter-alt bx-sm'></i>
+            {{ __('names.filter') }}
+        </x-input.button>
+
+
     </div>
 
-    <div class=" hidden flex justify-between" id="filter" wire:ignore x-data="collapse">
+    <x-grid cols="6" gap="2" id="filter" wire:ignore x-data="collapse" hidden="1">
 
         <x-input.date wire:model="start_date" :label="__('names.date-start')"></x-input.date>
 
         <x-input.date wire:model.lazy="end_date" :label="__('names.date-end')"></x-input.date>
 
-
-        <x-input.select wire:model.lazy="status_id" :label="__('names.status')" placeholder="status">
+        <x-input.select wire:model.lazy="status_id" label="Status" placeholder="status">
         </x-input.select>
 
-
-        <x-input.select wire:model.lazy="orderBy" placeholder="order-by">
+        <x-input.select wire:model.lazy="orderBy" label="Order By" placeholder="order-by">
             <option value="name">{{ __('names.name') }}</option>
             <option value="created_at">{{ __('names.created-at') }}</option>
         </x-input.select>
 
-
-        <x-input.select wire:model.lazy="orderDesc" placeholder="order-desc">
+        <x-input.select wire:model.lazy="orderDesc" label="Order Desc" placeholder="order-desc">
             <option value="1">{{ __('names.desc') }}</option>
             <option value="0">{{ __('names.asc') }}</option>
         </x-input.select>
-
-        <x-input.select wire:model.lazy="perPage" placeholder="per-page" >
+        <x-input.select wire:model.lazy="perPage" label="Per Page"  placeholder="per-page">
             <option>5</option>
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
         </x-input.select>
-
-    </div>
+    </x-grid>
 
     <x-table>
         <x-slot name="thead">
@@ -101,4 +94,7 @@
             </x-tr>
         @endforelse
     </x-table>
+    <div class="" dir="ltr">
+        {{ $users->links() }}
+    </div>
 </div>

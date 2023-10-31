@@ -9,7 +9,7 @@ class BasicTable extends Component {
     use Toast;
     use WithPagination;
 
-    protected $paginationTheme = 'bootstrap';
+//    protected $paginationTheme = 'tailwind';
     public $perPage = 10;
     public $search = '';
     public $orderBy = 'id';

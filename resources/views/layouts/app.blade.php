@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light ">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,7 @@
         </script>
     </head>
     <body  dir="{{ $localeDirs[App::getLocale()] }}"
-        class="font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400"
+        class="font-inter antialiased bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400  "
         :class="{ 'sidebar-expanded': sidebarExpanded }"
         x-data="{ sidebarOpen: false, sidebarExpanded: localStorage.getItem('sidebar-expanded') == 'true' ,darkMode: false }"
         x-init="$watch('sidebarExpanded', value => localStorage.setItem('sidebar-expanded', value));
@@ -46,12 +46,12 @@
         </script>
 
         <!-- Page wrapper -->
-        <div class="flex h-screen overflow-hidden " id="app">
+        <div class="flex h-screen overflow-hidden   " id="app">
 
             <x-app.sidebar />
 
             <!-- Content area -->
-            <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden @if($attributes['background']){{ $attributes['background'] }}@endif" x-ref="contentarea"
+            <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-indigo-600 dark:scrollbar-thumb-indigo-700 scrollbar-track-gray-300 dark:scrollbar-track-gray-600 scrollbar-corner-blue-500 @if($attributes['background']){{ $attributes['background'] }}@endif" x-ref="contentarea"
                  style="{{ App::getLocale() === 'ar' ? 'padding-right: 240px;margin-left: 0px;' : 'padding-left: 240px;margin-right: 0px;' }} transition: all 0s ease 0s;" >
 
                 <x-app.header />
