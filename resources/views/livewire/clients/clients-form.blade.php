@@ -2,7 +2,7 @@
     <x-h h="2">{{ __('message.'.$title,['model' => __('names.client')]) }}</x-h>
     <form method="POST" action="#" wire:submit.prevent="save" enctype="multipart/form-data">
         @csrf
-        <x-grid cols="4" gap="4" >
+        <x-grid cols="4" gap="2" >
             <x-form.group name="name">
                 <x-input.label :value="__('names.client-name')" :required="true"></x-input.label>
                 <x-input.text wire:model.lazy="name" :required="false" name="name"

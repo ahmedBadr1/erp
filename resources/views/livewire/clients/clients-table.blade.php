@@ -22,37 +22,32 @@
 
     </div>
 
-    <div class=" hidden flex justify-between" id="filter" wire:ignore x-data="collapse">
+        <x-grid cols="6" gap="2" id="filter" wire:ignore x-data="collapse" hidden="1">
 
         <x-input.date wire:model="start_date" :label="__('names.date-start')"></x-input.date>
 
         <x-input.date wire:model.lazy="end_date" :label="__('names.date-end')"></x-input.date>
 
-
-        <x-input.select wire:model.lazy="status_id" :label="__('names.status')" placeholder="status">
+        <x-input.select wire:model.lazy="status_id" label="Status" placeholder="status">
         </x-input.select>
 
-
-        <x-input.select wire:model.lazy="orderBy" placeholder="order-by">
+        <x-input.select wire:model.lazy="orderBy" label="Order By" placeholder="order-by">
             <option value="name">{{ __('names.name') }}</option>
             <option value="created_at">{{ __('names.created-at') }}</option>
         </x-input.select>
 
-
-        <x-input.select wire:model.lazy="orderDesc" placeholder="order-desc">
+        <x-input.select wire:model.lazy="orderDesc" label="Order Desc" placeholder="order-desc">
             <option value="1">{{ __('names.desc') }}</option>
             <option value="0">{{ __('names.asc') }}</option>
         </x-input.select>
-
-        <x-input.select wire:model.lazy="perPage" placeholder="per-page">
+        <x-input.select wire:model.lazy="perPage" label="Per Page"  placeholder="per-page">
             <option>5</option>
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
         </x-input.select>
-
-    </div>
+        </x-grid>
 
     <x-table>
         <x-slot name="thead">
@@ -101,4 +96,5 @@
             </x-tr>
         @endforelse
     </x-table>
+    {{ $clients->links() }}
 </div>

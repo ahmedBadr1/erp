@@ -12,7 +12,7 @@
         'autocomplete' => true,
         'model' => null
 ])
-<div class="w-full m-2 relative rounded-md shadow-sm" x-data="date()" x-init="[initDate(), getNoOfDays()]" x-cloak >
+<div class="w-full my-2 relative rounded-md shadow-sm"" x-data="date()" x-init="[initDate(), getNoOfDays()]" x-cloak >
             @if($label)
                 <label for="datepicker" class="text-sm mb-1 text-gray-700 dark:text-gray-300 block">{{$label}}</label>
             @endif

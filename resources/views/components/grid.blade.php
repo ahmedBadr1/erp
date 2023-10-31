@@ -2,7 +2,8 @@
     'cols' => 2,
     'colsMd' => null ,
     'gap' => 2,
-        'gapMd' => null
+        'gapMd' => null,
+        'hidden' => false
     ])
 
 <div class="grid mx-2
@@ -21,6 +22,7 @@
     @default
         grid-cols-2
 @endswitch
- gap-{{$gap}}  @if($colsMd)md:grid-cols-{{$colsMd}}@endif @if($gapMd) md:gap-{{$gapMd}} @endif "  >
+ gap-{{$gap}}  @if($colsMd)md:grid-cols-{{$colsMd}}@endif @if($gapMd) md:gap-{{$gapMd}} @endif @if($hidden) hidden @endif  "
+{{ $attributes }}>
     {{ $slot }}
 </div>

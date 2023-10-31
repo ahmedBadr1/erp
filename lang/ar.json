@@ -1913,5 +1913,8 @@
     "Recent searches" : "أحدث نتائج البحث",
     "Credit Limit" : "حد الرصيد",
     "Charts Of Accounts" : "شجرة الحسابات",
-    "All Accounts" : "كل الحسابات"
+    "All Accounts" : "كل الحسابات",
+    "Order By" : "الترتيب حسب",
+    "Order Desc" : "إتجاه الترتيب",
+    "Per Page" : "لكل صفحة"
 }
