@@ -21,7 +21,7 @@ class EntryFactory extends Factory
         return [
             'amount' => $this->faker->numberBetween(100,200000),
             'credit' => $this->faker->boolean(30),
-            'description'=>$this->faker->realText(),
+//            'description'=>$this->faker->realText(),
             'account_id'=> Account::all()->random()->id,
             'transaction_id'=> Transaction::all()->random()->id,
         ];

@@ -24,8 +24,7 @@ class EntryService extends MainService
     {
         $search = trim($search);
         return empty($search) ? Entry::query()
-            : Entry::query()->where('description', 'like', '%' . $search . '%')
-                ->orWhere('amount', 'like', '%' . $search . '%')
+            : Entry::query()->where('amount', 'like', '%' . $search . '%')
                 ->orWhereHas('transaction', fn($q) => $q->where('description', 'like', '%' . $search . '%'))
                 ->orWhereHas('transaction', fn($q) => $q->where('type', 'like', '%' . $search . '%'))
                 ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));

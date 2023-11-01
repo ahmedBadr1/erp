@@ -5,6 +5,9 @@
 
 <div class="relative z-0 w-full h-auto max-w-full group
 @switch($cols)
+     @case(2)
+        md:col-span-2
+            @break
      @case(3)
    lg:col-span-3 md:col-span-2
         @break

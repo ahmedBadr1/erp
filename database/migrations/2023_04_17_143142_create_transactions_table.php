@@ -19,7 +19,8 @@ return new class extends Migration
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\User::class);
             $table->nullableMorphs('reference');
-            $table->boolean('credit');
+            $table->boolean('post')->default(false);
+            $table->boolean('locked')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

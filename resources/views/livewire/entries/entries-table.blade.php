@@ -68,7 +68,7 @@
                 <x-td medium="true">{{ $entry->id }}</x-td>
                 <x-td>{{ $entry->credit ? __('Credit') : __('Debit') }}</x-td>
                 <x-td> <span title="{{$entry->amount}}">{{ formatMoney($entry->amount) }}</span></x-td>
-                <x-td>{{ Str::limit($entry->description,40) }}</x-td>
+                <x-td>{{ Str::limit($entry->transaction?->description,40) }}</x-td>
                 <x-td>{{ $entry->account?->name }}</x-td>
                 <x-td>{{ $entry->transaction?->type }}-{{ $entry->transaction?->id }}</x-td>
                 <x-td>{{ $entry->post ? __('Posted') : __('Un Posted') }}</x-td>

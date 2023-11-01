@@ -25,7 +25,6 @@ class TransactionFactory extends Factory
             'type' => $types[array_rand($types)],
             'description'=> $this->faker->text(),
             'due'=> $this->faker->dateTimeThisYear(),
-            'credit' => $this->faker->boolean,
             'user_id' => User::all()->random()->id
         ];
     }

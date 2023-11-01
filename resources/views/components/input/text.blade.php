@@ -10,7 +10,7 @@
     'aria_label' => '',
         'label' => '',
         'autofocus' => false,
-        'autocomplete' => true,
+        'autocomplete' => false,
         'model' => null,
         'icon' => null
 ])

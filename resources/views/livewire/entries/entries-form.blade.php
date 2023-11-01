@@ -8,54 +8,49 @@
                 <x-input.date-picker
                     wire:model.lazy="due"
                     id="due"
-                    autocomplete="off"
-                    hidden_element="hidden_due"
+                    hidden_element="due"
                 />
+
             </x-form.group>
             <x-form.group name="description" cols="6">
                 <x-input.label :value="__('names.description')" :required="true"></x-input.label>
                 <x-input.textarea wire:model.lazy="description" :required="false" name="description"
                               placeholder="description"></x-input.textarea>
             </x-form.group>
+{{--            <x-form.group name="color" cols="6">--}}
+{{--            <x-input.color wire:model.lazy="color"/>--}}
+{{--            </x-form.group>--}}
 
+            @foreach($entries as $key => $ent)
 
-            <x-form.group name="status">
-                <x-input.label :value="__('names.accounts')" :required="true"></x-input.label>
-                <x-input.select wire:model.lazy="status_id" :required="true" :options="$accounts"
-                                placeholder="{{ __('names.account') }}"></x-input.select>
-            </x-form.group>
-            <x-form.group name="credit_limit">
-                <x-input.label :value="__('Credit Limit')" :required="true"></x-input.label>
-                <x-input.text type="number" wire:model.lazy="credit_limit" :required="false"
-                              name="credit_limit"
-                              placeholder="{{ __('Credit Limit') }}"></x-input.text>
-            </x-form.group>
+                <x-form.group name="entries[{{$key}}]['credit']" cols="2">
+                    <x-input.label :value="$ent['credit'] ? __('Credit') : __('Debit')" ></x-input.label>
+                                        <x-input.text type="checkbox" wire:model.lazy="entries.{{$key}}.credit" :required="false" value="1"
+                                                      name="credit"
+                                                      placeholder="{{ __('Credit Limit') }}"></x-input.text>
+                </x-form.group>
+                <x-form.group name="entries.{{$key}}.account_id" cols="4">
+                    <x-input.label :value="__('names.accounts')" :required="true"></x-input.label>
+                    <x-input.select wire:model.lazy="entries.{{$key}}.account_id" :required="true" :options="$accounts"
+                                    placeholder="{{ __('names.account') }}"></x-input.select>
+                </x-form.group>
+                <x-form.group name="entries.{{$key}}.amount" cols="4">
+                    <x-input.label :value="__('Amount')" :required="true"></x-input.label>
+                    <x-input.text type="number" wire:model.lazy="entries.{{$key}}.amount" :required="false"
+                                  name="amount"
+                                  placeholder="{{ __('Amount') }}"></x-input.text>
+                </x-form.group>
+                <x-form.group name="entries[{{$key}}]['amount']" cols="2">
+                    <x-input.button wire:click.prevent="deleteEntry({{$key}})" color="red" icon="bx bx-x bx-sm" size="sm" >
+                    </x-input.button>
+                </x-form.group>
+
+            @endforeach
+            <x-input.button wire:click.prevent="addEntry()" icon="bx bx-plus"  >
+                {{ __("Add Entry") }}
+            </x-input.button>
         </x-grid>
-        <x-grid cols="3" gap="2" >
-            <x-form.group name="address">
-                <x-input.label :value="__('Address')" :required="true"></x-input.label>
-                <x-input.text type="text" wire:model.lazy="address" :required="true" name="address"
-                              placeholder="{{ __('Address') }}"></x-input.text>
-            </x-form.group>
-            <x-form.group name="phone">
-                <x-input.label :value="__('names.phone-number')" :required="true"></x-input.label>
-                <x-input.text type="number" wire:model.lazy="phone" :required="true" name="phone"
-                              placeholder="{{ __('names.phone-number') }}"></x-input.text>
-            </x-form.group>
-
-
-            <x-form.group name="email">
-                <x-input.label :value="__('Email')" :required="false"></x-input.label>
-                <x-input.text wire:model.lazy="email" :required="false" name="email"
-                              placeholder="{{ __('names.email') }}"></x-input.text>
-            </x-form.group>
-
-
-
-
-
-        </x-grid>
-        <div class="">
+        <div class="flex justify-end w-full">
             <x-input.button name="{{$color}}" wire:click.prevent="save">
                 {{ __('names.'.$button) }}
             </x-input.button>

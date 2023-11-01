@@ -25,7 +25,7 @@ class ClientsForm extends BasicForm
     #[Rule('required|string')]
     public $phone = '';
 
-    #[Rule('nullable|email|string')]
+    #[Rule('nullable|email')]
     public $email = '';
 
     #[Rule('nullable|numeric')]

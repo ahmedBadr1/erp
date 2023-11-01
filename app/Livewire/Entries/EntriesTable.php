@@ -24,7 +24,7 @@ class EntriesTable extends BasicTable
                 ->when($this->end_date, function ($query) {
                     $query->where('created_at', $this->end_date);
                 })
-                ->with(['account' => fn($q) => $q->select('accounts.id','accounts.name'),'transaction' => fn($q) => $q->select('transactions.id','transactions.type')])
+                ->with(['account' => fn($q) => $q->select('accounts.id','accounts.name'),'transaction' => fn($q) => $q->select('transactions.id','transactions.type','transactions.description')])
                 ->orderBy($this->orderBy, $this->orderDesc ? 'desc' : 'asc')
                 ->paginate($this->perPage),
         ]);

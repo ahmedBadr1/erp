@@ -13,8 +13,14 @@ import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.e
 import Clipboard from '@ryangjchandler/alpine-clipboard'
 import Pikaday from 'pikaday';
 import Swal from 'sweetalert2';
+import $ from 'jquery';
+
+import Picker from 'vanilla-picker/csp';
+
 window.Pikaday = Pikaday
 window.Swal = Swal
+window.Picker = Picker
+window.jQuery = window.$ = $
 Alpine.plugin(Clipboard)
 window.Alpine = Alpine
 Livewire.start()
