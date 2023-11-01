@@ -13,7 +13,7 @@
                 {{ __('message.add', ['model' => __('Entry')]) }}
             </x-a>
         @endif
-        <x-input.button collapse="1" target="filter">
+        <x-input.button collapse="1" target="filter" color="indigo">
             <i class='bx bx-filter-alt bx-sm'></i>
             {{ __('names.filter') }}
         </x-input.button>
