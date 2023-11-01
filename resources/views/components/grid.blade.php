@@ -1,7 +1,7 @@
 @props([
-    'cols' => 2,
+    'cols' => 12,
     'colsMd' => null ,
-    'gap' => 2,
+    'gap' => 4,
         'gapMd' => null,
         'hidden' => false
     ])

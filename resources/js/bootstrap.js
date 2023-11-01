@@ -13,7 +13,7 @@ import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.e
 import Clipboard from '@ryangjchandler/alpine-clipboard'
 import Pikaday from 'pikaday';
 import Swal from 'sweetalert2';
-window.Swal = Pikaday
+window.Pikaday = Pikaday
 window.Swal = Swal
 Alpine.plugin(Clipboard)
 window.Alpine = Alpine

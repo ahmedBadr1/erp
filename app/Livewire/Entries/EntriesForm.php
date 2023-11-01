@@ -4,7 +4,8 @@ namespace App\Livewire\Entries;
 
 use App\Livewire\Basic\BasicForm;
 use App\Models\Accounting\Account;
-use App\Models\Crm\entry;
+
+use App\Models\Accounting\Entry;
 use App\Models\System\Status;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Rule;
@@ -15,44 +16,27 @@ class EntriesForm extends BasicForm
 {
     use WithFileUploads ;
     #[Rule('required|string')]
-    public $name = '';
+    public $description = '';
 
-    #[Rule('required|string')]
-    public $code = '';
-
-    #[Rule('required|exists:statuses,id')]
-    public $status_id = 0;
+    #[Rule('required|date')]
+    public $due ;
 
     #[Rule('required|string')]
     public $phone = '';
 
-    #[Rule('nullable|email|string')]
-    public $email = '';
 
     #[Rule('nullable|numeric')]
     public $credit_limit = '';
 
-    #[Rule('nullable|string')]
-    public $address = '';
 
-    #[Rule('nullable|max:10240')]
-    public $image = '';
-
-
-    public $entry ,$image_path ;
-    public $statuses = [] ;
+    public $entry  ;
+    public $accounts = [] ;
 
     public function mount($id = null){
         if ($id) {
-            $this->entry = entry::find($id) ;
-            $this->name = $this->entry->name ;
-            $this->code = $this->entry->code ;
-            $this->phone = $this->entry->phone ;
-            $this->email = $this->entry->email ;
-            $this->credit_limit = $this->entry->credit_limit ;
-            $this->address = $this->entry->address ;
-            $this->status_id = $this->entry->status_id ;
-            $this->image_path = $this->entry->image ;
+            $this->entry = Entry::with('account')->whereId($id)->first() ;
+            $this->due = $this->entry->due ;
+            $this->description = $this->entry->description ;
             $this->title = 'edit';
             $this->button = 'update';
             $this->color = 'primary';
@@ -62,6 +46,11 @@ class EntriesForm extends BasicForm
     {
         $this->accounts = Account::active()->pluck('name','id')->toArray();
         return view('livewire.entries.entries-form');
+    }
+
+    public function updatedDue($propertyName)
+    {
+        dd($propertyName);
     }
 
     public  function save()
