@@ -2,6 +2,8 @@
 
 namespace Database\Factories\Accounting;
 
+use App\Models\Accounting\Expense;
+use App\Models\Accounting\Transaction;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,10 +19,14 @@ class TransactionFactory extends Factory
      */
     public function definition(): array
     {
+        $types = Transaction::$TYPES;
         return [
-            'description' => $this->faker->text(),
-            'total' => $this->faker->randomNumber(),
-            'user_id' => User::all()->random(1)->first()->id,
+            'amount' => $this->faker->numberBetween(10,1000),
+            'type' => $types[array_rand($types)],
+            'description'=> $this->faker->text(),
+            'due'=> $this->faker->dateTimeThisYear(),
+            'credit' => $this->faker->boolean,
+            'user_id' => User::all()->random()->id
         ];
     }
 }

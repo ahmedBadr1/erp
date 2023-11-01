@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories\Inventory;
+namespace Database\Factories\Sales;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Inventory\Brand>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Sales\Order>
  */
-class BrandFactory extends Factory
+class OrderFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,8 +17,7 @@ class BrandFactory extends Factory
     public function definition(): array
     {
         return [
-        'name' => $this->faker->company(),
-
+            //
         ];
     }
 }

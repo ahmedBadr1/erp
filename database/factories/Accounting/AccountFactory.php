@@ -3,6 +3,8 @@
 namespace Database\Factories\Accounting;
 
 use App\Models\Accounting\Category;
+use App\Models\System\Currency;
+use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,15 +19,19 @@ class AccountFactory extends Factory
      */
     public function definition(): array
     {
+//        $statues = Status::where('type','account')->pluck('id')->toArray();
         return [
             'code' =>$this->faker->numerify,
             'name' =>$this->faker->name,
             'type' => rand(0, 1) ? 'credit' : 'debit',
             'description' => $this->faker->text,
             'active' => rand(0, 1),
-            'category_id' => Category::all()->random(1)->first()->id,
-            'currency_id' => rand(1, 3),
-            'status_id' => rand(1, 100),
+            'category_id' => Category::all()->random()->id,
+            'currency_id' => Currency::all()->random()->id,
+//            'status_id' => $statues[array_rand($statues)],
+            'opening_balance' => $this->faker->numberBetween(100,10000),
+            'opening_balance_date' => $this->faker->dateTimeThisYear(),
+            'system' => rand(0, 1),
         ];
     }
 }

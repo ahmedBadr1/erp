@@ -1,16 +1,16 @@
 <div>
     <x-h h="3" class="text-center">
-        {{ __('Clients Data') }}
+        {{ __('Entries Data') }}
     </x-h>
     <div class="flex justify-between">
         <div class="w-3/4	">
             <x-input.text type="search" wire:model.lazy="search" :placeholder="__('Search')"/>
         </div>
 
-        @if (havePermissionTo('clients.create'))
-            <x-a href="{{ route('admin.clients.create') }}">
+        @if (havePermissionTo('accounting.entries.create'))
+            <x-a href="{{ route('admin.accounting.entries.create') }}">
                 <i class='bx bx-plus-circle bx-sm'></i>
-                {{ __('message.add', ['model' => __('names.client')]) }}
+                {{ __('message.add', ['model' => __('Entry')]) }}
             </x-a>
         @endif
         <x-input.button collapse="1" target="filter">
@@ -31,7 +31,9 @@
         </x-input.select>
 
         <x-input.select wire:model.lazy="orderBy" label="Order By" placeholder="order-by">
-            <option value="name">{{ __('names.name') }}</option>
+            <option value="description">{{ __('names.description') }}</option>
+            <option value="amount">{{ __('names.amount') }}</option>
+            <option value="credit">{{ __('names.credit') }}</option>
             <option value="created_at">{{ __('names.created-at') }}</option>
         </x-input.select>
 
@@ -52,34 +54,25 @@
         <x-slot name="thead">
             <tr>
                 <th scope="col" class="px-6 py-4">#</th>
-                <th scope="col" class="px-6 py-4">{{ __('Name') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Email') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Phone') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Address') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Code') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Type') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Amount') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Description') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Account') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Transaction') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Posting') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Status') }}</th>
-                <th scope="col" class="px-6 py-4">{{ __('Setting') }}</th>
             </tr>
         </x-slot>
-        @forelse($clients as $key => $client)
+        @forelse($entries as $key => $entry)
             <x-tr>
-                <x-td medium="true">{{ $client->id }}</x-td>
-                <x-td>{{ $client->name }}</x-td>
-                <x-td>{{ $client->email }}</x-td>
-                <x-td>{{ $client->phone }}</x-td>
-                <x-td>{{ Str::limit($client->address,40) }}</x-td>
-                <x-td>{{ __($client->code) }}</x-td>
-                <x-td>{{ $client->status?->name }}</x-td>
-                <x-td>
-                    <div class="limit-2">
-                        <a href="{{ route('admin.clients.edit',$client->id) }}" class="px-1">
-                            <x-i name=" bxs-edit" class="text-gray-500"></x-i>
-                        </a>
-                        <a href="#" class="px-1" wire:click.prevent="delete({{$client->id}})">
-                            <x-i name="bx-trash" class="text-red-800"></x-i>
-                        </a>
-                    </div>
-                </x-td>
+                <x-td medium="true">{{ $entry->id }}</x-td>
+                <x-td>{{ $entry->credit ? __('Credit') : __('Debit') }}</x-td>
+                <x-td> <span title="{{$entry->amount}}">{{ formatMoney($entry->amount) }}</span></x-td>
+                <x-td>{{ Str::limit($entry->description,40) }}</x-td>
+                <x-td>{{ $entry->account?->name }}</x-td>
+                <x-td>{{ $entry->transaction?->type }}-{{ $entry->transaction?->id }}</x-td>
+                <x-td>{{ $entry->post ? __('Posted') : __('Un Posted') }}</x-td>
+                <x-td>{{ $entry->locked ? __('Locked') : __('Un Locked') }}</x-td>
             </x-tr>
         @empty
             <x-tr>
@@ -89,14 +82,14 @@
                              alt="">
                     </div>
                     <div class="text-center">
-                        {{ __('message.empty', ['model' => __('names.clients')]) }}
+                        {{ __('message.empty', ['model' => __('names.entries')]) }}
                     </div>
                 </x-td>
             </x-tr>
         @endforelse
     </x-table>
     <div class="" dir="ltr">
-        {{ $clients->links() }}
+        {{ $entries->links() }}
     </div>
 
 </div>

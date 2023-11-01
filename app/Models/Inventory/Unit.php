@@ -2,11 +2,12 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\MainModel;
 use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Unit extends MainModelSoft
+class Unit extends MainModel
 {
 
     protected $fillable = ['name', 'type', 'group', 'conversion_factor',];

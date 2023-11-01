@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Accounting\Account::class); // 1
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
-            $table->foreignIdFor(\App\Models\Inventory\Branch::class);
+            $table->foreignIdFor(\App\Models\Inventory\Branch::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
             $table->foreignIdFor(\App\Models\System\Status::class);
-            $table->boolean('taxable_exclusive');
-            $table->boolean('taxable_inclusive');
+            $table->boolean('tax_exclusive');
+            $table->boolean('tax_inclusive');
             $table->string('code');
             $table->string('number')->nullable();
             $table->dateTime('billed_at');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('responsible_id')
                 ->nullable()
                 ->references('id')
-                ->on('employees')
+                ->on('users')
                 ->onUpdate('cascade');
             $table->decimal('paid',15,2)->nullable();
             $table->decimal('sub_total',15,2);

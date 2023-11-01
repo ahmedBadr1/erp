@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('sku');
             $table->string('quantity');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->decimal('price',10,2);
             $table->decimal('tax_exclusive',10,2);
             $table->decimal('tax_inclusive',10,2);

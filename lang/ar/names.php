@@ -919,6 +919,7 @@ return [
     'paper-name' => 'اسم الورقة',
     'qualification-date' => 'تاريخ الشهادة',
     'add-more' => 'اضافة المزيد',
+    'entries' => "القيود"
 
 
 ];

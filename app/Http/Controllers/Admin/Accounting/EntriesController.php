@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Accounting;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
+use App\Models\Accounting\Entry;
 use Illuminate\Http\Request;
 
 class EntriesController extends MainController
@@ -21,7 +22,7 @@ class EntriesController extends MainController
     }
     public function index(){
         $tree = $this->tree;
-        $chart = Category::account()->tree()->with('entries')->get()->toTree();
+//        $entries = Entry::all()->get();
         return view('admin.accounting.entries.index', compact('tree'));
     }
 

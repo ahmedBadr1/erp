@@ -22,7 +22,7 @@ class ActionFactory extends Factory
     {
         return [
             'type' => Action::$types[rand(0,4)],
-            'description' => $this->faker->title,
+            'description' => $this->faker->realText(),
             'due_at' => $this->faker->dateTime,
             'done_at'=> $this->faker->dateTime,
 //            'employee_id' => Employee::all()->random()->value('id'),

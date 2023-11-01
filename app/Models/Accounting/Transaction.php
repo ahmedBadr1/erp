@@ -13,21 +13,27 @@ class Transaction extends MainModelSoft
 {
     use  LogsActivity;
 
-    protected $fillable = ['user_id','type','date','total','description'];
+    protected $fillable = ['amount', 'type', 'description','due','user_id'];
 
-    protected $casts = ['date' => 'datetime'];
+    public static $expenses = ['cost of goods','rent','salary','Operating','Extraordinary','Accrued','Prepaid','Fixed'];
 
-    public static array $TYPES = ['so','si','po'];
-    public function entries()
+    protected $casts = ['due' => 'datetime'];
+
+    public static array $TYPES = ['so','si','po','ex','ci',"co"];
+
+    public static array $METHODS = ['cash','bank'];
+
+    public function refrence()
     {
-        return $this->hasMany(Entry::class);
+        return $this->morphTo();
     }
+
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Transaction has been {$eventName}")
-            ->logOnly(['user_id','total','description'])
+            ->logOnly(['user_id','amount', 'type', 'description','due'])
             ->logOnlyDirty()
             ->useLogName('system');
     }

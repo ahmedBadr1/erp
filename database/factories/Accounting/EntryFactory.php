@@ -2,6 +2,8 @@
 
 namespace Database\Factories\Accounting;
 
+use App\Models\Accounting\Account;
+use App\Models\Accounting\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +19,11 @@ class EntryFactory extends Factory
     public function definition(): array
     {
         return [
-            'debit' => $this->faker->randomNumber(),
-            'credit' => $this->faker->randomNumber(),
+            'amount' => $this->faker->numberBetween(100,200000),
+            'credit' => $this->faker->boolean(30),
             'description'=>$this->faker->realText(),
-            'account_id'=> rand(1,100)
+            'account_id'=> Account::all()->random()->id,
+            'transaction_id'=> Transaction::all()->random()->id,
         ];
     }
 }

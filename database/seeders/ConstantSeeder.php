@@ -3,10 +3,16 @@
 namespace Database\Seeders;
 
 
+use App\Models\Accounting\Account;
 use App\Models\Accounting\Category;
+use App\Models\Accounting\Entry;
+use App\Models\Accounting\Transaction;
+use App\Models\Inventory\Item;
+use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Crm\Client;
+use App\Models\Purchases\Bill;
 use App\Models\Purchases\Supplier;
 use App\Models\System\City;
 use App\Models\System\Country;
@@ -116,8 +122,15 @@ class ConstantSeeder extends Seeder
         $this->seedUnits();
 
         \App\Models\Crm\Client::factory(10)->create();
-        \App\Models\Crm\Action::factory(10)->create();
-        Supplier::factory(10)->create();
+        \App\Models\Crm\Action::factory(100)->create();
+        Supplier::factory(100)->create();
+        Product::factory(1000)->create();
+        Account::factory(100)->create();
+        Bill::factory(100)->create();
+        Warehouse::factory(2)->create();
+        Item::factory(1000)->create();
+        Transaction::factory(500)->create();
+        Entry::factory(1000)->create();
 
     }
 

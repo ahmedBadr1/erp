@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('actions', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->dateTime('due_at');
             $table->dateTime('done_at')->nullable();
             $table->foreignIdFor(\App\Models\Employee\Employee::class)->nullable();

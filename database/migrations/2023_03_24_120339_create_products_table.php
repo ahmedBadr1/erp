@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('name_2')->nullable();
+            $table->string('short_name')->nullable();
             $table->string('code')->unique();
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class)->nullable();
             $table->string('origin_number')->nullable();

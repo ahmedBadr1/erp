@@ -17,7 +17,7 @@ class Product extends MainModelSoft
     use LogsActivity;
 
     protected $fillable = [
-        'name', 'name_2', 'code', 'warehouse_id', 'origin_number', 'type', 'name_2', 'price', 'd_price', 'sd_price', 'min_price', 'ref_price',
+        'name', 'short_name', 'code', 'warehouse_id', 'origin_number', 'type', 'name_2', 'price', 'd_price', 'sd_price', 'min_price', 'ref_price',
 'last_cost', 'avg_cost', 'first_cost', 'profit_margin', 'warranty', 'expire_date', 'barcode', 'hs_code', 'batch_number',
 'tax1_id', 'tax2_id', 'unit_id', 'brand_id', 'vendor_id', 'employee_id', 'weight', 'width', 'length', 'height', 'max_limit', 'min_limit',
         'require_barcode', 'repeat_barcode', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'active', 'category_id'];

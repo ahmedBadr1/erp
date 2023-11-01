@@ -13,7 +13,7 @@ class BasicTable extends Component {
     public $perPage = 10;
     public $search = '';
     public $orderBy = 'id';
-    public $orderDesc = true;
+    public $orderDesc = '1';
     public $type = 'all';
     public $start_date ;
     public $end_date ;

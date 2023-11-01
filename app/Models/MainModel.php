@@ -10,6 +10,7 @@ use App\Traits\HasContacts;
 use App\Traits\HasDevice;
 use App\Traits\HasMessages;
 use App\Traits\HasTicket;
+use App\Traits\ReferenceTrait;
 use App\Traits\Taggable;
 use App\Traits\WorkAtTrait;
 use Carbon\Carbon;
@@ -22,7 +23,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class MainModel extends Model implements HasMedia
 {
-    use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice;
+    use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
     use InteractsWithMedia;
 
     public static function getTableName()
@@ -142,6 +143,32 @@ class MainModel extends Model implements HasMedia
     public function scopeSale($query, $sale = 1)
     {
         return $query->where('sale', $sale);
+    }
+
+    public function scopeCredit($query, $sale = 1)
+    {
+        return $query->where('credit', $sale);
+    }
+
+    public function scopeDebit($query)
+    {
+        return $query->where('credit', 0);
+    }
+
+    public static function scopeMonth($query,$month = null,$year=null)
+    {
+        if (!$month){
+            $month = Carbon::now()->subMonth()->toDateString();
+            $date = Carbon::now()->addDay()->toDateString();
+        }else{
+            if(!$year){
+                $year = date('Y');
+            }
+            $month = Carbon::createFromDate($year, $month, 1)->startOfDay()->toDateString();
+            $date = Carbon::createFromDate($year, $month, 1)->endOfDay()->toDateString();
+        }
+
+        return $query->whereBetween('due',[$month, $date]);
     }
 
     public function scopeConfirmed($query, $confirmed = 1)

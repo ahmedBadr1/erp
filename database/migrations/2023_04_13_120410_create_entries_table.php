@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->bigInteger('credit');
-            $table->bigInteger('debit');
+            $table->boolean('credit');
+            $table->bigInteger('amount');
+            $table->text('description');
             $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Transaction::class)->nullable();
+            $table->boolean('post')->default(false);
+            $table->boolean('locked')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

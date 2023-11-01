@@ -2818,3 +2818,21 @@ function secondsToHours($seconds)
 
     return " س $hours :  $minutes ق ";
 }
+
+function formatMoney($value)
+{
+    // Check if the value is in million range
+    if ($value >= 1000000) {
+        $formattedValue = number_format($value / 1000000, 1) . 'M';
+    }
+    // Check if the value is in thousand range
+    elseif ($value >= 1000) {
+        $formattedValue = number_format($value / 1000, 1) . 'k';
+    }
+    // For values less than thousand, simply format with commas
+    else {
+        $formattedValue = number_format($value);
+    }
+
+    return $formattedValue;
+}
