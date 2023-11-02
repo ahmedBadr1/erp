@@ -25,7 +25,6 @@
         "pikaday": "^1.8.2",
         "sweetalert2": "^11.8.0",
         "toastr": "^2.1.4",
-        "tw-elements": "^1.0.0",
         "vanilla-picker": "^2.12.2"
     }
 }

@@ -15,7 +15,7 @@ class Account extends MainModelSoft
 {
     use LogsActivity ;
 
-    protected $fillable = ['code', 'name', 'type', 'description','opening_balance','opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'credit', 'description','opening_balance','opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
 
     protected array $TYPES= ['credit','debit'];
 

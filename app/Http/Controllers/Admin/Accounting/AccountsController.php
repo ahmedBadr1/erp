@@ -23,7 +23,7 @@ class AccountsController extends MainController
     }
     public function index(){
         $tree = $this->tree;
-        $chart = Category::account()->tree()->with('accounts')->get()->toTree();
+        $chart = Category::tree()->with('accounts')->get()->toTree();
         return view('admin.accounting.accounts.index', compact('tree'));
     }
 

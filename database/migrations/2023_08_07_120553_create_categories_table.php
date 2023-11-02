@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
-            $table->string('type');
+            $table->boolean('credit');
             $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')

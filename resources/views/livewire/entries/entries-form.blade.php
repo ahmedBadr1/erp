@@ -5,10 +5,8 @@
         <x-grid  >
             <x-form.group name="due" cols="6">
                 <x-input.label :value="__('names.due')" :required="true"></x-input.label>
-                <x-input.date-picker
-                    wire:model.lazy="due"
-                    id="due"
-                    hidden_element="due"
+                <input wire:model.live="due" type="date"
+                       class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 dark:active:bg-slate-600 focus:bg-gray-200  dark:focus:bg-slate-600 "
                 />
 
             </x-form.group>

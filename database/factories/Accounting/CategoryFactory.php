@@ -17,7 +17,7 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'slug' => $this->faker->url(),
-            'type' => Category::$types[rand(0,1)],
+            'credit' => $this->faker->boolean,
             'parent_id' => rand(1,Category::count())
         ];
     }

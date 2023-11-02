@@ -117,20 +117,20 @@ class ConstantSeeder extends Seeder
 
         $this->seedCategories();
 
-        $key = $this->seedCurrencies();
+        $this->seedCurrencies();
 
         $this->seedUnits();
 
-        \App\Models\Crm\Client::factory(10)->create();
-        \App\Models\Crm\Action::factory(100)->create();
-        Supplier::factory(100)->create();
-        Product::factory(1000)->create();
-        Account::factory(100)->create();
-        Bill::factory(100)->create();
+        \App\Models\Crm\Client::factory(3)->create();
+        \App\Models\Crm\Action::factory(10)->create();
+        Supplier::factory(3)->create();
+        Product::factory(10)->create();
+//        Account::factory(100)->create();
+//        Bill::factory(10)->create();
         Warehouse::factory(2)->create();
-        Item::factory(1000)->create();
-        Transaction::factory(500)->create();
-        Entry::factory(1000)->create();
+//        Item::factory(10)->create();
+//        Transaction::factory(500)->create();
+//        Entry::factory(1000)->create();
 
     }
 
@@ -592,35 +592,35 @@ class ConstantSeeder extends Seeder
     /**
      * @return array
      */
-    public function seedCategories(): array
+    public function seedCategories()
     {
         $categories = [
-            'assets' => null,
-            'liabilities' => null,
-            'owner equity' => null,
-            'revenue' => null,
-            'expenses' => null,
-            'fixed assets' => 1,
-            'current assets' => 1,
-            'intangible assets' => 1,
-            'long term loans' => 2,
-            'short term loans' => 2,
-            'long term liabilities' => 2,
-            'current owners' => 3,
-            'prepaid revenue' => 4,
-            'accrued expenses' => 5,
-            'admin expenses' => 5,
-            'general expenses' => 5,
+            ['name' => 'assets','parent_id' => null,'credit' => 0],
+            ['name' =>'liabilities','parent_id' => null,'credit' => 1],
+           [ 'name'=> 'owner equity','parent_id' => null,'credit' => 1],
+           [ 'name'=> 'revenue','parent_id' => null,'credit' => 0],
+           [ 'name'=>'expenses' ,'parent_id'=> null,'credit' => 1],
+           [ 'name'=> 'fixed assets' ,'parent_id'=> 1,'credit' => 0],
+           [ 'name'=>'current assets' ,'parent_id'=> 1,'credit' => 0],
+          [  'name'=>'intangible assets' ,'parent_id'=> 1,'credit' => 0],
+           [ 'name'=> 'long term loans' ,'parent_id'=> 2,'credit' => 1],
+           [ 'name'=>'short term loans','parent_id' => 2,'credit' => 1],
+           [ 'name'=>'long term liabilities','parent_id' => 2,'credit' => 1],
+            [  'name'=>'current owners','parent_id' => 3,'credit' => 1],
+            [  'name'=>'prepaid revenue','parent_id' => 4,'credit' => 0],
+             [ 'name'=>'accrued expenses','parent_id' => 5,'credit' => 1],
+             [ 'name'=>'admin expenses','parent_id' => 5,'credit' => 1],
+             [ 'name'=> 'general expenses','parent_id' => 5,'credit' => 1],
         ];
-        foreach ($categories as $key => $val) {
+        foreach ($categories as $key => $cat) {
             Category::factory()->create([
-                'name' => $key,
-                'slug' => Str::slug($key),
-                'type' => 'account',
-                'parent_id' => $val,
+                'name' => $cat['name'],
+                'slug' => Str::slug($cat['name']),
+                'credit' => $cat['credit'],
+                'parent_id' =>  $cat['parent_id'],
             ]);
         }
-        return array($key, $val);
+        return true;
     }
 
     /**
@@ -674,7 +674,7 @@ class ConstantSeeder extends Seeder
                 'name' => $val,
             ]);
         }
-        return $key;
+        return true;
     }
 
     /**

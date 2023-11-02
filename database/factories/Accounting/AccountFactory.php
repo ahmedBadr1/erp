@@ -23,14 +23,14 @@ class AccountFactory extends Factory
         return [
             'code' =>$this->faker->numerify,
             'name' =>$this->faker->name,
-            'type' => rand(0, 1) ? 'credit' : 'debit',
+            'credit' => rand(0, 1),
             'description' => $this->faker->text,
             'active' => rand(0, 1),
             'category_id' => Category::all()->random()->id,
             'currency_id' => Currency::all()->random()->id,
 //            'status_id' => $statues[array_rand($statues)],
-            'opening_balance' => $this->faker->numberBetween(100,10000),
-            'opening_balance_date' => $this->faker->dateTimeThisYear(),
+//            'opening_balance' => $this->faker->numberBetween(100,10000),
+//            'opening_balance_date' => $this->faker->dateTimeThisYear(),
             'system' => rand(0, 1),
         ];
     }

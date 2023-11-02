@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class EntriesTable extends BasicTable
 {
-    protected $listeners = ['refreshClients' => '$refresh'];
+    protected $listeners = ['refreshEntries' => '$refresh'];
     public $perPage = 50;
     public function render()
     {

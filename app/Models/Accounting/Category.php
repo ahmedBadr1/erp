@@ -16,11 +16,16 @@ class Category extends MainModelSoft
 
     public static $types = ['account','product'];
 
-    protected $fillable = ['name','slug','type','parent_id'];
+    protected $fillable = ['name','slug','credit','parent_id'];
 
     public function accounts()
     {
-        return $this->hasMany(Account::class);
+        return $this->hasMany(Account::class)->withTrashed();
+    }
+
+    public function lastChild()
+    {
+        return $this->hasOne(Account::class)->latestOfMany();
     }
 
     public function products()

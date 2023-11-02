@@ -133,19 +133,4 @@ class EntriesForm extends BasicForm
         return redirect()->route('admin.accounting.entries.index')->with('success', __('message.updated',['model'=>__('names.entry')]));
     }
 
-    /**
-     * @param array $validated
-     * @return array
-     */
-    public function uploadFiles(array $validated , $id): array
-    {
-        if (!empty($validated['image'])) {
-            $validated['image'] = uploadFile($this->image, "entries", $id, 'image');
-        } else {
-            $validated = Arr::except($validated, array('image'));
-        }
-        return $validated;
-    }
-
-
 }
