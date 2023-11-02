@@ -47,6 +47,8 @@ class AccountsForm extends  BasicForm
             $this->name = $this->account->name ;
             $this->type = $this->account->type ;
             $this->active = $this->account->active ;
+            $this->category_id = $this->account->category_id ;
+            $this->currency_id = $this->account->currency_id ;
             $this->description = $this->account->description ;
             $this->title = 'edit';
             $this->button = 'update';
@@ -67,7 +69,10 @@ class AccountsForm extends  BasicForm
         $validated =  $this->validate();
 //        dd($validated);
         if ($this->account) {
-            $this->account->update($validated);
+            $this->account->update([
+                'name' => $validated['name'],
+                'description' => $validated['description']
+            ]);
             $this->toast( __('message.updated', ['model' => __('names.account')]));
         }else{
             $category = Category::withCount('accounts')->whereId($validated['category_id'])->first();

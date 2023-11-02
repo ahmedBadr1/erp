@@ -3,6 +3,7 @@
 namespace App\Models\Accounting;
 
 use App\Models\MainModelSoft;
+use App\Models\System\Currency;
 use App\Models\System\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

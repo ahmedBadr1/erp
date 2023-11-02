@@ -86,6 +86,16 @@
                 <x-td dir="ltr">{{ $account->category?->id }}-{{ $account->category?->name }}</x-td>
                 <x-td>{{ $account->active ? __('Active') : __('In Active') }}</x-td>
                 <x-td>{{ $account->system ? __('System') : __('User') }}</x-td>
+                <x-td>
+                    <div class="limit-2">
+                        <a href="{{ route('admin.accounting.accounts.edit',$account->id) }}" class="px-1">
+                            <x-i name=" bxs-edit" class="text-gray-500"></x-i>
+                        </a>
+                        <a href="#" class="px-1" wire:click.prevent="delete({{$account->id}})">
+                            <x-i name="bx-trash" class="text-red-800"></x-i>
+                        </a>
+                    </div>
+                </x-td>
             </x-tr>
         @empty
             <x-tr>
