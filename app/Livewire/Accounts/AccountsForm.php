@@ -88,24 +88,26 @@ class AccountsForm extends  BasicForm
                     'description' => $validated['description'],
                     'currency_id' => $validated['currency_id'],
                     'category_id' => $validated['category_id'],
+                    'opening_balance' => $validated['opening_balance'],
+                    'opening_balance_date' => $validated['opening_balance_date'],
                     'credit'  => $category->credit,
 
                 ]);
-                if ($validated['opening_balance']){
-                    $transaction =  Transaction::create([
-                        'amount' => $validated['opening_balance'],
-                        'description' =>'Opening Balance For Account' . $account->name,
-                        'type' => 'user',
-                        'due' => $validated['opening_balance_date'] ?? now(),//$validated['due']
-                        'user_id' => auth()->id()
-                    ]);
-                    Entry::create([
-                        'amount' => $validated['opening_balance'],
-                        'credit' =>$account->credit,
-                        'account_id' => $account->id,
-                        'transaction_id' => $transaction->id
-                    ]);
-                }
+//                if ($validated['opening_balance']){
+//                    $transaction =  Transaction::create([
+//                        'amount' => $validated['opening_balance'],
+//                        'description' =>'Opening Balance For Account' . $account->name,
+//                        'type' => 'user',
+//                        'due' => $validated['opening_balance_date'] ?? now(),//$validated['due']
+//                        'user_id' => auth()->id()
+//                    ]);
+//                    Entry::create([
+//                        'amount' => $validated['opening_balance'],
+//                        'credit' =>$account->credit,
+//                        'account_id' => $account->id,
+//                        'transaction_id' => $transaction->id
+//                    ]);
+//                }
 
             });
 //            $user =auth()->user() ;

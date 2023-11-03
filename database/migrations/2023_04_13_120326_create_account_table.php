@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('credit');
             $table->text('description');
+            $table->float('opening_balance')->nullable();
+            $table->dateTime('opening_balance_date')->nullable();
             $table->boolean('system')->default(false);
             $table->boolean('active')->default(true);
             $table->foreignIdFor(\App\Models\Accounting\Category::class);

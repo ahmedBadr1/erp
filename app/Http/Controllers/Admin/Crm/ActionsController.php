@@ -23,12 +23,13 @@ class ActionsController extends MainController
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
      */
     public function index()
     {
        $actions = Action::all();
-       return view('admin.clients.actions.index',compact('actions'));
+        $tree = array_merge($this->tree, [route('admin.clients.index') => 'clients']);
+        return view('admin.clients.actions.index',compact('actions','tree'));
     }
 
 }

@@ -16,7 +16,7 @@ class Category extends MainModelSoft
 
     public static $types = ['account','product'];
 
-    protected $fillable = ['name','slug','credit','parent_id'];
+    protected $fillable = ['code','name','slug','credit','parent_id'];
 
     public function accounts()
     {
@@ -51,5 +51,18 @@ class Category extends MainModelSoft
                 ->orWhereHas('parent', fn($q) => $q->where('name','like', '%'.$search.'%'))
                 ->orWhereHas('elements', fn($q) => $q->where('name','like', '%'.$search.'%'));
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function($model)
+        {
+            if (!empty($model->parent_id)){
+                $parent = Category::withCount('children')->find($model->parent_id);
+                $model->code = $parent->code . ((int) $parent->children_count + 1 );
+            }
+        });
+    }
+
 
 }

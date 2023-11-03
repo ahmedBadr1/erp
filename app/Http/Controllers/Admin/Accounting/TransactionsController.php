@@ -37,4 +37,16 @@ class TransactionsController extends MainController
         $tree = array_merge($this->tree, [route('admin.accounting.accounts.index') => 'accounts']);
         return view('admin.accounting.accounts.create', compact('tree','id'));
     }
+
+    public function cashIn( )
+    {
+        $tree = array_merge($this->tree, [route('admin.accounting.accounts.index') => 'accounts']);
+        return view('admin.accounting.cashin', compact('tree'));
+    }
+
+    public function cashOut()
+    {
+        $tree = array_merge($this->tree, [route('admin.accounting.accounts.index') => 'accounts']);
+        return view('admin.accounting.cashout', compact('tree'));
+    }
 }

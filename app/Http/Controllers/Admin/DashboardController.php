@@ -25,7 +25,12 @@ class DashboardController extends MainController
 
     public function profile()
     {
-        return view('admin.profile');
+        return view('admin.profile')->with('tree',$this->tree);
+    }
+
+    public function help()
+    {
+        return view('admin.help')->with('tree',$this->tree);
     }
 
     public function notifications()

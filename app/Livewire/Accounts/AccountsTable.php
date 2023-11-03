@@ -10,6 +10,7 @@ class AccountsTable extends BasicTable
 {
     protected $listeners = ['refreshClients' => '$refresh'];
     public $perPage = 50;
+    public $orderBy = 'code';
     public function render()
     {
 

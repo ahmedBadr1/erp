@@ -51,7 +51,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
             Route::get('/', [\App\Http\Controllers\Admin\ClientController::class, 'index'])->name('index');
             Route::get('/create', [\App\Http\Controllers\Admin\ClientController::class, 'create'])->name('create');
             Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\ClientController::class, 'edit'])->name('edit');
-            Route::get('/actions', [\App\Http\Controllers\Admin\ClientController::class, 'actions'])->name('actions.index');
+            Route::get('/actions', [\App\Http\Controllers\Admin\Crm\ActionsController::class, 'index'])->name('actions.index');
         });
         Route::group([
             'prefix' => 'accounting',

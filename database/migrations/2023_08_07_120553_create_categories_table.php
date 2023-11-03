@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
+            $table->mediumInteger('code')->nullable()->index();
             $table->boolean('credit');
             $table->foreignId('parent_id')
                 ->nullable()

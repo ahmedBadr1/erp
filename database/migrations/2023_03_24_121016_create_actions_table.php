@@ -22,6 +22,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Crm\Client::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
