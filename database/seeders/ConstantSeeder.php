@@ -84,7 +84,6 @@ class ConstantSeeder extends Seeder
             ],
         ];
 
-
         foreach ($roles as $key => $value) {
             $role = Role::create($value);
             if ($role['id'] == 1) {
@@ -595,36 +594,39 @@ class ConstantSeeder extends Seeder
     public function seedCategories()
     {
         $categories = [
-            ['code' => 1,'name' => 'assets','parent_id' => null,'credit' => 0],
-            ['code' => 2,'name' =>'liabilities','parent_id' => null,'credit' => 1],
-            ['code' => 3, 'name'=> 'owner equity','parent_id' => null,'credit' => 1],
-            ['code' => 4, 'name'=> 'revenue','parent_id' => null,'credit' => 0],
-            ['code' => 5, 'name'=>'expenses' ,'parent_id'=> null,'credit' => 1],
+            ['code' => 1, 'name' => 'assets', 'parent_id' => null, 'credit' => 0],
+            ['code' => 2, 'name' => 'liabilities', 'parent_id' => null, 'credit' => 1],
+            ['code' => 3, 'name' => 'owner equity', 'parent_id' => null, 'credit' => 1],
+            ['code' => 4, 'name' => 'revenue', 'parent_id' => null, 'credit' => 0],
+            ['code' => 5, 'name' => 'expenses', 'parent_id' => null, 'credit' => 1],
 
-            [ 'name'=> 'fixed assets' ,'parent_id'=> 1,'credit' => 0],
-            [ 'name'=>'current assets' ,'parent_id'=> 1,'credit' => 0],
-            [ 'name'=> 'cash' ,'parent_id'=> 7,'credit' => 0],// 8
-          [ 'name'=>'intangible assets' ,'parent_id'=> 1,'credit' => 0],
-           [ 'name'=> 'long term loans' ,'parent_id'=> 2,'credit' => 1],
-           [ 'name'=>'short term loans','parent_id' => 2,'credit' => 1],
-           [ 'name'=>'long term liabilities','parent_id' => 2,'credit' => 1],
-            [  'name'=>'current owners','parent_id' => 3,'credit' => 1],
-            [  'name'=>'prepaid revenue','parent_id' => 4,'credit' => 0],
-             [ 'name'=>'accrued expenses','parent_id' => 5,'credit' => 1],
-             [ 'name'=>'admin expenses','parent_id' => 5,'credit' => 1],
-             [ 'name'=> 'general expenses','parent_id' => 5,'credit' => 1],
-            ['name'=> 'vehicles','parent_id' => 6,'credit' => 1],
-            [ 'name'=> 'buildings','parent_id' => 6,'credit' => 1],
-            [ 'name'=> 'equipments','parent_id' => 6,'credit' => 1],
-            [ 'name'=> 'equipments','parent_id' => 6,'credit' => 1],
+            ['name' => 'fixed assets', 'parent_id' => 1],
+            ['name' => 'current assets', 'parent_id' => 1,],
+            ['name' => 'Investments', 'parent_id' => 1,],
+            ['name' => 'inventory', 'parent_id' => 1,],
+            ['name' => 'intangible assets', 'parent_id' => 1,],
+            ['name' => 'long term loans', 'parent_id' => 2,],
+            ['name' => 'short term loans', 'parent_id' => 2,],
+            ['name' => 'long term liabilities', 'parent_id' => 2,],
+            ['name' => 'current owners', 'parent_id' => 3,],
+            ['name' => 'prepaid revenue', 'parent_id' => 4,],
+            ['name' => 'accrued expenses', 'parent_id' => 5,],
+            ['name' => 'admin expenses', 'parent_id' => 5,],
+            ['name' => 'general expenses', 'parent_id' => 5,],
+            ['name' => 'cash', 'parent_id' => 7],// 8
+            ['name' => 'vehicles', 'parent_id' => 6,],
+            ['name' => 'buildings', 'parent_id' => 6,],
+            ['name' => 'equipments', 'parent_id' => 6,],
+            ['name' => 'furniture', 'parent_id' => 6,],
+
         ];
         foreach ($categories as $key => $cat) {
             Category::factory()->create([
                 'code' => $cat['code'] ?? null,
                 'name' => $cat['name'],
                 'slug' => Str::slug($cat['name']),
-                'credit' => $cat['credit'],
-                'parent_id' =>  $cat['parent_id'],
+                'credit' => $cat['credit'] ?? null,
+                'parent_id' => $cat['parent_id'],
             ]);
         }
         return true;

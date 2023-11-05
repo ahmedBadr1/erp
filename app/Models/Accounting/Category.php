@@ -16,7 +16,7 @@ class Category extends MainModelSoft
 
     public static $types = ['account','product'];
 
-    protected $fillable = ['code','name','slug','credit','parent_id'];
+    protected $fillable = ['code','name','slug','credit','parent_id','active','usable','system'];
 
     public function accounts()
     {
@@ -26,6 +26,11 @@ class Category extends MainModelSoft
     public function lastChild()
     {
         return $this->hasOne(Account::class)->latestOfMany();
+    }
+
+    public function descendantCategories()
+    {
+        return $this->hasManyOfDescendants(Category::class,'parent_id');
     }
 
     public function products()
@@ -58,8 +63,15 @@ class Category extends MainModelSoft
         static::creating(function($model)
         {
             if (!empty($model->parent_id)){
-                $parent = Category::withCount('children')->find($model->parent_id);
-                $model->code = $parent->code . ((int) $parent->children_count + 1 );
+                $parent = Category::withCount('children','accounts','ancestors')->with('parent')->find($model->parent_id);
+                if ($parent->ancestors_count > 2){
+                return false ;
+                }
+                if ($parent->ancestors_count === 2){
+                    $model->usable = 1;
+                }
+                $model->code =$parent->code .  str_pad( ((int) $parent->children_count + $parent->accounts_count + 1 ),2, '0', STR_PAD_LEFT);
+                $model->credit = $parent->credit;
             }
         });
     }

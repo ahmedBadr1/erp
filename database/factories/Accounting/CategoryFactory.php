@@ -18,7 +18,9 @@ class CategoryFactory extends Factory
             'name' => $this->faker->name(),
             'slug' => $this->faker->url(),
             'credit' => $this->faker->boolean,
-            'parent_id' => rand(1,Category::count())
+            'parent_id' => rand(1,Category::count()),
+            'usable' => 0,
+            'system' => 1,
         ];
     }
 }

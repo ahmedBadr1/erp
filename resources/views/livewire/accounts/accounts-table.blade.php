@@ -83,7 +83,7 @@
                 <x-td>{{ Str::limit($account->description,40) }}</x-td>
                 <x-td> <span title="{{$account->credit_sum}}">{{ formatMoney($account->credit_sum) }}</span></x-td>
                 <x-td> <span title="{{$account->debit_sum}}">{{ formatMoney($account->debit_sum) }}</span></x-td>
-                <x-td dir="ltr">{{ $account->category?->id }}-{{ $account->category?->name }}</x-td>
+                <x-td dir="ltr">{{ $account->category?->code }}-{{ $account->category?->name }}</x-td>
                 <x-td>{{ $account->active ? __('Active') : __('In Active') }}</x-td>
                 <x-td>{{ $account->system ? __('System') : __('User') }}</x-td>
                 <x-td>

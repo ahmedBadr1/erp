@@ -1,19 +1,21 @@
 <div class="mx-2">
     @foreach($tree as $chart)
         <br>
-        <x-input.button collapse="1" target="{{$chart->id ?? 'no'}}">
-            {{ $chart->id }}
+        <x-input.button collapse="1" target="{{$chart->code ?? 'no'}}">
+            {{ $chart->code }}
             {{ $chart->name }}
         </x-input.button>
-            <div class="hidden" id="{{$chart->id}}">
+            <div class="hidden" id="{{$chart->code}}">
                 @if(!empty($chart->children))
                     <x-tree :tree="$chart->children" ></x-tree>
                 @endif
                     <br>
                 @forelse($chart->accounts as $char)
-                    <div>{{ $char->id }} - {{ $char->name }}</div>
+                    <div>{{ $char->code }} - {{ $char->name }}</div>
                 @empty
-                    <div class="">{{ __("No Accounts") }}</div>
+                    @if($chart->ancestors_count  == 2)
+                            <div class="">{{ __("No Accounts") }}</div>
+                    @endif
                 @endforelse
             </div>
 

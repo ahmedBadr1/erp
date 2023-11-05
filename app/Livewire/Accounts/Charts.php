@@ -9,7 +9,8 @@ class Charts extends Component
 {
     public function render()
     {
-        $charts = Category::tree()->with('accounts')->get()->toTree();
+        $charts = Category::tree()->with('accounts','ancestors')->get()->toTree();
+
         return view('livewire.accounts.charts',compact('charts'));
     }
 }

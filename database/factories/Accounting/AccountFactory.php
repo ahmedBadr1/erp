@@ -20,18 +20,21 @@ class AccountFactory extends Factory
     public function definition(): array
     {
 //        $statues = Status::where('type','account')->pluck('id')->toArray();
+//       $ids = Category::whereHas('ancestors', function ($q)  {
+//            $q->
+//        });
         return [
-            'code' =>$this->faker->numerify,
-            'name' =>$this->faker->name,
+//            'code' =>$this->faker->numerify,
+            'name' =>$this->faker->company,
             'credit' => rand(0, 1),
             'description' => $this->faker->text,
             'active' => rand(0, 1),
-            'category_id' => Category::all()->random()->id,
+            'category_id' => Category::withCount('ancestors' )->get()->where('ancestors_count','=',2)->random()->id,//
             'currency_id' => Currency::all()->random()->id,
 //            'status_id' => $statues[array_rand($statues)],
 //            'opening_balance' => $this->faker->numberBetween(100,10000),
 //            'opening_balance_date' => $this->faker->dateTimeThisYear(),
-            'system' => rand(0, 1),
+            'system' =>  1,
         ];
     }
 }

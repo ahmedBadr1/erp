@@ -48,4 +48,18 @@ class Account extends MainModelSoft
             ->logOnlyDirty()
             ->useLogName('system');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function($model)
+        {
+            $category = Category::withCount('children','accounts','ancestors')->find($model->category_id);
+            if($category->ancestors_count != 2){
+                return false ;
+            }
+                $model->code = $category->code . str_pad( ((int) $category->children_count + $category->accounts_count + 1 ) ,4, '0', STR_PAD_LEFT);
+                $model->credit = $category->credit;
+        });
+    }
 }

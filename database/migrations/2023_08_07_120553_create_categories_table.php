@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
-            $table->mediumInteger('code')->nullable()->index();
+            $table->string('code')->nullable()->index();
             $table->boolean('credit');
             $table->foreignId('parent_id')
                 ->nullable()
@@ -23,6 +23,8 @@ return new class extends Migration
                 ->on('categories')
                 ->onUpdate('cascade');
             $table->boolean('active')->default(1);
+            $table->boolean('usable')->default(0);
+            $table->boolean('system')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
