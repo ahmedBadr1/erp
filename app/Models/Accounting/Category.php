@@ -33,6 +33,11 @@ class Category extends MainModelSoft
         return $this->hasManyOfDescendants(Category::class,'parent_id');
     }
 
+    public function childrens()
+    {
+        return $this->hasMany(Category::class,'parent_id');
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -63,18 +68,29 @@ class Category extends MainModelSoft
         static::creating(function($model)
         {
             if (!empty($model->parent_id)){
-                $parent = Category::withCount('children','accounts','ancestors')->with('parent')->find($model->parent_id);
-                if ($parent->ancestors_count > 2){
-                return false ;
-                }
-                if ($parent->ancestors_count === 2){
-                    $model->usable = 1;
+                $parent = Category::withCount('children','accounts','ancestors')->find($model->parent_id);
+                if ($parent->accounts_count > 0 ){
+                    return false ;
                 }
                 $model->code =$parent->code .  str_pad( ((int) $parent->children_count + $parent->accounts_count + 1 ),2, '0', STR_PAD_LEFT);
                 $model->credit = $parent->credit;
+                $model->usable = 1;
+            }
+        });
+        static::created(function($model){
+            if($model->children()->exists()){
+                $model->usable = 0;
+                $model->save();
+            }
+        });
+        static::updated(function($model){
+            if($model->children()->exists()){
+                $model->usable = 0;
+                $model->save();
             }
         });
     }
+
 
 
 }

@@ -57,10 +57,8 @@ class AccountsForm extends  BasicForm
     }
     public function render()
     {
-
-        $this->categories = Category::active()->pluck('name','id')->toArray();
+        $this->categories = Category::isLeaf()->active()->pluck('name','id')->toArray();
         $this->currencies = Currency::active()->pluck('name','id')->toArray();
-
         return view('livewire.accounts.accounts-form');
     }
 

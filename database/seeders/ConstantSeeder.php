@@ -128,8 +128,8 @@ class ConstantSeeder extends Seeder
 //        Bill::factory(10)->create();
         Warehouse::factory(2)->create();
 //        Item::factory(10)->create();
-//        Transaction::factory(500)->create();
-//        Entry::factory(1000)->create();
+        Transaction::factory(500)->create();
+        Entry::factory(1000)->create();
 
     }
 
@@ -594,30 +594,90 @@ class ConstantSeeder extends Seeder
     public function seedCategories()
     {
         $categories = [
-            ['code' => 1, 'name' => 'assets', 'parent_id' => null, 'credit' => 0],
-            ['code' => 2, 'name' => 'liabilities', 'parent_id' => null, 'credit' => 1],
-            ['code' => 3, 'name' => 'owner equity', 'parent_id' => null, 'credit' => 1],
-            ['code' => 4, 'name' => 'revenue', 'parent_id' => null, 'credit' => 0],
-            ['code' => 5, 'name' => 'expenses', 'parent_id' => null, 'credit' => 1],
+            ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0],
+            ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1],
+            ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1],
+            ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 0],
+            ['code' => 5, 'name' => 'المصروفات', 'parent_id' => null, 'credit' => 1],
 
-            ['name' => 'fixed assets', 'parent_id' => 1],
-            ['name' => 'current assets', 'parent_id' => 1,],
-            ['name' => 'Investments', 'parent_id' => 1,],
-            ['name' => 'inventory', 'parent_id' => 1,],
-            ['name' => 'intangible assets', 'parent_id' => 1,],
-            ['name' => 'long term loans', 'parent_id' => 2,],
-            ['name' => 'short term loans', 'parent_id' => 2,],
-            ['name' => 'long term liabilities', 'parent_id' => 2,],
-            ['name' => 'current owners', 'parent_id' => 3,],
-            ['name' => 'prepaid revenue', 'parent_id' => 4,],
-            ['name' => 'accrued expenses', 'parent_id' => 5,],
-            ['name' => 'admin expenses', 'parent_id' => 5,],
-            ['name' => 'general expenses', 'parent_id' => 5,],
-            ['name' => 'cash', 'parent_id' => 7],// 8
-            ['name' => 'vehicles', 'parent_id' => 6,],
-            ['name' => 'buildings', 'parent_id' => 6,],
-            ['name' => 'equipments', 'parent_id' => 6,],
-            ['name' => 'furniture', 'parent_id' => 6,],
+            ['name' => 'اﻷصول المتداولة', 'parent_id' => 1], // 6
+            ['name' => 'اﻷصول الثابتة', 'parent_id' => 1], // 7
+            ['name' => 'الخصوم المتداولة', 'parent_id' => 2,], // 8
+            ['name' => 'رأس المال', 'parent_id' => 3,], // 9
+            ['name' => 'جاري الشركاء', 'parent_id' => 3,], // 10
+            ['name' => 'أرباح مرحلة', 'parent_id' => 3,], // 11
+            ['name' => 'المبيعات', 'parent_id' => 4,], // 12
+            ['name' => 'إيرادات أخري', 'parent_id' => 4,], // 13
+            ['name' => 'تكلفة المبيعات', 'parent_id' => 5,], // 14
+            ['name' => 'مصروفات إدارية وعمومية', 'parent_id' => 5,], // 15
+
+            ['name' => 'النقدية', 'parent_id' => 6,], // 16
+            ['name' => 'النقدية بالصندوق', 'parent_id' => 16,], // 17
+            ['name' => 'النقدية بالبنك', 'parent_id' => 16,], // 18
+            ['name' => 'المخزون', 'parent_id' => 6,], // 19
+            ['name' => 'العملاء', 'parent_id' => 6,], // 20
+            ['name' => 'أرصدة مدينة اخري', 'parent_id' => 6,], // 21
+            ['name' => 'أصول غير ملموسة', 'parent_id' => 7,], // 22
+            ['name' => 'أصول ملموسة', 'parent_id' => 7,], // 23
+            ['name' => 'اﻹستثمارات', 'parent_id' => 7,], // 24
+            ['name' => 'أجهزة كومبيزتر', 'parent_id' => 23,], // 25
+            ['name' => 'أثاث', 'parent_id' => 23,], // 26
+            ['name' => 'أجهزة كهربائية', 'parent_id' => 23,], // 27
+            ['name' => 'تشطبيات ومستلزمات', 'parent_id' => 23,], // 28
+            ['name' => 'الموردين', 'parent_id' => 8,], // 29
+            ['name' => 'أرصدة دائنة أخري', 'parent_id' => 8,], // 30
+            ['name' => 'إيراد المبيعات', 'parent_id' => 12,], //
+            ['name' => 'مردودات المبيعات', 'parent_id' => 12,], //
+            ['name' => 'إيرادات أخري', 'parent_id' => 12,], //
+            ['name' => 'تكلفة البضاعة المباعة', 'parent_id' => 14,], //
+            ['name' => 'خصم مسموح به', 'parent_id' => 14,], //
+
+            ['name' => 'مرتبات', 'parent_id' => 15], //
+            ['name' => 'مصروف كهرباء - مياه - غاز', 'parent_id' => 15], //
+            ['name' => 'مصروف إيجار', 'parent_id' => 15], //
+            ['name' => 'مصروف بوفيه', 'parent_id' => 15], //
+            ['name' => 'مصروف شحن', 'parent_id' => 15], //
+            ['name' => 'مصروف إنتقالات', 'parent_id' => 15], //
+            ['name' => 'مصروف نظافة', 'parent_id' => 15], //
+            ['name' => 'مصروف إكرامية', 'parent_id' => 15], //
+            ['name' => 'أدوات مكتبية ومطبوعات', 'parent_id' => 15], //
+            ['name' => 'رسوم ومصروفات حكومية', 'parent_id' => 15], //
+            ['name' => 'مصروفات صيانة', 'parent_id' => 15], //
+            ['name' => 'مصروف مكافأت', 'parent_id' => 15], //
+            ['name' => 'مصروف ضريبة خارجية', 'parent_id' => 15], //
+            ['name' => 'مصروفات نثرية أخري', 'parent_id' => 15], //
+            ['name' => 'مصروف عمولة', 'parent_id' => 15], //
+            ['name' => 'مصروف ديون معدومة', 'parent_id' => 15], //
+            ['name' => 'مصروف مشال', 'parent_id' => 15], //
+            ['name' => 'مصروف إنترنت', 'parent_id' => 15], //
+            ['name' => 'مصروف تليفونات', 'parent_id' => 15], //
+            ['name' => 'مصروف دعاية وتسويق', 'parent_id' => 15], //
+            ['name' => 'مصروف تأمينات إجتماعية', 'parent_id' => 15], //
+            ['name' => 'مصروف الضرائب العامة', 'parent_id' => 15], //
+            ['name' => 'مصروف بنكية', 'parent_id' => 15], //
+            ['name' => 'مصروف سيرفر', 'parent_id' => 15], //
+            ['name' => 'مصروف دعاية أونلاين', 'parent_id' => 15], //
+            ['name' => 'مصروف الموقع اﻹلكتروني', 'parent_id' => 15], //
+            ['name' => 'مصروف البريد اﻹلكرتوني', 'parent_id' => 15], //
+            ['name' => 'مصروف أصول ثابتة', 'parent_id' => 15], //
+
+//            ['name' => 'أوراق القبض', 'parent_id' => 8], //
+//            ['name' => 'الحسابات المدينة المتنوعة', 'parent_id' => 8], //
+//            ['name' => 'مخزن المستلزمات السلعية', 'parent_id' => 9], //
+//            ['name' => 'مخزن مشتريات بغرض البيع', 'parent_id' => 9], //
+//            ['name' => 'أعمال تحت التنفيذ', 'parent_id' => 9], //
+//            ['name' => 'استثمارات فى أوراق مالية', 'parent_id' => 10], //
+//            ['name' => 'مشاركـات أخرى', 'parent_id' => 10], //
+//
+//            ['name' => 'الدائنون', 'parent_id' => 12,], // مصحلة الضرائب
+//            ['name' => 'مصروفات مستحقة', 'parent_id' => 12,], //
+//            ['name' => 'رواتب مستحقة', 'parent_id' => 12,], //
+//            ['name' => 'ضرائب مستحقة', 'parent_id' => 12,], //
+//            ['name' => 'إيرادات مقدمة', 'parent_id' => 12,], //
+//            ['name' => 'مجمع اﻹستهلاك', 'parent_id' => 12,], //
+//            ['name' => 'قروض طويلة اﻷجل', 'parent_id' => 13,], //
+//            ['name' => 'قروض قصيرة اﻷجل', 'parent_id' => 13,], //
+
 
         ];
         foreach ($categories as $key => $cat) {

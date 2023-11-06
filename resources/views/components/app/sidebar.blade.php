@@ -1,6 +1,6 @@
 <nav id="full-screen-example" dir="{{ $localeDirs[App::getLocale()] }}"
      class="fixed left-0 top-0 z-[1035] h-screen w-60 -translate-x-full overflow-hidden bg-slate-200 shadow-[0_4px_12px_0_rgba(0,0,0,0.07),_0_2px_4px_rgba(0,0,0,0.05)] data-[te-sidenav-hidden='false']:translate-x-0 dark:bg-slate-800"
-     style="{{ $localeDirs[App::getLocale()] === 'rtl' ? 'right:0;' : '' }} width: 240px; height: 100vh; position: fixed;  transition: all 0.3s linear 0s; transform: translateX(0%);">
+     style="{{ $localeDirs[App::getLocale()] === 'rtl' ? 'right:0;' : '' }} width: 240px; height: 100vh; position: fixed;  transform: translateX(0%);">
     <div class="pt-6 text-center">
         <x-app.logo></x-app.logo>
         {{ config('app.name') }}

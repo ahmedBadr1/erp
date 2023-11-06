@@ -8,19 +8,16 @@
             <div class="hidden" id="{{$chart->code}}">
                 @if(!empty($chart->children))
                     <x-tree :tree="$chart->children" ></x-tree>
-                @endif
                     <br>
+                @endif
+
                 @forelse($chart->accounts as $char)
                     <div>{{ $char->code }} - {{ $char->name }}</div>
                 @empty
-                    @if($chart->ancestors_count  == 2)
+                    @if($chart->children_count  == 0)
                             <div class="">{{ __("No Accounts") }}</div>
                     @endif
                 @endforelse
             </div>
-
-
     @endforeach
-
-
 </div>

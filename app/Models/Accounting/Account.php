@@ -14,32 +14,37 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Account extends MainModelSoft
 {
-    use LogsActivity ;
+    use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'credit', 'description','opening_balance','opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'credit', 'description', 'opening_balance', 'opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
 
-    protected array $TYPES= ['credit','debit'];
+    protected array $TYPES = ['credit', 'debit'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+
     public function currency()
     {
         return $this->belongsTo(Currency::class);
     }
+
     public function status()
     {
         return $this->belongsTo(Status::class);
     }
+
     public function creator()
     {
-        return $this->belongsTo(User::class,'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
+
     public function entries()
     {
         return $this->hasMany(Entry::class);
     }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -52,14 +57,13 @@ class Account extends MainModelSoft
     public static function boot()
     {
         parent::boot();
-        static::creating(function($model)
-        {
-            $category = Category::withCount('children','accounts','ancestors')->find($model->category_id);
-            if($category->ancestors_count != 2){
-                return false ;
+        static::creating(function ($model) {
+            $category = Category::withCount('children', 'accounts', 'ancestors')->find($model->category_id);
+            if ($category->children_count > 0) {
+                return false;
             }
-                $model->code = $category->code . str_pad( ((int) $category->children_count + $category->accounts_count + 1 ) ,4, '0', STR_PAD_LEFT);
-                $model->credit = $category->credit;
+            $model->code = $category->code . str_pad(((int)$category->children_count + $category->accounts_count + 1), 4, '0', STR_PAD_LEFT);
+            $model->credit = $category->credit;
         });
     }
 }
