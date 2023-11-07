@@ -698,8 +698,22 @@ class ConstantSeeder extends Seeder
     public function seedCurrencies(): string
     {
         $currencies = [
+            'EGP' => 'Egyptian Pound',
             'USD' => 'US Dollar',
             'EUR' => 'Euro',
+            'SAR' => 'Saudi Riyal',
+            'QAR' => 'Qatari Riyal',
+            'IQD' => 'Iraqi Dinar',
+            'IRR' => 'Iranian Rial',
+            'JOD' => 'Jordanian Dinar',
+            'KWD' => 'Kuwaiti Dinar',
+            'LBP' => 'Lebanese Pound',
+            'LYD' => 'Libyan Dinar',
+            'MAD' => 'Moroccan Dirham',
+            'OMR' => 'Omani Rial',
+            'SYP' => 'Syrian Pound',
+            'TND' => 'Tunisian Dinar',
+            'YER' => 'Yemeni Rial',
             'JPY' => 'Japanese Yen',
             'GBP' => 'British Pound',
             'AUD' => 'Australian Dollar',
@@ -720,21 +734,7 @@ class ConstantSeeder extends Seeder
             'BRL' => 'Brazilian Real',
             'AED' => 'United Arab Emirates Dirham',
             'BHD' => 'Bahraini Dinar',
-            'EGP' => 'Egyptian Pound',
-            'ILS' => 'Israeli New Shekel',
-            'IQD' => 'Iraqi Dinar',
-            'IRR' => 'Iranian Rial',
-            'JOD' => 'Jordanian Dinar',
-            'KWD' => 'Kuwaiti Dinar',
-            'LBP' => 'Lebanese Pound',
-            'LYD' => 'Libyan Dinar',
-            'MAD' => 'Moroccan Dirham',
-            'OMR' => 'Omani Rial',
-            'QAR' => 'Qatari Riyal',
-            'SAR' => 'Saudi Riyal',
-            'SYP' => 'Syrian Pound',
-            'TND' => 'Tunisian Dinar',
-            'YER' => 'Yemeni Rial',
+
         ];
 
         foreach ($currencies as $key => $val) {

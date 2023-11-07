@@ -3,12 +3,13 @@
 namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\BasicTable;
+use App\Models\Accounting\Account;
 use App\Services\Accounting\AccountService;
 use Livewire\Component;
 
 class AccountsTable extends BasicTable
 {
-    protected $listeners = ['refreshClients' => '$refresh'];
+    protected $listeners = ['refreshAccounts' => '$refresh','confirmDelete'];
     public $perPage = 50;
     public $orderBy = 'code';
     public function render()
@@ -31,5 +32,16 @@ class AccountsTable extends BasicTable
                 ->orderBy($this->orderBy, $this->orderDesc ? 'desc' : 'asc')
                 ->paginate($this->perPage),
         ]);
+    }
+
+    public function confirmDelete($id){
+        $account = Account::with('entries')->find($id);
+        if ($account->entries()->exists()){
+            $this->toast(__('message.still-has', ['model' => __('names.account'),'relation' => __('names.entries')]), 'warning');
+            return;
+        }
+        $account->delete();
+        $this->toast(__('message.deleted', ['model' => __('names.account')]));
+        return;
     }
 }

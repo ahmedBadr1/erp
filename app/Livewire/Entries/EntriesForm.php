@@ -16,12 +16,13 @@ use Livewire\WithFileUploads;
 
 class EntriesForm extends BasicForm
 {
-    use WithFileUploads ;
+    use WithFileUploads;
+
     #[Rule('required|string')]
     public $description = '';
 
     #[Rule('nullable|date')]
-    public $due = '' ;
+    public $due = '';
 
 //    #[Rule('required|color')]
 //    public $color = '';
@@ -30,87 +31,84 @@ class EntriesForm extends BasicForm
     public $credit_limit = '';
 
 
-    public $entry  ;
-    public $accounts = [] ;
+    public $entry;
+    public $accounts = [];
     #[Rule([
         'entries' => 'required',
         'entries.*.account_id' => [
             'required',
             'exists:accounts,id',
         ],
-        'entries.*.amount'=> ['required','numeric','gt:0']
+        'entries.*.amount' => ['required', 'numeric', 'gt:0']
     ])]
-    public array $entries ;
+    public array $entries;
 
-    public function mount($id = null){
+    public function mount($id = null)
+    {
         if ($id) {
-            $this->entry = Entry::with('account')->whereId($id)->first() ;
-            $this->due = $this->entry->due ;
-            $this->description = $this->entry->description ;
+            $this->entry = Entry::with('account')->whereId($id)->first();
+            $this->due = $this->entry->due;
+            $this->description = $this->entry->description;
             $this->title = 'edit';
             $this->button = 'update';
             $this->color = 'primary';
         }
-        $this->entries = [['account_id'=>0,'amount'=>0 ,'credit'=>0],['account_id'=>0,'amount'=>0 ,'credit'=>1]];
+        $this->entries = [['account_id' => 0, 'amount' => 0, 'credit' => 0], ['account_id' => 0, 'amount' => 0, 'credit' => 1]];
     }
+
     public function render()
     {
         usort($this->entries, function ($a, $b) {
             return $b['credit'] - $a['credit'];
         });
-        $this->accounts = Account::active()->pluck('name','id')->toArray();
+        $this->accounts = Account::active()->pluck('name', 'id')->toArray();
         return view('livewire.entries.entries-form');
-    }
-
-    public function updatedDue($propertyName)
-    {
-        dd($propertyName);
     }
 
     public function addEntry()
     {
-        $this->entries[] = ['account_id'=>0,'amount'=>0 ,'credit'=>0];
+        $this->entries[] = ['account_id' => 0, 'amount' => 0, 'credit' => 0];
     }
 
     public function deleteEntry($index)
     {
-       unset($this->entries[$index]);
+        unset($this->entries[$index]);
     }
 
 
-    public  function save()
+    public function save()
     {
-        $validated =  $this->validate();
+        $validated = $this->validate();
 //        dd($validated);
         if ($this->entry) {
             $this->entry->update($validated);
-            $this->toast( __('message.updated', ['model' => __('names.entry')]));
-        }else{
-            $credit = 0 ;
-            $debit = 0 ;
+            $this->toast(__('message.updated', ['model' => __('names.entry')]));
+        } else {
+            $credit = 0;
+            $debit = 0;
 
-            foreach ($validated['entries'] as $ent){
-                if (empty($ent['credit'])){
-                    $debit += $ent['amount'] ;
-                }else{
-                    $credit += $ent['amount'] ;
+            foreach ($validated['entries'] as $ent) {
+                if (empty($ent['credit'])) {
+                    $debit += $ent['amount'];
+                } else {
+                    $credit += $ent['amount'];
                 }
             }
-           if ($credit !== $debit){
-               $this->toast(__('Entries Must Be Equals'),'error');
-               return ;
-           }
 
+            if ($credit !== $debit) {
+                $this->toast(__('Entries Must Be Equals'), 'error');
+                return;
+            }
 
-            DB::transaction(function () use ($validated,$credit){
-               $transaction =  Transaction::create([
+            DB::transaction(function () use ($validated, $credit) {
+                $transaction = Transaction::create([
                     'amount' => $credit,
                     'description' => $validated['description'],
-                   'type' => 'user',
+                    'type' => 'user',
                     'due' => now(),//$validated['due']
-                   'user_id' => auth()->id()
+                    'user_id' => auth()->id()
                 ]);
-                foreach ($validated['entries'] as $ent){
+                foreach ($validated['entries'] as $ent) {
                     Entry::create([
                         'amount' => $ent['amount'],
                         'credit' => $ent['credit'],
@@ -126,11 +124,11 @@ class EntriesForm extends BasicForm
 //                ->event('updated')
 //                ->useLog($user->name)
 //                ->log('entry Has been Updated');
-            $this->toast(__('message.created',['model'=>__('names.entry')]));
+            $this->toast(__('message.created', ['model' => __('names.entry')]));
         }
 
         $this->reset();
-        return redirect()->route('admin.accounting.entries.index')->with('success', __('message.updated',['model'=>__('names.entry')]));
+        return redirect()->route('admin.accounting.entries.index')->with('success', __('message.updated', ['model' => __('names.entry')]));
     }
 
 }

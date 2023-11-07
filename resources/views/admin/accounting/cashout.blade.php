@@ -1,6 +1,6 @@
 <x-app-layout>
     @section('breadcrumb')
-        <x-breadcrumb :tree="$tree" current="cashin"/>
+        <x-breadcrumb :tree="$tree" current="cashout"/>
     @endsection
-    <livewire:accounts.accounts-table />
+        <livewire:cashin cashOut="1" />
 </x-app-layout>

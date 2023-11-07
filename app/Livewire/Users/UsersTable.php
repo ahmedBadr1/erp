@@ -18,10 +18,10 @@ class UsersTable extends BasicTable
         return view('livewire.users.users-table', [
             'users' => $service->search($this->search)
                 ->when($this->start_date, function ($query) {
-                    $query->where('created_at', $this->start_date);
+                    $query->where('created_at', '>=',$this->start_date);
                 })
                 ->when($this->end_date, function ($query) {
-                    $query->where('created_at', $this->end_date);
+                    $query->where('created_at','<=', $this->end_date);
                 })
 //                ->with(['employee' => fn($q) => $q->select('employees.id','employees.first_name')])
                 ->withCount('roles')

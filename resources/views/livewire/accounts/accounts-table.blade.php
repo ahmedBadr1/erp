@@ -60,9 +60,8 @@
     <x-table>
         <x-slot name="thead">
             <tr>
-                <th scope="col" class="px-6 py-4">#</th>
-                <th scope="col" class="px-6 py-4">{{ __('Name') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Code') }}</th>
+                <th scope="col" class="px-6 py-4">{{ __('Name') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Type') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Opening Balance') }}</th>
                 <th scope="col" class="px-6 py-4">{{ __('Description') }}</th>
@@ -75,9 +74,8 @@
         </x-slot>
         @forelse($accounts as $key => $account)
             <x-tr>
-                <x-td medium="true">{{ $account->id }}</x-td>
-                <x-td medium="true">{{ $account->name }}</x-td>
                 <x-td medium="true" dir="ltr">{{ $account->code }}</x-td>
+                <x-td medium="true">{{ $account->name }}</x-td>
                 <x-td>{{  $account->credit ? __('Credit') : __('Debit') }}</x-td>
                 <x-td> <span title="{{$account->opening_balance}}">{{ formatMoney($account->opening_balance) }}</span></x-td>
                 <x-td>{{ Str::limit($account->description,40) }}</x-td>

@@ -24,9 +24,18 @@
 
     <x-grid cols="6" gap="2" id="filter" wire:ignore x-data="collapse" hidden="1">
 
-        <x-input.date wire:model="start_date" :label="__('names.date-start')"></x-input.date>
-
-        <x-input.date wire:model.lazy="end_date" :label="__('names.date-end')"></x-input.date>
+        <x-form.group name="due" >
+            <x-input.label :value="__('names.start_date')" :required="true"></x-input.label>
+            <input wire:model.live="start_date" type="date"
+                   class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 dark:active:bg-slate-600 focus:bg-gray-200  dark:focus:bg-slate-600 "
+            />
+        </x-form.group>
+        <x-form.group name="due" >
+            <x-input.label :value="__('names.end_date')" :required="true"></x-input.label>
+            <input wire:model.lazy="end_date" type="date"
+                   class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 dark:active:bg-slate-600 focus:bg-gray-200  dark:focus:bg-slate-600 "
+            />
+        </x-form.group>
 
         <x-input.select wire:model.lazy="status_id" label="Status" placeholder="status">
         </x-input.select>
