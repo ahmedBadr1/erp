@@ -61,8 +61,8 @@ class Cashin extends BasicForm
         DB::transaction(function () use ($validated) {
             $transaction = Transaction::create([
                 'amount' => $validated['amount'],
-                'description' => $validated['description'],
-                'type' => $this->cashOut ?  'cash out': 'cash in',
+                'description' => $validated['description'] ??  $this->cashOut ?  'cash out': 'cash in' ,
+                'type' => $this->cashOut ?  'co': 'ci',
                 'due' => now(),//$validated['due']
                 'user_id' => auth()->id()
             ]);

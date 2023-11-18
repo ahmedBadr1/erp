@@ -155,6 +155,16 @@ class MainModel extends Model implements HasMedia
         return $query->where('credit', 0);
     }
 
+    public function scopePost($query, $post = 1)
+    {
+        return $query->where('post', $post);
+    }
+
+    public function scopeLocked($query,$locked = 1)
+    {
+        return $query->where('locked', $locked);
+    }
+
     public static function scopeMonth($query,$month = null,$year=null)
     {
         if (!$month){

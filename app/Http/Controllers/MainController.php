@@ -13,7 +13,7 @@ class MainController extends Controller
     public function __construct()
     {
         $this->fcmService = new FCMService();
-        $this->tree = [url('/admin') => 'dashboard'];
+        $this->tree = [url('/admin') => 'Dashboard'];
 
     }
 }

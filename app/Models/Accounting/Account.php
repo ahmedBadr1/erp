@@ -55,7 +55,7 @@ class Account extends MainModelSoft
     }
 
     public static function boot()
-    {
+    {3
         parent::boot();
         static::creating(function ($model) {
             $category = Category::withCount('children', 'accounts', 'ancestors')->find($model->category_id);

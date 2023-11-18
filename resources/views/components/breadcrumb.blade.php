@@ -1,6 +1,6 @@
 @props([
     'class' => '',
-    'tree' => [url('/admin')=>'dashboard'],
+    'tree' => [url('/admin')=>'Dashboard'],
     'current' => '',
     'name' => ''
 
@@ -28,10 +28,7 @@
                         </svg>
                         @endif
                    @endif
-
-
-
-                    {{__('names.'.$title)}}
+                    {{__($title)}}
                 </a>
             </li>
         @endforeach
@@ -52,7 +49,7 @@
         @endif
         <span class="ml-1 mr-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
              @if(!empty($current))
-                {{__('names.'.$current)}}
+                {{__($current)}}
             @endif @if(!empty($name))
                 {{$name}}
             @endif

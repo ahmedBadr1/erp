@@ -23,9 +23,9 @@ class Transaction extends MainModelSoft
 
     public static array $METHODS = ['cash','bank'];
 
-    public function refrence()
+    public function entries()
     {
-        return $this->morphTo();
+        return $this->hasMany(Entry::class);
     }
 
 

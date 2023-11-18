@@ -156,6 +156,7 @@ class ConstantSeeder extends Seeder
     {
         $permissions = [
             'dashboard',
+            "reports",
             "accounting.chart",
             "accounting.cash_in",
             "accounting.cash_out",
@@ -163,6 +164,7 @@ class ConstantSeeder extends Seeder
             "accounting.unposting",
             "accounting.reports",
             "purchases.reports",
+            "sales.reports",
         ];
         foreach ($permissions as $permission) {
             Permission::Create([
