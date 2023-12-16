@@ -66,8 +66,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('/create', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'create'])->name('create');
                 Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'edit'])->name('edit');
                 Route::get('/charts', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'charts'])->name('charts');
-
+                Route::get('/{code}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'show'])->name('show');
             });
+            Route::get('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
 
             Route::get('/cash-in', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashIn'])->name('cash-in');
             Route::get('/cash-out', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashOut'])->name('cash-out');
@@ -80,6 +81,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
                 Route::get('/create', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'create'])->name('create');
                 Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'edit'])->name('edit');
             });
+
 
             Route::get('/posting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'posting'])->name('posting');
             Route::get('/unposting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'unposting'])->name('unposting');

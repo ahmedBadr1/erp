@@ -35,15 +35,17 @@ class Cashin extends BasicForm
         foreach ($cashCategory->descendants as $child) {
             $this->cashAccounts = $this->cashAccounts->merge($child->accounts);
         }
-        if ($this->cashOut ){
-            $category = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'almsrofat')->first();
-        }else{
-            $category = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alayradat')->first();
-        }
-        $this->accounts = collect($category->accounts);
-        foreach ($category->descendants as $child) {
-            $this->accounts = $this->accounts->merge($child->accounts);
-        }
+//        if ($this->cashOut ){
+//            $category = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'almsrofat')->first();
+//        }else{
+//            $category = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alayradat')->first();
+//        }
+        $this->accounts = Account::active()->get();
+//        $category = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->get();
+//        $this->accounts = collect($category->accounts);
+//        foreach ($category->descendants as $child) {
+//            $this->accounts = $this->accounts->merge($child->accounts);
+//        }
     }
 
     public function render()

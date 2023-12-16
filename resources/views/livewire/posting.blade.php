@@ -68,7 +68,7 @@
                 <th scope="col" class="px-6 py-4 text-center">{{ __('Entries') }}</th>
                 <th scope="col" class="px-6 py-4 text-center">{{ __('Type') }}</th>
                 <th scope="col" class="px-6 py-4 text-center">{{ __('Posting') }}</th>
-                <th scope="col" class="px-6 py-4 text-center">{{ __('Status') }}</th>
+{{--                <th scope="col" class="px-6 py-4 text-center">{{ __('Status') }}</th>--}}
                 <th scope="col" class="px-6 py-4 text-center">{{ __('Details') }}</th>
                 <th scope="col" class="px-6 py-4 text-center">{{ __('Check') }}</th>
             </tr>
@@ -81,18 +81,18 @@
                 <x-td>{{ $transaction->type }}-{{ $transaction?->id }}</x-td>
                 <x-td>{{ $transaction->post ? __('Posted') : __('Un Posted') }}</x-td>
                 <x-td>{{ $transaction->locked ? __('Locked') : __('Un Locked') }}</x-td>
-                <x-td >
-                    <x-input.button collapse="1" target="{{$transaction->id}}" color="rose" icon="bx bx-chevrons-left"></x-input.button>
-                </x-td>
-                <x-td >
-                    <table class="hidden" id="{{$transaction->id}}">
-                        <thead>
-                        <tr>
-                            <th scope="col" class="px-6 py-4 text-center">{{ __('Account') }}</th>
-                            <th scope="col" class="px-6 py-4 text-center">{{ __('Amount') }}</th>
-                            <th scope="col" class="px-6 py-4 text-center">{{ __('Credit') }}</th>
-                        </tr>
-                        </thead>
+{{--                <x-td >--}}
+{{--                    <x-input.button collapse="1" target="{{$transaction->id}}" color="rose" icon="bx bx-chevrons-left"></x-input.button>--}}
+{{--                </x-td>--}}
+                <x-td  center="1">
+                    <table >
+{{--                        <thead>--}}
+{{--                        <tr>--}}
+{{--                            <th scope="col" class="px-6 py-4 text-center">{{ __('Account') }}</th>--}}
+{{--                            <th scope="col" class="px-6 py-4 text-center">{{ __('Amount') }}</th>--}}
+{{--                            <th scope="col" class="px-6 py-4 text-center">{{ __('Credit') }}</th>--}}
+{{--                        </tr>--}}
+{{--                        </thead>--}}
                        <tbody>
                        @foreach($transaction->entries as $entry)
                            <tr>
