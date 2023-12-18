@@ -2,7 +2,7 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use App\Models\Employee\Employee;
 use App\Models\MainModelSoft;
 use App\Models\System\Tax;
@@ -26,7 +26,7 @@ class Product extends MainModelSoft
         'can_be_sold' => 'boolean', 'can_be_purchased' => 'boolean', 'returnable' => 'boolean', 'active' => 'boolean'];
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(AccCategory::class);
     }
 
     public function warehouse()

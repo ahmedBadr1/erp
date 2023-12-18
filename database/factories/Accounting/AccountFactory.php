@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Accounting;
 
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use App\Models\System\Currency;
 use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -27,7 +27,7 @@ class AccountFactory extends Factory
             'credit' => rand(0, 1),
             'description' => $this->faker->text,
             'active' => rand(0, 1),
-            'category_id' => Category::isLeaf()->get()->random()->id,//
+            'acc_category_id' => AccCategory::isLeaf()->get()->random()->id,//
             'currency_id' => Currency::all()->random()->id,
 //            'status_id' => $statues[array_rand($statues)],
 //            'opening_balance' => $this->faker->numberBetween(100,10000),

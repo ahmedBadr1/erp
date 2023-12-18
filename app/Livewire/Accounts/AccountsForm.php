@@ -4,7 +4,7 @@ namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\BasicForm;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use App\Models\System\Currency;
@@ -57,7 +57,7 @@ class AccountsForm extends  BasicForm
     }
     public function render()
     {
-        $this->categories = Category::isLeaf()->active()->pluck('name','id')->toArray();
+        $this->categories = AccCategory::isLeaf()->active()->pluck('name','id')->toArray();
         $this->currencies = Currency::active()->pluck('name','id')->toArray();
         return view('livewire.accounts.accounts-form');
     }
@@ -73,7 +73,7 @@ class AccountsForm extends  BasicForm
             ]);
             $this->toast( __('message.updated', ['model' => __('names.account')]));
         }else{
-            $category = Category::withCount('accounts')->whereId($validated['category_id'])->first();
+            $category = AccCategory::withCount('accounts')->whereId($validated['category_id'])->first();
             if (!$category){
                 $this->toast(__('Category Not Found'),'error');
                 return ;

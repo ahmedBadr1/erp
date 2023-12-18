@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Accounting;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use Illuminate\Http\Request;
 
 class TransfersController extends MainController

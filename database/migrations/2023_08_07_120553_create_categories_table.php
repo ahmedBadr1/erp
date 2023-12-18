@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('acc_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')
-                ->on('categories')
+                ->on('acc_categories')
                 ->onUpdate('cascade');
             $table->boolean('active')->default(1);
             $table->boolean('usable')->default(0);
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('acc_categories');
     }
 };

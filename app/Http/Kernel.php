@@ -4,6 +4,8 @@ namespace App\Http;
 
 use App\Http\Middleware\Active;
 use App\Http\Middleware\CheckLocale;
+use App\Http\Middleware\Cors;
+use App\Http\Middleware\ForceJsonResponse;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Spatie\Permission\Middlewares\PermissionMiddleware;
 use Spatie\Permission\Middlewares\RoleMiddleware;
@@ -48,6 +50,8 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            ForceJsonResponse::class,
+            Cors::class
         ],
     ];
 
@@ -75,6 +79,7 @@ class Kernel extends HttpKernel
 //        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'locale' => CheckLocale::class,
         'active' => Active::class,
+        'cors' => Cors::class,
         'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
     ];
 }

@@ -14,11 +14,13 @@ return new class extends Migration
         Schema::create('invitations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('email');
-            $table->string('invitation_token', 32)->unique()->nullable();
+            $table->string('invitation_token', 50)->nullable();
             $table->timestamp('expire_at')->nullable();
+            $table->foreignIdFor(\Spatie\Permission\Models\Role::class)->nullable();
             $table->foreignId('sent_by')->references('id')->on('users');
             $table->timestamp('registered_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

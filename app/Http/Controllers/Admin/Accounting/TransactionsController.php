@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Accounting;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use Illuminate\Http\Request;
 
 class TransactionsController extends MainController
@@ -22,7 +22,7 @@ class TransactionsController extends MainController
     }
     public function index(){
         $tree = $this->tree;
-        $chart = Category::account()->tree()->with('accounts')->get()->toTree();
+        $chart = AccCategory::account()->tree()->with('accounts')->get()->toTree();
         return view('admin.accounting.accounts.index', compact('tree'));
     }
 

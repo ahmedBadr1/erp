@@ -58,7 +58,7 @@ return new class extends Migration
             $table->boolean('returnable')->default(true);
             $table->boolean('active')->default(true);
 
-            $table->foreignIdFor(\App\Models\Accounting\Category::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\AccCategory::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

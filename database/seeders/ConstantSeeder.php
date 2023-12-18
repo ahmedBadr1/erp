@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 
 use App\Models\Accounting\Account;
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use App\Models\Inventory\Item;
@@ -21,7 +21,6 @@ use App\Models\System\Setting;
 use App\Models\System\State;
 use App\Models\System\Status;
 use App\Models\System\Tax;
-use App\Models\System\University;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -98,8 +97,6 @@ class ConstantSeeder extends Seeder
 
         $this->seedEgyptAndSuadi();
 
-        $this->loadUniveristes();
-
         $this->seedStatues();
 
         Warehouse::factory()->create([
@@ -125,11 +122,15 @@ class ConstantSeeder extends Seeder
         Supplier::factory(3)->create();
         Product::factory(10)->create();
         Account::factory(100)->create();
-//        Bill::factory(10)->create();
         Warehouse::factory(2)->create();
-//        Item::factory(10)->create();
-        Transaction::factory(500)->create();
-        Entry::factory(1000)->create();
+        Bill::factory(10)->create()->each(function ($bill){
+            $bill->items()->saveMany(Item::factory(rand(2,5))->create());
+        });
+
+        Transaction::factory(100)->create()->each(function ($transaction){
+            $transaction->entries()->saveMany(Entry::factory(rand(2,5))->create());
+        });
+
 
     }
 
@@ -506,36 +507,7 @@ class ConstantSeeder extends Seeder
     /**
      * @return void
      */
-    public function loadUniveristes(): void
-    {
-        $universities = [
-            "Cairo University",
-            "Alexandria University",
-            "Ain Shams University",
-            "Helwan University",
-            "Assiut University",
-            "Zagazig University",
-            "Mansoura University",
-            "Tanta University",
-            "Suez Canal University",
-            "Benha University",
-            "Minia University",
-            "Sohag University",
-            "South Valley University",
-            "Fayoum University",
-            "Aswan University",
-            "Banha University",
-            "Damietta University",
-            "Port Said University",
-            "Kafr Elsheikh University",
-            "October 6 University"
-            // Add more universities here...
-        ];
 
-        foreach ($universities as $university) {
-            University::create(['name' => $university]);
-        }
-    }
 
     private function seedStatues()
     {
@@ -683,7 +655,7 @@ class ConstantSeeder extends Seeder
 
         ];
         foreach ($categories as $key => $cat) {
-            Category::factory()->create([
+            AccCategory::factory()->create([
                 'code' => $cat['code'] ?? null,
                 'name' => $cat['name'],
                 'slug' => Str::slug($cat['name']),
@@ -863,6 +835,7 @@ class ConstantSeeder extends Seeder
 
         $user1 = \App\Models\User::factory()->create([
             'name' => 'admin',
+            'username' => 'admin',
             'email' => 'admin@erp.com',
             'active' => true,
             'password' => $password,
@@ -871,6 +844,7 @@ class ConstantSeeder extends Seeder
 
         $user2 = \App\Models\User::factory()->create([
             'name' => 'manager',
+            'username' => 'manager',
             'email' => 'manager@erp.com',
             'password' => $password,
         ]);
@@ -878,6 +852,7 @@ class ConstantSeeder extends Seeder
 
         $user3 = \App\Models\User::factory()->create([
             'name' => 'employee',
+            'username' => 'employee',
             'email' => 'emp@erp.com',
             'password' => $password,
         ]);

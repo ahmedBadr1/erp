@@ -21,7 +21,7 @@ return new class extends Migration
             $table->dateTime('opening_balance_date')->nullable();
             $table->boolean('system')->default(false);
             $table->boolean('active')->default(true);
-            $table->foreignIdFor(\App\Models\Accounting\Category::class);
+            $table->foreignIdFor(\App\Models\Accounting\AccCategory::class);
             $table->foreignIdFor(\App\Models\System\Currency::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class)->nullable();
             $table->timestamps();

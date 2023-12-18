@@ -16,13 +16,13 @@ class Account extends MainModelSoft
 {
     use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'credit', 'description', 'opening_balance', 'opening_balance_date', 'system', 'active', 'category_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'credit', 'description', 'opening_balance', 'opening_balance_date', 'system', 'active', 'acc_category_id', 'currency_id', 'status_id'];
 
     protected array $TYPES = ['credit', 'debit'];
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(AccCategory::class);
     }
 
     public function currency()
@@ -49,7 +49,7 @@ class Account extends MainModelSoft
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Account has been {$eventName}")
-            ->logOnly(['code', 'name', 'type', 'description', 'active', 'category_id', 'currency_id', 'status_id',])
+            ->logOnly(['code', 'name', 'type', 'description', 'active', 'acc_category_id', 'currency_id', 'status_id',])
             ->logOnlyDirty()
             ->useLogName('system');
     }
@@ -58,7 +58,7 @@ class Account extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
-            $category = Category::withCount('children', 'accounts', 'ancestors')->find($model->category_id);
+            $category = AccCategory::withCount('children', 'accounts', 'ancestors')->find($model->acc_category_id);
             if ($category->children_count > 0) {
                 return false;
             }

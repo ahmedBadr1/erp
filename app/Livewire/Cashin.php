@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Livewire\Basic\BasicForm;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\Category;
+use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +30,7 @@ class Cashin extends BasicForm
     public function mount($cashOut = false)
     {
         $this->cashOut = $cashOut ;
-        $cashCategory = Category::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
+        $cashCategory = AccCategory::with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
         $this->cashAccounts = collect($cashCategory->accounts);
         foreach ($cashCategory->descendants as $child) {
             $this->cashAccounts = $this->cashAccounts->merge($child->accounts);

@@ -2,34 +2,27 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\MainResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends MainResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray(Request $request): array
     {
         return [
-            'id'                   => $this->id,
-            'employee_id'          => $this->employee->id,
-            'name'                 => $this->name,
-            // 'name'                 => $this->name[$this->changeLang()],
-            'email'             => $this->email,
-            'phone'                => $this->phone,
-            'image'                => $this->image,
-            'lang'               => $this->lang,
-            'active'               => $this->active,
-//            'last_active'          => $this->last_active,
-
-            // relations :
-           'employee'             => new EmployeeResource($this->whenLoaded('employee')),
-            'country'              => new CountryResource($this->whenLoaded('country')),
-
+            'id' => $this->id,
+            'name' => $this->name,
+            'username' => $this->username,
+            'email' => $this->email,
+            'active' => $this->active,
+            'roles' => $this->roles()->select('name')->pluck('name') ?? null,
+        //    'roles' => fn($q)=> $q->select("name"),
+//            'updated_at' => $this->updated_at->diffForHumans(),
         ];
     }
 }

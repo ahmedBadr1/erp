@@ -15,6 +15,7 @@ class User extends AuthModel
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'otp','otp_expire_at','lang','image','phone'
