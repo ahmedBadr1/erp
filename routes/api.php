@@ -41,9 +41,18 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('roles/permissions', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissionsCreate']);
         Route::delete('permission/delete/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissionsDelete'])->name('permission.delete');
 
-        Route::group(['prefix' => 'users', 'middleware' => ['auth:api', ]], function () {
-    Route::post('/', [\App\Http\Controllers\Api\Hr\UsersController::class, 'index']);
-});
+        Route::group(['prefix' => 'users', 'middleware' => ['auth:api',]], function () {
+            Route::post('/', [\App\Http\Controllers\Api\Hr\UsersController::class, 'index']);
+            Route::post('create', [\App\Http\Controllers\Api\Hr\UsersController::class, 'create']);
+            Route::post('store', [\App\Http\Controllers\Api\Hr\UsersController::class, 'store']);
+
+            Route::post('/toggle/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'toggle']);
+            Route::post('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'show']);
+            Route::patch('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'update']);
+
+            Route::delete('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'destroy']);
+
+        });
 
 //   Route::resource('employees',\App\Http\Controllers\Api\Hr\EmployeesController::class);
 

@@ -18,7 +18,7 @@ class User extends AuthModel
         'username',
         'email',
         'password',
-        'otp','otp_expire_at','lang','image','phone'
+        'otp','otp_expire_at','lang','image','phone','active'
     ];
 
     /**

@@ -49,10 +49,14 @@ class UsersController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function create()
+    public function create(Request $request)
     {
-        $roles = Role::whereNotIn('name',['Feedback'])->pluck('name','name');
-        return success($roles);
+        $request->all();
+        if ($request->has("id")){
+            $user = User::find($request->get('id'));
+        }
+        $roles = Role::whereNotIn('name',['Feedback'])->pluck('name')->toArray();
+        return $this->successResponse(['roles'=>$roles,'user'=>isset($user) ? new UserResource($user) : null]);
     }
 
     /**
@@ -68,18 +72,26 @@ class UsersController extends ApiController
 
         $this->validate($request,[
             'name'=>'required',
+            'username'=>'required|unique:users,username',
             'email'=> 'required|email|unique:users,email',
+//            'role_id'=> 'required|numeric|exists:roles,id',
             'role'=>'required|in:' . implode(',', $roles),
-            'password'=> 'required',
+            'password'=> 'required|confirmed',
+            'active' => "nullable|boolean"
 
         ]);
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
-        $user = User::create($input);
-        $user->assignRole($request->input('role'));
-//        Toastr::SUCCESS('User Created Successfully');
-//        Toastr::info('New Employee Created also');
-        return success(['message'=>'User Created Successfully']);
+        DB::beginTransaction();
+        try {
+            $user = User::create($input);
+            $user->assignRole(Role::findByName($input['role'],'web'));
+        }catch (e){
+            return $this->errorResponse(e);
+            DB::rollBack();
+        }
+        DB::commit();
+        return $this->successResponse(null,'User Created Successfully');
     }
 
     /**
@@ -128,33 +140,52 @@ class UsersController extends ApiController
      */
     public function update(Request $request, $id)
     {
+        $roles = Role::whereNotIn('name',['Feedback'])->pluck('name')->toArray();
+
         $this->validate($request,[
             'name'=>'required',
-            'email'=> 'required|email',
-            'role'=>'required'
+            'username'=>'required|unique:users,username,'.$id,
+            'email'=> 'required|email|unique:users,email,'.$id,
+//            'role_id'=> 'required|numeric|exists:roles,id',
+            'role'=>'required|in:' . implode(',', $roles),
+//            'password'=> 'required|confirmed',
+            'active' => "nullable|boolean"
         ]);
         $input = $request->all();
-        $user =  User::findOrFail($id);
-        $user->update($input);
 
-        DB::table('model_has_roles')->where('model_id',$id)->delete();
-        //   $roleId = DB::table('roles')->where('name',$request->input('role'))->value('id');
 
-        //    DB::table('users')->where('id',$id)->update(['role'=>$roleId]);
-        $user->assignRole($request->input('role'));
-        return redirect()->route('hr.users.index')->with('success','User Updated Successfully');
+        DB::beginTransaction();
+        try {
+            $user =  User::findOrFail($id);
+            $user->update($input);
+            $user->roles()->detach();
+            $user->assignRole(Role::findByName($input['role'],'web'));
+        }catch (e){
+            return $this->errorResponse(e);
+            DB::rollBack();
+        }
+        DB::commit();
+        return $this->successResponse(null,'User Updated Successfully');
+
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return RedirectResponse
      */
-    public function destroy($id): RedirectResponse
+    public function destroy($id)
     {
-        User::findOrFail($id)->trash();
-        return redirect()->route('hr.users.index')->with('success','User Deleted Successfully');
+        if ($id == auth('api')->id()){
+            return $this->errorResponse('you cannt delete yourself',200);
+        }
+
+        $user = User::findOrFail($id);
+        if ($user->active){
+            return $this->errorResponse('you cannt delete Active User',200);
+        }
+        $user->delete();
+        return $this->successResponse('success','User Deleted Successfully');
     }
 
     public function process(StoreInveitationRequest $request)
