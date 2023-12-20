@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\AuthModel;
+use Spatie\Permission\Models\Role;
 
 class User extends AuthModel
 {
@@ -40,4 +41,10 @@ class User extends AuthModel
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    public function role()
+    {
+        return $this->hasMany(Role::class)->latest()->limit(1);
+    }
 }

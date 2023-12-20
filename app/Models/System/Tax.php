@@ -27,6 +27,7 @@ class Tax extends MainModelSoft
     {
         return empty($search) ? static::query()
             : static::query()->where('name', 'like', '%' . $search . '%')
+                ->orWhere('code', 'like', '%' . $search . '%')
                 ->orWhere('rate', 'like', '%' . $search . '%');
     }
 }

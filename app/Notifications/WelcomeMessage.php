@@ -52,7 +52,10 @@ class WelcomeMessage extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'message' => 'Welcome to Our app , Hope you enjoy it ;)'
+            'message' => 'Welcome to Our app , Hope you enjoy it ;)',
+                  'from' => config('app.name'),
+//            'title'=>  $this->data['title'] ?? null,
+            'url' =>  '/',
         ];
     }
 }

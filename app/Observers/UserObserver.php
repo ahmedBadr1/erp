@@ -20,10 +20,10 @@ class UserObserver
     {
         $user->notify(new WelcomeMessage());
 
-        if (!$user->HasAnyRole(Role::all())){
-            $role = Role::findByName('admin','api');
-            $user->assignRole($role);
-        }
+//        if (!$user->HasAnyRole(Role::all())){
+//            $role = Role::findByName('admin','api');
+//            $user->assignRole($role);
+//        }
     }
 
     /**

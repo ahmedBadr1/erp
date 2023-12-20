@@ -168,8 +168,8 @@ class RolesController extends ApiController
             return $this->errorResponse('Role Still Has Users',200);
         }
 
-        DB::table('roles')->where('id',$id)->delete();
-        return $this->successResponse('','deleted Successfully');
+        $role->delete();
+        return $this->successResponse(null,'deleted Successfully');
     }
 
     public function permissions(){
@@ -183,12 +183,12 @@ class RolesController extends ApiController
         $input = $request->all();
 
         Permission::create(['name' => $input['name']]);
-        return $this->successResponse($permission,'','Permission Created Successfully');
+        return $this->successResponse(null,'Permission Created Successfully');
     }
     public function permissionsDelete(int $id)
     {
         $permission = Permission::findById($id);
         $permission->delete();
-        return $this->successResponse('','','Permission Deleted Successfully');
+        return $this->successResponse(null,'Permission Deleted Successfully');
     }
 }

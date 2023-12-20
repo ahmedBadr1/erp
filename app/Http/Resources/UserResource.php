@@ -22,8 +22,10 @@ class UserResource extends JsonResource
             'lang' => $this->lang,
             'image' => $this->image,
             'active' => $this->active,
-//            'roles' => RoleResource::collection($this->whenLoaded('roles'))
-            "role" => $this->getRoleNames()[0],
+//            'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'role' => $this->when($this->relationLoaded('roles'), function () {
+                return $this->roles()->value('name');
+            }),
         ];
     }
 }

@@ -62,36 +62,53 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::delete('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'destroy']);
         });
 
-
-
-//   Route::resource('employees',\App\Http\Controllers\Api\Hr\EmployeesController::class);
-
-
-    });
-//
-
-//
-//
-//
-//Route::group(['prefix' => '', 'middleware' => []], function () {
-//    Route::post('login', [UsersController::class, 'login']);
-//    Route::get('{user}', [UsersController::class, 'get']);
-//    Route::get('photo/{user}', [UsersController::class, 'photo']);
-//});
-//
 ///*
 //|--------------------------------------------------------------------------
-//| Hr API
+//| Accounting API
 //|--------------------------------------------------------------------------
 //*/
-//
 
-//Route::group(['prefix' => 'employees', 'middleware' => ['auth:api', ]], function () {
-//
-//    Route::post('', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'index']);
-//    Route::put('{employee?}', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'put']);
-//
-//});
+
+        Route::group([
+            'prefix' => 'accounting',
+            'as' => 'accounting.',
+        ], function () {
+
+            Route::group([
+                'prefix' => 'accounts',
+                'as' => 'accounts.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
+                Route::post('/edit/{user_id}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'edit'])->name('edit');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');
+            });
+            Route::post('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
+
+            Route::post('/cash-in', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashIn'])->name('cash-in');
+            Route::post('/cash-out', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashOut'])->name('cash-out');
+
+            Route::group([
+                'prefix' => 'entries',
+                'as' => 'entries.',
+            ], function () {
+                Route::get('/', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'create'])->name('create');
+                Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'edit'])->name('edit');
+            });
+
+
+            Route::get('/posting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'posting'])->name('posting');
+            Route::get('/unposting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'unposting'])->name('unposting');
+
+            Route::get('/reports', [\App\Http\Controllers\Admin\Accounting\ReportsController::class, 'index'])->name('reports');
+        });
+
+
+
+
+
 
 ///*
 //|--------------------------------------------------------------------------
@@ -109,16 +126,34 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Employees API
+    | System API
     |--------------------------------------------------------------------------
     */
 
-    Route::group(['prefix' => 'employees', 'middleware' => ['auth:api',]], function () {
-        Route::post('', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'list']);
-        Route::get('/create', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'create']);
-        Route::get('access/{employee?}', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'show']);
-        Route::put('{employee?}', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'put']);
-        Route::delete('{employee}', [\App\Http\Controllers\Api\Hr\EmployeesController::class, 'destroy']);
+    Route::group(['prefix' => 'system'], function () {
+        Route::post('currencies', [\App\Http\Controllers\Api\SystemController::class, 'currencies']);
+        Route::post('currencies/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCurrency']);
+
+        Route::post('countries', [\App\Http\Controllers\Api\SystemController::class, 'countries']);
+        Route::post('countries/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCountry']);
+
+        Route::post('states', [\App\Http\Controllers\Api\SystemController::class, 'states']);
+        Route::post('states/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getState']);
+
+        Route::post('cities', [\App\Http\Controllers\Api\SystemController::class, 'cities']);
+        Route::post('cities/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCity']);
+
+        Route::post('taxes', [\App\Http\Controllers\Api\SystemController::class, 'taxes']);
+        Route::post('taxes/{tax}', [\App\Http\Controllers\Api\SystemController::class, 'getTax']);
+
+
+        Route::post('statuses/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getStatus']);
+        Route::post('addresses/{address}', [\App\Http\Controllers\Api\SystemController::class, 'getAddress']);
+        Route::post('attachments/{attachment}', [\App\Http\Controllers\Api\SystemController::class, 'getAttachment']);
+        Route::post('tags/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getTag']);
+        Route::post('contacts/{contact}', [\App\Http\Controllers\Api\SystemController::class, 'getContact']);
+        Route::post('tickets/{ticket}', [\App\Http\Controllers\Api\SystemController::class, 'getTicket']);
+
     });
 
 
@@ -162,6 +197,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
 
         Route::post('contacts', [\App\Http\Controllers\Api\Purchases\VendorsController::class, 'storeContact']);
+
+    });
 
     });
 

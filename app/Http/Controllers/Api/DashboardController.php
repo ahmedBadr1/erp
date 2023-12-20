@@ -47,9 +47,7 @@ class DashboardController extends ApiController
     {
      //   $notifications = \auth()->user()->notifications();
         $user =  Auth::guard('api')->user();
-        $data = [];
-        $data['message'] = 'welcome to our app';
-        $user->notify(new MainNotification($data));
+
         return $this->successResponse(NotificationResource::collection($user->notifications));
     }
 
@@ -63,6 +61,9 @@ class DashboardController extends ApiController
     public function unreadNotifications()
     {
         $user =  \auth('api')->user();
+        $data = [];
+        $data['message'] = 'welcome to our app';
+        $user->notify(new MainNotification($data));
         return $this->successResponse(NotificationResource::collection($user->unreadNotifications()->limit(5)->get()));
     }
 
