@@ -84,6 +84,10 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/edit/{user_id}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'edit'])->name('edit');
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');
             });
+
+            Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
+            Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
+
             Route::post('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
 
             Route::post('/cash-in', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashIn'])->name('cash-in');
@@ -154,20 +158,6 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
         Route::post('contacts/{contact}', [\App\Http\Controllers\Api\SystemController::class, 'getContact']);
         Route::post('tickets/{ticket}', [\App\Http\Controllers\Api\SystemController::class, 'getTicket']);
 
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Accounting API
-    |--------------------------------------------------------------------------
-    */
-
-    Route::group(['middleware' => ['auth:api',]], function () {
-        Route::post('accounts/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree']);
-        Route::post('entries', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'index']);
-        Route::get('entries/create', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'create']);
-        Route::put('entries/store', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'store']);
     });
 
 

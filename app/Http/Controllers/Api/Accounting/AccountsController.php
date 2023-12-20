@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\Accounting;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ListRequest;
 use App\Http\Resources\Accounting\AccCategoryResource;
 use App\Http\Resources\Accounting\AccountChartResource;
+use App\Http\Resources\Accounting\AccountResource;
 use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Account;
+use App\Services\Accounting\AccountService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -23,6 +26,7 @@ class AccountsController extends ApiController
         $this->middleware('permission:accounting.accounts.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:accounting.accounts.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accounting.accounts.delete', ['only' => ['destroy']]);
+        $this->service = new AccountService();
     }
     public function index(){
         $tree = AccCategory::tree()->withCount('children')->with('accounts')->get()->toTree();
@@ -58,6 +62,37 @@ class AccountsController extends ApiController
             'system' => 0,
         ]);
         $this->successResponse(__('message.created',['model'=>__('Account')]));
+    }
+
+    public function journal(ListRequest $request){
+
+        $accounts = $this->service->search($request->get('keywords'))
+            ->when($request->get('start_date'), function ($query) use ($request) {
+                $query->where('created_at', '>=',$request->get('start_date'));
+            })
+            ->when($request->get('end_date'), function ($query) use ($request) {
+                $query->where('created_at','<=', $request->get('start_date'));
+            })
+            ->with('category')
+            ->withSum(['entries as credit_sum' => function ($query) {
+                $query->where('credit', true);}],'amount')
+            ->withSum(['entries as debit_sum' => function ($query) {
+                $query->where('credit', false);}],'amount')
+            ->orderBy($request->get('OrderBy') ?? $this->orderBy, $request->get('OrderBy')  ?? $this->orderDesc ? 'desc' : 'asc')
+           ->get();
+        return $this->successResponse(['accounts'=> AccountResource::collection($accounts)]); //AccountResource
+    }
+
+    public function show(Request $request , $code)
+    {
+        $account = Account::with(['entries','category'])
+            ->withSum(['entries as credit_sum' => function ($query) {
+                $query->where('locked',false)->where('post',false)->where('credit', true);}],'amount')
+            ->withSum(['entries as debit_sum' => function ($query) {
+                $query->where('locked',false)->where('post',false)->where('credit', false);}],'amount')
+            ->where('code',$code)
+            ->firstOrFail();
+     return $this->successResponse(new AccountResource($account));  ;
     }
 
 }

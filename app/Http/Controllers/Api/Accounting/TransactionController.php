@@ -9,22 +9,23 @@ use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use App\Services\Accounting\EntryService;
+use App\Services\Accounting\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class EntriesController extends ApiController
+class TransactionController extends ApiController
 {
     public function __construct()
     {
         parent::__construct();
-        $this->class = "entries";
-        $this->table = "entries";
+        $this->class = "transactions";
+        $this->table = "transactions";
         $this->middleware('auth');
-        $this->middleware('permission:accounting.entries.view', ['only' => ['index', 'show']]);
-        $this->middleware('permission:accounting.entries.create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:accounting.entries.edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:accounting.entries.delete', ['only' => ['destroy']]);
-        $this->service = new EntryService();
+        $this->middleware('permission:accounting.transactions.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:accounting.transactions.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:accounting.transactions.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:accounting.transactions.delete', ['only' => ['destroy']]);
+        $this->service = new TransactionService();
     }
 
     public function index(){

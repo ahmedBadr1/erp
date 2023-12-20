@@ -22,7 +22,7 @@ class Account extends MainModelSoft
 
     public function category()
     {
-        return $this->belongsTo(AccCategory::class);
+        return $this->belongsTo(AccCategory::class,'acc_category_id');
     }
 
     public function currency()

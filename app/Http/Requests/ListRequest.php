@@ -27,6 +27,8 @@ class ListRequest extends FormRequest
             'orderDesc' => "boolean|nullable",
             'limit' => "numeric|nullable",
             'filter' => "numeric|nullable",
+            'start_date' => "nullable|date",
+            'end_date' => "nullable|date",
         ];
     }
 }
