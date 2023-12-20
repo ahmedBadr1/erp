@@ -39,10 +39,9 @@ class ConstantSeeder extends Seeder
 
         $admin_models =
             [
-                "logs",
                 "users",
                 "roles",
-                "clients",
+                "clients.clients",
                 "clients.actions",
                 "accounting.accounts",
                 "accounting.entries",
@@ -166,6 +165,7 @@ class ConstantSeeder extends Seeder
             "accounting.reports",
             "purchases.reports",
             "sales.reports",
+            "logs",
         ];
         foreach ($permissions as $permission) {
             Permission::Create([

@@ -12,6 +12,6 @@ class AccountsController extends Controller
     {
         $tree = AccCategory::account()->tree()->with('accounts')->get()->toTree();
 //        $tree = Category::with('accounts' )->get();
-        return success($tree);
+        return $this->successResponse($tree);
     }
 }

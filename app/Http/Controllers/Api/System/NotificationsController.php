@@ -37,11 +37,11 @@ class NotificationsController extends Controller
 
         $notification = requestModel($notification, Notification::class);
 
-        if ($notification->user_id != auth()->id()) return error(System::HTTP_UNAUTHORIZED);
+        if ($notification->user_id != auth()->id()) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $notification->delete();
 
-        return success();
+        return $this->successResponse();
     }
 
     public function removeAll(Request $request)
@@ -49,7 +49,7 @@ class NotificationsController extends Controller
 
         Notification::where('user_id', auth()->id())->delete();
 
-        return success();
+        return $this->successResponse();
     }
 
     public function see(Request $request, Notification $notification)
@@ -63,6 +63,6 @@ class NotificationsController extends Controller
             $notification->save();
         }
 
-        return success();
+        return $this->successResponse();
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\NotificationResource;
+use App\Notifications\MainNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -38,36 +40,42 @@ class DashboardController extends ApiController
     public function index()
     {
         $user = \auth()->user();
-        return success($user,'','dashboard goes ere');
+        return $this->successResponse($user,'','dashboard goes ere');
     }
 
     public function notifications()
     {
      //   $notifications = \auth()->user()->notifications();
-        $user =  \auth()->user();
-        $notifications = $user->notifications;
-        return success($notifications);
+        $user =  Auth::guard('api')->user();
+        $data = [];
+        $data['message'] = 'welcome to our app';
+        $user->notify(new MainNotification($data));
+        return $this->successResponse(NotificationResource::collection($user->notifications));
     }
 
     public function markAsRead()
     {
-        $user =  \auth()->user();
+        $user =  \auth('api')->user();
         $user->unreadNotifications->markAsRead();
-        $notifications = $user->notifications;
-        return success($notifications);
+        return $this->successResponse('success');
     }
 
     public function unreadNotifications()
     {
-        $user =  \auth()->user();
-        $notifications = $user->unreadNotifications();
-        return success($notifications);
+        $user =  \auth('api')->user();
+        return $this->successResponse(NotificationResource::collection($user->unreadNotifications()->limit(5)->get()));
+    }
+
+    public function count()
+    {
+        $user =  \auth('api')->user();
+        return $this->successResponse(['count'=> $user->unreadNotifications()->count()]);
     }
 
     public function profile()
     {
         $profile = auth()->user()->profile;
-        return success($profile);
+        return $this->successResponse($profile);
     }
 
     public function profileUpdate(Request $request)
@@ -121,7 +129,7 @@ class DashboardController extends ApiController
 
         $user->push();
 
-        return success($user->profile);
+        return $this->successResponse($user->profile);
 
     }
 
@@ -136,7 +144,7 @@ class DashboardController extends ApiController
             $token->delete();
             //   Activity::log('user\logout', $user);
         }
-        return success(['message'=>'logged out !']);
+        return $this->successResponse(['message'=>'logged out !']);
     }
 
 }

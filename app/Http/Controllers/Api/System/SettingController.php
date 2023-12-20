@@ -49,7 +49,7 @@ class SettingController extends Controller
 
 
         if ($exist) {
-            return error(System::ERROR_ITEM_ALREADY_EXISTS);
+            return $this->errorResponse(System::ERROR_ITEM_ALREADY_EXISTS);
         }
 
         if (!$setting) {
@@ -63,19 +63,19 @@ class SettingController extends Controller
 
         Log::log(($new) ? 'setting\add' : 'setting\edit', $setting);
 
-        return success($setting->data(System::DATA_BRIEF));
+        return $this->successResponse($setting->data(System::DATA_BRIEF));
     }
 
     public function get(Request $request, Setting $setting, $details = System::DATA_DETAILS)
     {
-        return success($setting->data($details));
+        return $this->successResponse($setting->data($details));
     }
 
     public function remove(Request $request, Setting $setting)
     {
         $setting->delete();
         Log::log('setting\remove', $setting);
-        return success(true);
+        return $this->successResponse(true);
     }
 
 }

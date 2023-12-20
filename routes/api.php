@@ -32,27 +32,37 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
         Route::post('profile/', [\App\Http\Controllers\Api\DashboardController::class, 'profile'])->name('profile');
         Route::post('profile/update', [\App\Http\Controllers\Api\DashboardController::class, 'profileUpdate'])->name('profile-update');
-        Route::post('notifications/', [\App\Http\Controllers\Api\DashboardController::class, 'notifications'])->name('notifications');
-        Route::post('notifications/read', [\App\Http\Controllers\Api\DashboardController::class, 'markAsRead'])->name('notifications');
 
-        Route::post('unread-notifications/', [\App\Http\Controllers\Api\DashboardController::class, 'unreadNotifications'])->name('unread-notifications');
+        Route::group(['prefix' => 'notifications'], function () {
+            Route::post('/', [\App\Http\Controllers\Api\DashboardController::class, 'notifications']);
+            Route::post('read', [\App\Http\Controllers\Api\DashboardController::class, 'markAsRead']);
+            Route::post('unread', [\App\Http\Controllers\Api\DashboardController::class, 'unreadNotifications']);
+            Route::post('count', [\App\Http\Controllers\Api\DashboardController::class, 'count']);
+        });
 
-        Route::get('roles/permissions', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissions'])->name('roles.permissions');
-        Route::post('roles/permissions', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissionsCreate']);
-        Route::delete('permission/delete/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissionsDelete'])->name('permission.delete');
-
-        Route::group(['prefix' => 'users', 'middleware' => ['auth:api',]], function () {
+        Route::group(['prefix' => 'users'], function () {
             Route::post('/', [\App\Http\Controllers\Api\Hr\UsersController::class, 'index']);
             Route::post('create', [\App\Http\Controllers\Api\Hr\UsersController::class, 'create']);
             Route::post('store', [\App\Http\Controllers\Api\Hr\UsersController::class, 'store']);
-
             Route::post('/toggle/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'toggle']);
             Route::post('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'show']);
             Route::patch('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'update']);
-
             Route::delete('/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'destroy']);
-
         });
+
+        Route::group(['prefix' => 'roles'], function () {
+
+            Route::post('/', [\App\Http\Controllers\Api\Hr\RolesController::class, 'index']);
+            Route::post('create', [\App\Http\Controllers\Api\Hr\RolesController::class, 'create']);
+            Route::post('store', [\App\Http\Controllers\Api\Hr\RolesController::class, 'store']);
+            Route::post('permissions', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissions']);
+            Route::post('/toggle/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'toggle']);
+            Route::post('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'show']);
+            Route::patch('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'update']);
+            Route::delete('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'destroy']);
+        });
+
+
 
 //   Route::resource('employees',\App\Http\Controllers\Api\Hr\EmployeesController::class);
 
@@ -95,23 +105,6 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 //    Route::get('{setting}/{details?}', [SettingController::class, 'get']);
 //    Route::delete('{setting}', [SettingController::class, 'remove']);
 //});
-
-    /*
-    |--------------------------------------------------------------------------
-    | Roles API
-    |--------------------------------------------------------------------------
-    */
-
-    Route::group(['prefix' => 'roles', 'middleware' => ['auth:api']], function () {
-
-        Route::post('', [RolesController::class, 'roles']);
-        Route::get('{role?}', [RolesController::class, 'get']);
-        Route::put('{role?}', [RolesController::class, 'put']);
-        Route::delete('{role}', [RolesController::class, 'delete']);
-        Route::put('user/{user}', [RolesController::class, 'sync']);
-        Route::get('user/{user}', [RolesController::class, 'user']);
-
-    });
 
 
     /*

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\UserRolesResource;
 use App\Models\System\Invitation;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,25 +14,22 @@ class AuthController extends ApiController
     public function __construct()
     {
         parent::__construct();
-         $this->middleware('guest');
+         $this->middleware('guest')->except('logout');
     }
 
     public function login(Request $request)
     {
-        $valid = $request->validate(
-            [
+        $valid = $request->validate([
              'email' => 'required|email',
              'password' => 'required|string'
-            ]
-        );
+            ]);
         $user = \App\Models\User::where('email', $valid['email'])->first();
 
         if (!$user || !Hash::check($valid['password'], $user->password)) {
             return $this->successResponse('wrong email or password');
         }
-        $token = $user->createToken('app') ;
 
-        return $this->successResponse(['user'=>new UserResource($user),'token'=> $token->accessToken]);
+        return $this->successResponse(['user'=> new UserRolesResource($user),'token'=> $user->createToken('website')->accessToken]);
     }
 
     public function register(Request $request)
@@ -51,13 +48,13 @@ class AuthController extends ApiController
 
         $token = $user->createToken('app') ;
 
-        return $this->successResponse(['user'=>new UserResource($user),'token'=> $token->accessToken]);
+        return $this->successResponse(['user'=>new UserRolesResource($user),'token'=> $token->accessToken]);
     }
 
     public function reg(Request $request)
     {
         $token = $request->get('invitation_token');
-        if (!$token)  return error(404,'invitation token is required');
+        if (!$token)  return $this->errorResponse(404,'invitation token is required');
         $invitation = Invitation::where('invitation_token', $token)->first();
         if (!$invitation){
             return  $this->errorResponse('invalid invitation token',404);
@@ -70,6 +67,28 @@ class AuthController extends ApiController
         $email = $invitation->email;
         //   dd($email);
         return $this->successResponse(['email' => $email]);
+    }
+
+    /**
+     * Sign out (logout).
+     *
+     */
+    public function logout()
+    {
+        try {
+            $user = Auth::user();
+            // Revoke current user token
+            $user
+                ->tokens()
+                ->where("id", $user->currentAccessToken()->id)
+                ->delete();
+
+            return response()->json(["status" => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 401);
+        }
     }
 
     public function docs ()

@@ -45,13 +45,13 @@ class VendorsController extends Controller
         $currencies = Currency::all();
         $employees = Employee::active()->get(['id','name']);
         $methods = Payment::$METHODS;
-        return success(['countries' => $countries , 'currencies'=>$currencies,'employees'=>$employees,'methods'=>$methods]);
+        return $this->successResponse(['countries' => $countries , 'currencies'=>$currencies,'employees'=>$employees,'methods'=>$methods]);
     }
 
     public function getStates(Request $request){
         $states = State::where('country_id', $request->country_id )->get();
 //        $states = State::whereHas('country', fn($q)=>$q->where('name',$request->country)->get();
-        return success(['states' => $states]);
+        return $this->successResponse(['states' => $states]);
     }
 
     public function store(StoreVendorRequest $request,Vendor $vendor = null){
@@ -117,7 +117,7 @@ class VendorsController extends Controller
            $vendor->account_id = $account->id;
             $vendor->save();
             DB::commit();
-            return success(null,null,'Vendor created successfully');
+            return $this->successResponse(null,null,'Vendor created successfully');
         } catch (\Exception $e) {
             DB::rollback();
 //            return $e ;
@@ -134,12 +134,12 @@ class VendorsController extends Controller
     public function show(int $id)
     {
         $vendorData = new ShowVendorResource(Vendor::with('contacts','locations','account')->findOrFail($id));
-        return success($vendorData);
+        return $this->successResponse($vendorData);
     }
 
     public function storeContact(StoreContact $request): \Illuminate\Http\JsonResponse
     {
         Contact::created($request->all());
-        return success(null,null,'Contact Created Successfully');
+        return $this->successResponse(null,null,'Contact Created Successfully');
     }
 }

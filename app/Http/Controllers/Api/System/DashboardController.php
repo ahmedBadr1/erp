@@ -19,7 +19,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        if (!can('admin_system')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('admin_system')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $users_count = User::select(DB::raw('count(type) as count'), 'type')->groupBy('type')->get()->transform(function ($item) {
             $item->type = User::decodeType($item->type) ? User::decodeType($item->type)->name . "s" : '';
@@ -39,14 +39,14 @@ class DashboardController extends Controller
             'users_count' => $users_data,
         ];
 
-        return success($statistic);
+        return $this->successResponse($statistic);
 
     }
 
     public function faculty(Request $request)
     {
 
-        if (!can('admin_system')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('admin_system')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $data = (object)[];
         $data->studnets_per_faculty = Faculty::select('code as name')->withCount('students')->whereRemoved(0)->orderBy('students_count', 'DESC')->limit(15)->get();
@@ -57,13 +57,13 @@ class DashboardController extends Controller
         $data->programs_per_faculty = Faculty::select('code as name')->withCount('programs')->whereRemoved(0)->orderBy('programs_count', 'DESC')->limit(15)->get();
         $data->courses_per_faculty = Faculty::select('code as name')->withCount('courses')->whereRemoved(0)->orderBy('courses_count', 'DESC')->limit(15)->get();
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
     public function payment(Request $request)
     {
 
-        if (!can('admin_system')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('admin_system')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $data = (object)[];
 
@@ -72,13 +72,13 @@ class DashboardController extends Controller
 
         $data->payments_per_month = $query->get()->toArray();
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
     public function activities()
     {
 
-        if (!can('admin_system')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('admin_system')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $data = (object)[];
 
@@ -88,7 +88,7 @@ class DashboardController extends Controller
 
         $data->activities_per_month = $query->get()->toArray();
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
 }

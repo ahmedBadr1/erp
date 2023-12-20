@@ -17,7 +17,7 @@ class LogsController extends Controller
     public function logs(Request $request)
     {
 
-        if (!can('access_logs')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('access_logs')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $query = Log::select('logs.*');
 
@@ -37,8 +37,8 @@ class LogsController extends Controller
     public function get(Request $request, Log $log)
     {
 
-        if (!can('access_logs')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('access_logs')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
-        return success($log->data(System::DATA_DETAILS));
+        return $this->successResponse($log->data(System::DATA_DETAILS));
     }
 }

@@ -49,6 +49,7 @@ class MainNotification extends Notification
     {
         return [
             'from' => $this->data['from'] ?? config('app.name'),
+            'title'=>  $this->data['title'] ?? null,
             'message'=>  $this->data['message'],
             'url' =>  $this->data['url'] ?? '#',
         ];

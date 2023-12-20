@@ -64,7 +64,7 @@ class LookupController extends Controller
             }
 
         }
-        return success($lookups);
+        return $this->successResponse($lookups);
     }
 
 

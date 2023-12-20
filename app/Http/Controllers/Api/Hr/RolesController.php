@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Api\Hr;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RolesController extends Controller
+class RolesController extends ApiController
 {
     public function __construct()
     {
+        parent::__construct();
+        $this->middleware('auth:api');
         $this->middleware('permission:hr');
     }
 
@@ -24,9 +28,9 @@ class RolesController extends Controller
     public function index(Request $request)
     {
         //
-        $roles = Role::orderBy('id','DESC')->paginate(10);
+        $roles = Role::withCount('permissions')->orderBy('id','DESC')->paginate(10);
 
-        return success($roles);
+        return $this->successResponse(RoleResource::collection($roles));
     }
 
     /**
@@ -34,10 +38,41 @@ class RolesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        $permissions = Permission::getPermissions();
-        return success($permissions);
+      $permissions = Permission::select('name',"id")->get();
+        $groupedPermissions = [];
+
+        foreach ($permissions as $permission) {
+            $parts = explode('.', $permission->name);
+            $currentGroup = &$groupedPermissions;
+
+            // Exclude the last part (e.g., "index")
+            $numParts = count($parts) - 1;
+
+            foreach ($parts as $key => $part) {
+                if ($key === $numParts) {
+                    // Exclude the last part
+                    break;
+                }
+
+                if (!isset($currentGroup[$part])) {
+                    $currentGroup[$part] = [];
+                }
+
+                $currentGroup = &$currentGroup[$part];
+            }
+
+            $currentGroup[] = [
+                'id' => $permission->id,
+                'name' => $part,
+            ];
+        }
+
+        if ($request->has("name")){
+            $role = Role::with('permissions')->where('name',$request->get('name'))->first();
+        }
+        return $this->successResponse(['permissions'=>$groupedPermissions,'role'=>isset($role) ? new RoleResource($role) :null ]);
     }
 
     /**
@@ -49,14 +84,20 @@ class RolesController extends Controller
     public function store(Request $request)
     {
         //dd($request);
+        if (auth()->user()->cannot('roles.create')) {
+            return $this->errorResponse('Unauthorized, you don\'t have access.');
+        }
+
         $this->validate($request,[
             'name'=>'required|unique:roles,name',
+            'permissions'=>'required|array',
+            'permissions.*'=>'required|exists:permissions,id',
         ]);
         $input = $request->all();
 
         $role =Role::findOrCreate($request->input('name'));
         $role->syncPermissions($request->input('permissions'));
-        return success($role);
+        return $this->successResponse($role);
     }
 
     /**
@@ -67,10 +108,8 @@ class RolesController extends Controller
      */
     public function show(Request $request, int $id= null)
     {
-        $role = Role::findById($id,'web');
-        $rolePermissions = Permission::whereHas('roles', fn($q) => $q->where('id',$id))->get();
-        $res = [$role ,$rolePermissions ];
-        return success($res);
+        $role = Role::with(['permissions'=>fn($q)=>$q->select('id','name')])->withCount('permissions')->where('id',$id)->where('guard_name','web')->first();
+        return $this->successResponse(new RoleResource ($role));
     }
 
     /**
@@ -88,7 +127,7 @@ class RolesController extends Controller
         //  $rolePermissions =DB::table("role_has_permissions")->where('role_has_permissions.role_id',$id)->pluck('role_has_permissions.permission_id','role_has_permissions.permission_id')->all();
         $rolePermissions = Permission::whereHas('roles', fn($q) => $q->where('id',$id))->pluck('id')->toArray();
         $res = [$role , $permissions , $rolePermissions];
-        return success($res);
+        return $this->successResponse($res);
     }
 
     /**
@@ -110,7 +149,7 @@ class RolesController extends Controller
         $role->save();
         $role->syncPermissions($request->input('permissions'));
 
-        return success($role);
+        return $this->successResponse($role);
     }
 
     /**
@@ -119,16 +158,23 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request,$name)
     {
+        $role = Role::findByName($name,'web');
+        if ($role->permissions()->exists()){
+            return $this->errorResponse('Role Still Has Permissions',200);
+        }
+        if ($role->users()->exists()){
+            return $this->errorResponse('Role Still Has Users',200);
+        }
+
         DB::table('roles')->where('id',$id)->delete();
-        return success('','','deleted Successfully');
+        return $this->successResponse('','deleted Successfully');
     }
 
     public function permissions(){
-        $permissions = Permission::getPermissions();
-        //$roles = Role::
-        return success($permissions);
+        $permissions = Permission::select('name',"id")->get();
+        return $this->successResponse($permissions);
     }
     public function permissionsCreate(Request $request){
         $this->validate($request,[
@@ -137,12 +183,12 @@ class RolesController extends Controller
         $input = $request->all();
 
         Permission::create(['name' => $input['name']]);
-        return success($permission,'','Permission Created Successfully');
+        return $this->successResponse($permission,'','Permission Created Successfully');
     }
     public function permissionsDelete(int $id)
     {
         $permission = Permission::findById($id);
         $permission->delete();
-        return success('','','Permission Deleted Successfully');
+        return $this->successResponse('','','Permission Deleted Successfully');
     }
 }

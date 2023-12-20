@@ -43,19 +43,19 @@ class BillsController extends Controller
 //        $billNumber = Bill::latest()->first()->number;
 //   59 + 1 = 61
         // 60
-    return success(['statuses' => $statuses ,'taxes' => $taxes]);
+    return $this->successResponse(['statuses' => $statuses ,'taxes' => $taxes]);
     }
 
     public function searchVendor(ListRequest $request): \Illuminate\Http\JsonResponse
     {
         $vendors = VendorsResource::collection(Vendor::search($request->keywords)->take($request->limit)->get());
-        return success(['vendors' => $vendors]);
+        return $this->successResponse(['vendors' => $vendors]);
     }
 
     public function searchProduct(ListRequest $request): \Illuminate\Http\JsonResponse
     {
         $products= ProductResource::collection(product::search($request->keywords)->take($request->limit)->get());
-        return success(['products' => $products]);
+        return $this->successResponse(['products' => $products]);
     }
 
     public function store(BillRequest $request)
@@ -73,7 +73,7 @@ class BillsController extends Controller
            'tax_id' => $validated['tax_id'],
            'paid' => $validated['paid'] ,
         //    'sub_total' => $this->subTotal,
-           'discount' => $validated['discount'],    
+           'discount' => $validated['discount'],
            'tax_total' => $validated['taxTotal'],
         //    'total' => $this->total,
            'user_id' => \auth()->id(),
@@ -116,12 +116,12 @@ class BillsController extends Controller
                 return response()->json(['message' => 'Total is not balanced'], 500);
             }
             $total = $subTotal + $validated['tax_total'] - $validated['discount'];
-            
+
             $bill->subTotal = $subTotal;
             $bill->total = $total;
             $bill->save();
-            
-            
+
+
             if ($bill->status->name != 'unpaid'){
                 $amount= 0;
                 if ($bill->status->name == 'paid'){
@@ -136,7 +136,7 @@ class BillsController extends Controller
                     'vendor_id' => $bill->vendor_id,
                 ]);
             }
-            
+
 
             DB::commit();
             return response()->json(['message' => 'Bill created successfully'], 201);

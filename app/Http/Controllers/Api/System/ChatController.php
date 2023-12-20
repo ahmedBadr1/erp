@@ -56,7 +56,7 @@ class ChatController extends Controller
         Chat::saveChat(['chat' => $chat ? $chat : new Chat()]);
         Log::log(($new) ? 'chat\add' : 'chat\edit', $chat);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function message(Request $request, Chat $chat)
@@ -76,7 +76,7 @@ class ChatController extends Controller
 
         Log::log('message\add', $chat);
 
-        return success();
+        return $this->successResponse();
     }
 
 

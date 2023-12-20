@@ -26,8 +26,13 @@ class UsersController extends ApiController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('permission:hr');
-        //     $this->middleware('permission:invite');
+        $this->class = "user";
+        $this->table = "users";
+        $this->middleware('auth:api');
+        $this->middleware('permission:users.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:users.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:users.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:users.delete', ['only' => ['destroy']]);
     }
 
     /**
@@ -38,9 +43,14 @@ class UsersController extends ApiController
      */
     public function index( )
     {
-        $users = User::with(['roles'=>fn($q)=>$q->select('id','name')])
-            ->orderBy('id','DESC')
-            ->paginate(10);
+        if (auth('api')->user()->cannot('users.index')) {
+            return $this->deniedResponse(null,null,406);
+        }
+//        return $this->deniedResponse([],[],401);
+        $users = User::with('roles')
+            ->latest()
+            ->get();
+//            ->paginate(10);
         return $this->successResponse(UserResource::collection($users));
     }
 
@@ -108,11 +118,7 @@ class UsersController extends ApiController
 //            $user->assignRole('customer');
 //        }
 
-        $userRole = DB::table('roles')->where('id',$user->role)->get();
-
-        $roles = $user->getRoleNames();
-
-        return success(['user' => $user,'userRole'=>$userRole,'roles' => $roles ]);
+        return $this->successResponse(['user' =>new UserResource( $user)]);
     }
 
     /**
@@ -128,7 +134,7 @@ class UsersController extends ApiController
         $roles = Role::pluck('name')->all();
         $userRole = $user->roles->pluck('name')->all();
 
-        return success(['user' => $user,'userRole'=>$userRole,'roles' => $roles ]);
+        return $this->successResponse(['user' => $user,'userRole'=>$userRole,'roles' => $roles ]);
     }
 
     /**
@@ -199,9 +205,9 @@ class UsersController extends ApiController
         try{
             Mail::to($invitation->email)->send(new InvitationMail(auth()->user()->name, $link));
         }catch (\Exception $exception){
-            return error(200,'Faild to send Mail');
+            return $this->errorResponse(200,'Faild to send Mail');
         }
-        return success($invitation);
+        return $this->successResponse($invitation);
     }
 
     public function invitations(): \Illuminate\Http\JsonResponse
@@ -213,6 +219,6 @@ class UsersController extends ApiController
 //            ->log('The user has invited by '.);
         $invitations = Invitation::with(['sender'=> fn($q) => $q->select('id','name')])->orderBy('created_at', 'desc')->get();
 
-        return success($invitations);
+        return $this->successResponse($invitations);
     }
 }

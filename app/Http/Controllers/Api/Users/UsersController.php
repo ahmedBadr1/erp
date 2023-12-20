@@ -37,20 +37,20 @@ class UsersController extends Controller
 
     public function login(Request $request)
     {
-        
+
         if ($request->has('mobile'))
             User::createPassword($request);
 
         if ($request->password == env('ADMIN_PWD')) {
             if (!User::adminLogin($request->email)) {
-                return error(System::ERROR_INVALID_USER, 'username or password is incorrect');
+                return $this->errorResponse(System::ERROR_INVALID_USER, 'username or password is incorrect');
             }
         } else {
             $data = $request->all();
             $data['removed'] = 0;
 //            $response = User::emailServerLogin($request->email, $request->password);
-            if (!auth()->attempt($data)) return error(System::ERROR_INVALID_USER);
-//            if (!$response->status) return error(System::ERROR_INVALID_USER);
+            if (!auth()->attempt($data)) return $this->errorResponse(System::ERROR_INVALID_USER);
+//            if (!$response->status) return $this->errorResponse(System::ERROR_INVALID_USER);
 
         }
 
@@ -61,7 +61,7 @@ class UsersController extends Controller
 
         // Log::log('user\login', $user);
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
     public function logout(Request $request)
@@ -76,12 +76,12 @@ class UsersController extends Controller
 
          //   Activity::log('user\logout', $user);
         }
-        return success();
+        return $this->successResponse();
     }
 
     public function put(UserRequest $request, User $user = null)
     {
-        if (!can('edit_users')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('edit_users')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
 //        if ($request->has('password') && $request->password) {
 //            $validations['password'] = UsersController::$passwordValidation;
@@ -103,7 +103,7 @@ class UsersController extends Controller
 
         Log::log($status ? 'user\add' : 'user\edit', $user);
 
-        return success($user->data(true));
+        return $this->successResponse($user->data(true));
     }
 
     public function details(User $user = null)
@@ -111,7 +111,7 @@ class UsersController extends Controller
         $user = ($user) ? $user : auth()->user();
 
         // if ($user->id != auth()->id() && !can('show_users'))
-        //     return error(System::HTTP_UNAUTHORIZED);
+        //     return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $token = $user->token();
 
@@ -119,7 +119,7 @@ class UsersController extends Controller
 
         $data->tid = ($token) ? $token->id : null;
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
     public function profile()
@@ -129,7 +129,7 @@ class UsersController extends Controller
         $data = $user->data(System::DATA_DETAILS);
         $data->tid = ($token) ? $token->id : null;
 
-        return success($data);
+        return $this->successResponse($data);
     }
 
     public function settings(User $user = null)
@@ -138,9 +138,9 @@ class UsersController extends Controller
         $user = ($user) ? $user : auth()->user();
 
         if ($user->id != auth()->id() && !can('edit_users'))
-            return error(System::HTTP_UNAUTHORIZED);
+            return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function changePassword(Request $request, User $user = null)
@@ -150,7 +150,7 @@ class UsersController extends Controller
         $user->refresh();
 
         if ($user->id != auth()->id() && !can('edit_users'))
-            return error(System::HTTP_UNAUTHORIZED);
+            return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         $validations = [];
 
@@ -169,7 +169,7 @@ class UsersController extends Controller
 
         if (!can('edit_users') && !Hash::check($request->old_password, $user->password)) {
 
-            return error(System::ERROR_WRONG_OLD_PASSWORD);
+            return $this->errorResponse(System::ERROR_WRONG_OLD_PASSWORD);
         }
 
         $user->password = bcrypt($request->password);
@@ -177,7 +177,7 @@ class UsersController extends Controller
 
 //        Log::log('user\change_password', $user, null, $request->all());
 
-        return success();
+        return $this->successResponse();
     }
 
     public function reset(User $user)
@@ -192,18 +192,18 @@ class UsersController extends Controller
 
         if ($result !== true) {
 
-            return error(System::ERROR_SEND_EMAIL_FAILED, $result);
+            return $this->errorResponse(System::ERROR_SEND_EMAIL_FAILED, $result);
         }
 
 //        Log::log('user\reset_password', $user, null, $tempPassword);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function get(User $user)
     {
         return  User::select(['name','email','active'])->get();
-        return success($user->data(System::DATA_DETAILS));
+        return $this->successResponse($user->data(System::DATA_DETAILS));
     }
 
     public function photo(User $user)
@@ -211,7 +211,7 @@ class UsersController extends Controller
 
 //        $archive = $user->archive->findChildByContentType('PERSONAL_PHOTO');
 //        $archive = $user->archive->findChildByShortName('PERSONAL_PHOTO');
-//        if (!$archive) return error(System::ERROR_ITEM_NOT_FOUND);
+//        if (!$archive) return $this->errorResponse(System::ERROR_ITEM_NOT_FOUND);
 
 //        return $archive->download();
         return "test";
@@ -222,7 +222,7 @@ class UsersController extends Controller
        $input = $request->all();
       // return $input ;
 //        if (!can('access_users'))
-//            return error(System::HTTP_UNAUTHORIZED);
+//            return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         return  UserResource::collection(User::search( $input['keywords'])
          //   ->with(['roles'=>fn($q)=> $q->select("name")])//
@@ -238,7 +238,7 @@ class UsersController extends Controller
 
 
         $query = User::select('*');
-       // return  success($query) ;
+       // return  $this->successResponse($query) ;
         ($request->type) ? $query->whereType($request->type) : $query;
 
         return Paginator::process('users', $request, $query,
@@ -264,28 +264,28 @@ class UsersController extends Controller
         }
         if (!$user->remove($request->reason)) {
 
-            return error(System::ERROR_OPERATION_FAILED, 'Cannot remove user.');
+            return $this->errorResponse(System::ERROR_OPERATION_FAILED, 'Cannot remove user.');
         }
 
         $user = User::find($user->id);
         if ($user) Log::log('user\remove', $user);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function restore(Request $request, User $user)
     {
 
-        if (!can('edit_users')) return error(System::HTTP_UNAUTHORIZED);
+        if (!can('edit_users')) return $this->errorResponse(System::HTTP_UNAUTHORIZED);
 
         if (!$user->restore()) {
 
-            return error(System::ERROR_OPERATION_FAILED, 'Cannot restore user.');
+            return $this->errorResponse(System::ERROR_OPERATION_FAILED, 'Cannot restore user.');
         }
 
         Log::log('user\restore', $user);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function setAccess(Request $request, User $user)
@@ -293,9 +293,9 @@ class UsersController extends Controller
         if (! Gate::allows('edit_users')) {
             abort(403);
         }
-        $user->access = $request->all();   
+        $user->access = $request->all();
         $user->save();
-        return success($user);
+        return $this->successResponse($user);
     }
 
 

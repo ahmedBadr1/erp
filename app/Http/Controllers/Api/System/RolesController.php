@@ -42,7 +42,7 @@ class RolesController extends Controller {
 
     public function roles(Request $request) {
 
-//        if (!can('access_roles')) return error(403);
+//        if (!can('access_roles')) return $this->errorResponse(403);
 
         $roles = Role::select('id', 'name')->orderBy('name')->pluck('name', 'id')->toArray();
 
@@ -50,16 +50,16 @@ class RolesController extends Controller {
 
         $permissionsGroups = self::permissionsGroups();
 
-        return success(['roles' => $roles, 'permissions' => $permissions, 'permissions_groups' => $permissionsGroups]);
+        return $this->successResponse(['roles' => $roles, 'permissions' => $permissions, 'permissions_groups' => $permissionsGroups]);
     }
 
     public function get(Request $request, Role $role) {
 
-//        if (!can('show_roles')) return error(403);
+//        if (!can('show_roles')) return $this->errorResponse(403);
 
         $permissions = $role->permissions()->pluck('name', 'id')->toArray();
 
-        return success(['permissions' => $permissions]);
+        return $this->successResponse(['permissions' => $permissions]);
     }
 
     public function put(Request $request, Role $role = null) {
@@ -87,7 +87,7 @@ class RolesController extends Controller {
       //   Log::log(($old) ? 'role\edit' : 'role\add', $role, $old);
 
         Artisan::call('cache:clear');
-        return success($role->getAttributes());
+        return $this->successResponse($role->getAttributes());
     }
 
     public function delete(Request $request, Role $role) {
@@ -96,7 +96,7 @@ class RolesController extends Controller {
             abort(403);
         }
 
-        if ($role->users()->count() > 0) return error(1005);
+        if ($role->users()->count() > 0) return $this->errorResponse(1005);
 
         $old = ($role) ? $role->getAttributes() : null;
 
@@ -106,7 +106,7 @@ class RolesController extends Controller {
 
       //  Activity::log('role/delete', $role, $old);
 
-        return success();
+        return $this->successResponse();
     }
 
     public function user(Request $request, User $user) {
@@ -122,7 +122,7 @@ class RolesController extends Controller {
 //        $user->setUserAccessAllPermissions();//to set by query
 //        $userAccessPermissions = $user->getUserAccessAllPermissions();
 
-        return success(['roles' => $roles, 'role_permissions' => $rolePermissions, 'direct_permissions' => $directPermissions]);
+        return $this->successResponse(['roles' => $roles, 'role_permissions' => $rolePermissions, 'direct_permissions' => $directPermissions]);
     }
 
     public function sync(Request $request, User $user) {
@@ -137,6 +137,6 @@ class RolesController extends Controller {
 
       //  Log::log('role/sync', $user);
 
-        return success();
+        return $this->successResponse();
     }
 }

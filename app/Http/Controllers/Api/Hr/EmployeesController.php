@@ -49,7 +49,7 @@ class EmployeesController extends Controller
         $joptitles = JopTitlesresources::collection(JopTitle::all()) ;
         $departments = Department::select('id','name')->pluck('id','name');
         $statuses = Status::where('type','jop')->pluck('id','name');
-        return success(['joptitles'=>$joptitles , 'departments' => $departments , 'statuses'=>$statuses]);
+        return $this->successResponse(['joptitles'=>$joptitles , 'departments' => $departments , 'statuses'=>$statuses]);
     }
 
     /**
@@ -80,7 +80,7 @@ class EmployeesController extends Controller
 //            $employee->update($input) ;
             $employee->fill($input);
         $employee->save();
-        return success(true);
+        return $this->successResponse(true);
     }
 
     /**
@@ -92,7 +92,7 @@ class EmployeesController extends Controller
     public function show(Employee $employee)
     {
         $employeeData = new EmployeesResource($employee);
-        return success($employeeData);
+        return $this->successResponse($employeeData);
     }
 
     /**
@@ -106,7 +106,7 @@ class EmployeesController extends Controller
         $joptitles = JopTitlesresources::collection(JopTitle::all()) ;
         $departments = Department::select('id','name')->pluck('id','name');
         $statuses = Status::where('type','jop')->pluck('id','name');
-        return success(['joptitles'=>$joptitles , 'departments' => $departments , 'statuses'=>$statuses]);
+        return $this->successResponse(['joptitles'=>$joptitles , 'departments' => $departments , 'statuses'=>$statuses]);
     }
 
 
@@ -120,10 +120,10 @@ class EmployeesController extends Controller
     {
         if (!$employee){
 
-            return error(403,'Employee Can\'t be Deleted');
+            return $this->errorResponse(403,'Employee Can\'t be Deleted');
         }
         $employee->delete();
 
-        return success('Employee Deleted Successfully');
+        return $this->successResponse('Employee Deleted Successfully');
     }
 }

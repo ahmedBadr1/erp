@@ -19,7 +19,7 @@ class EntriesController extends Controller
 
     public function index(){
        $transactions = Transaction::with('entries')->paginate(10);
-       return success($transactions);
+       return $this->successResponse($transactions);
     }
 
     public function list(ListRequest $request)
@@ -33,11 +33,11 @@ class EntriesController extends Controller
 
     public function create(){
         $accounts = Account::with(['category'=> fn($q)=>$q->select('id','name')])->get(['id','name','type']);
-        return success($accounts);
+        return $this->successResponse($accounts);
     }
      public function store(Request $request)
         {
-//            return success($request->all());
+//            return $this->successResponse($request->all());
             $data = $request->validate([
                 'description' => 'required',
                 'date' => 'required|date',
