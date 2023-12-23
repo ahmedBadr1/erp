@@ -30,6 +30,7 @@ class AccountResource extends JsonResource
 //            'currency_id' => $this->currency_id,
 //            'status_id' => $this->status_id,
             'entries' =>  EntryResource::collection($this->whenLoaded('entries')),
+            'transactions' =>  TransactionResource::collection($this->whenLoaded('transactions')),
             'currency' =>  new CurrencyResource($this->whenLoaded('currency')),
             'category' =>  new AccCategoryResource($this->whenLoaded('category')),
             'status' =>  new CurrencyResource($this->whenLoaded('status')),

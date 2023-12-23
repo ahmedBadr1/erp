@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Accounting;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListRequest;
+use App\Http\Resources\Accounting\TransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
@@ -45,6 +46,11 @@ class TransactionController extends ApiController
     public function create(){
         $accounts = Account::with(['category'=> fn($q)=>$q->select('id','name')])->get(['id','name','type']);
         return $this->successResponse($accounts);
+    }
+
+    public function show( Request $request, $id){
+        $transaction = Transaction::with('entries.account')->first();
+        return $this->successResponse(new  TransactionResource($transaction));
     }
      public function store(Request $request)
         {

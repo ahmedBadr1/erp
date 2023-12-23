@@ -85,13 +85,14 @@ class AccountsController extends ApiController
 
     public function show(Request $request , $code)
     {
-        $account = Account::with(['entries','category'])
+        $account = Account::with(['entries.transaction','transactions','category'])
             ->withSum(['entries as credit_sum' => function ($query) {
                 $query->where('locked',false)->where('post',false)->where('credit', true);}],'amount')
             ->withSum(['entries as debit_sum' => function ($query) {
                 $query->where('locked',false)->where('post',false)->where('credit', false);}],'amount')
             ->where('code',$code)
             ->firstOrFail();
+
      return $this->successResponse(new AccountResource($account));  ;
     }
 

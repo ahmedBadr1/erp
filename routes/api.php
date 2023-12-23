@@ -85,6 +85,18 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');
             });
 
+            Route::group([
+                'prefix' => 'transactions',
+                'as' => 'transactions.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
+                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
+            });
+
+
             Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
             Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
 

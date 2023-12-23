@@ -43,8 +43,8 @@ class User extends AuthModel
     ];
 
 
-    public function role()
-    {
-        return $this->hasMany(Role::class)->latest()->limit(1);
-    }
+//    public function role()
+//    {
+//        return $this->hasMany(Role::class)->latest()->limit(1);
+//    }
 }

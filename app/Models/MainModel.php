@@ -20,11 +20,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Znck\Eloquent\Traits\BelongsToThrough;
 
 class MainModel extends Model implements HasMedia
 {
     use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
-    use InteractsWithMedia;
+    use InteractsWithMedia , BelongsToThrough;
 
     public static function getTableName()
     {

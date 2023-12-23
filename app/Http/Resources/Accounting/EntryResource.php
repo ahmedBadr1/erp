@@ -19,6 +19,7 @@ class EntryResource extends JsonResource
             'credit' => $this->credit,
             'amount' => $this->amount,
             'post' => $this->post,
+            'locked' => $this->locked,
             'created_at' => $this->created_at->format('d/m/Y'),
         ];
     }

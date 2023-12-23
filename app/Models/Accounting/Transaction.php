@@ -28,6 +28,11 @@ class Transaction extends MainModelSoft
         return $this->hasMany(Entry::class);
     }
 
+    public function accounts()
+    {
+        return $this->hasManyThrough(Account::class,Entry::class);
+    }
+
 
     public function getActivitylogOptions(): LogOptions
     {

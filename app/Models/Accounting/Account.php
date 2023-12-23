@@ -45,6 +45,11 @@ class Account extends MainModelSoft
         return $this->hasMany(Entry::class);
     }
 
+    public function transactions()
+    {
+        return $this->belongsToThrough(Transaction::class,Entry::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
