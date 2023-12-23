@@ -14,6 +14,8 @@ class AccCategory extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
+//    protected $table = 'acc_categories';
+
     public static $types = ['account','product'];
 
     protected $fillable = ['code','name','slug','credit','parent_id','active','usable','system'];
@@ -23,20 +25,20 @@ class AccCategory extends MainModelSoft
         return $this->hasMany(Account::class)->withTrashed();
     }
 
-    public function lastChild()
+    public function lastAccount()
     {
         return $this->hasOne(Account::class)->latestOfMany();
     }
 
-    public function descendantCategories()
-    {
-        return $this->hasManyOfDescendants(AccCategory::class,'parent_id');
-    }
-
-    public function childrens()
-    {
-        return $this->hasMany(AccCategory::class,'parent_id');
-    }
+//    public function descendantCategories()
+//    {
+//        return $this->hasManyOfDescendants(__CLASS__,'parent_id');
+//    }
+//
+//    public function childrens()
+//    {
+//        return $this->hasMany(__CLASS__,'parent_id');
+//    }
 
     public function products()
     {
@@ -72,7 +74,7 @@ class AccCategory extends MainModelSoft
                 if ($parent->accounts_count > 0 ){
                     return false ;
                 }
-                $model->code =$parent->code .  str_pad( ((int) $parent->children_count + $parent->accounts_count + 1 ),2, '0', STR_PAD_LEFT);
+                $model->code =$parent->code .  str_pad( ((int)( $parent->children_count ?? 0) + $parent->accounts_count + 1 ),2, '0', STR_PAD_LEFT);
                 $model->credit = $parent->credit;
                 $model->usable = 1;
             }

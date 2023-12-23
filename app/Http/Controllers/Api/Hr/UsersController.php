@@ -44,7 +44,7 @@ class UsersController extends ApiController
     public function index( )
     {
         if (auth('api')->user()->cannot('users.index')) {
-            return $this->deniedResponse(null,null,406);
+            return $this->deniedResponse(null,null,403);
         }
 //        return $this->deniedResponse([],[],401);
         $users = User::with('roles')

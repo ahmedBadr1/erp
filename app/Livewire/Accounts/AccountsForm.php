@@ -30,7 +30,7 @@ class AccountsForm extends  BasicForm
     #[Rule('required|boolean')]
     public $active = true;
 
-    #[Rule('required|exists:categories,id')]
+    #[Rule('required|exists:acc_categories,id')]
     public $category_id ;
 
     #[Rule('required|exists:currencies,id')]

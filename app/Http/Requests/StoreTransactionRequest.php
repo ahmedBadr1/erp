@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Accounting;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AccountRequest extends FormRequest
+class StoreTransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,14 +21,14 @@ class AccountRequest extends FormRequest
      */
     public function rules(): array
     {
+
         return [
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'acc_category_id' => 'required|exists:acc_categories,id',
-            'currency_id' => 'required|exists:currencies,id',
-            'opening_balance' => 'nullable|numeric|gt:0',
-            'opening_balance_date' => 'nullable|date',
-            'active' => 'required|boolean',
+           'due' => 'nullable|date',
+            'description' =>  'required|string',
+            'entries' => 'required|array',
+            'entries.*.account_id' => ['required', 'exists:accounts,id',],
+            'entries.*.amount' => ['required', 'numeric', 'gt:0'],
+            'entries.*.credit' => ['required', 'boolean']
         ];
     }
 }

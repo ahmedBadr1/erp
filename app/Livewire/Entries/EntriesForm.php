@@ -24,8 +24,6 @@ class EntriesForm extends BasicForm
     #[Rule('nullable|date')]
     public $due = '';
 
-//    #[Rule('required|color')]
-//    public $color = '';
 
     #[Rule('nullable|numeric')]
     public $credit_limit = '';
@@ -79,7 +77,7 @@ class EntriesForm extends BasicForm
     public function save()
     {
         $validated = $this->validate();
-//        dd($validated);
+
         if ($this->entry) {
             $this->entry->update($validated);
             $this->toast(__('message.updated', ['model' => __('names.entry')]));

@@ -80,9 +80,13 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             ], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
+                Route::post('/categories', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'categories'])->name('categories');
+                Route::post('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
+
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
-                Route::post('/edit/{user_id}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'edit'])->name('edit');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'store'])->name('store');
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');
+                Route::patch('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'update'])->name('update');
             });
 
             Route::group([
@@ -92,6 +96,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'list'])->name('list');
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
+                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
                 Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
                 Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
             });
@@ -100,10 +106,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
             Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
             Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
 
-            Route::post('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
 
-            Route::post('/cash-in', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashIn'])->name('cash-in');
-            Route::post('/cash-out', [\App\Http\Controllers\Admin\Accounting\TransactionsController::class, 'cashOut'])->name('cash-out');
 
             Route::group([
                 'prefix' => 'entries',
