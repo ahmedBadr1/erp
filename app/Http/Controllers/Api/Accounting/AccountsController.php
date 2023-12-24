@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Accounting;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\AccountRequest;
+use App\Http\Requests\Accounting\DuplicateRequest;
 use App\Http\Requests\ListRequest;
+use App\Http\Requests\TypeRequest;
 use App\Http\Requests\UpdateAccountRequest;
 use App\Http\Resources\Accounting\AccCategoryResource;
 use App\Http\Resources\Accounting\AccountChartResource;
@@ -16,6 +18,7 @@ use App\Models\Accounting\Account;
 use App\Models\System\Currency;
 use App\Services\Accounting\AccountService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -34,26 +37,9 @@ class AccountsController extends ApiController
         $this->service = new AccountService();
     }
 
-    public function index()
-    {
-        if (auth('api')->user()->cannot('accounting.accounts.index')) {
-            return $this->deniedResponse(null, null, 403);
-        }
 
-        $tree = AccCategory::tree()->withCount('children')->with('accounts')->get()->toTree();
-        return $this->successResponse(['tree' => AccCategoryResource::collection($tree)]);
-    }
 
-    public function list(Request $request)
-    {
-        if (auth('api')->user()->cannot('accounting.accounts.index')) {
-            return $this->deniedResponse(null, null, 403);
-        }
-        $accounts = Account::active()->pluck('name', 'code')->toArray();
-        return $this->successResponse(['accounts' => $accounts]);
-    }
-
-    public function categories(Request $request)
+    public function index(Request $request)
     {
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
@@ -70,14 +56,52 @@ class AccountsController extends ApiController
         return $this->successResponse(['accounts' =>AccountChartResource::collection($accounts)]);
     }
 
-    public function create(Request $request)
+    public function list(Request $request)
+    {
+        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        $accounts = Account::active()->pluck('name', 'code')->toArray();
+        return $this->successResponse(['accounts' => $accounts]);
+    }
+
+    public function tree()
+    {
+        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        $tree = AccCategory::tree()->withCount('children')->with('accounts')->get()->toTree();
+        return $this->successResponse(AccCategoryResource::collection($tree));
+    }
+
+    public function categories(Request $request)
+    {
+        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        $accounts = AccCategory::active()->pluck('name', 'code')->toArray();
+        return $this->successResponse(['accounts' => $accounts]);
+    }
+
+    public function category(Request $request,$code)
+    {
+        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        $category = AccCategory::active()->where('code', $code)->firstOrFail() ;
+        return $this->successResponse(isset($category) ? new AccCategoryResource($category) : null);
+    }
+
+
+
+        public function create(Request $request)
     {
         if (auth('api')->user()->cannot('accounting.accounts.create')) {
             return $this->deniedResponse(null, null, 403);
         }
 
-        if ($request->has('id')) {
-            $account = Account::with('category', 'currency')->whereId($request->get('id'))->first();
+        if ($request->has('code')) {
+            $account = Account::with('category', 'currency')->where('code',$request->get('code'))->firstorFail();
         }
 
         $categories = AccCategory::isLeaf()->active()->pluck('name', 'id')->toArray();
@@ -147,33 +171,36 @@ class AccountsController extends ApiController
         return $this->successResponse(null, __('message.updated', ['model' => __('names.account')]));
     }
 
-    public function duplicateCategory($id)
+    public function duplicate(DuplicateRequest $request )
     {
-        $category = AccCategory::find($id);
-        AccCategory::create([
-            'name' => $category->name . ' copy',
-            'slug' => Str::slug($category->name . ' copy'),
-            'credit' => $category->credit,
-            'parent_id' => $category->parent_id,
-            'system' => 0,
-            'usable' => 1
-        ]);
-        $this->successResponse(__('message.created', ['model' => __('Category')]));
+        $data = $request->validated();
+        if ($data['type'] == 'account'){
+
+            $account = Account::where('code',$data['account'])->first();
+            Account::create([
+                'name' => $account->name . ' copy',
+                'credit' => $account->credit,
+                'acc_category_id' => $account->acc_category_id,
+                'currency_id' => $account->currency_id,
+                'description' => $account->description,
+                'system' => 0,
+            ]);
+            return $this->successResponse(null,__('message.created', ['model' => __('Account')]));
+        }else{
+            $category = AccCategory::where('code',$data['category'])->first();
+            AccCategory::create([
+                'name' => $category->name . ' copy',
+                'slug' => Str::slug($category->name . ' copy'),
+                'credit' => $category->credit,
+                'parent_id' => $category->parent_id,
+                'system' => 0,
+                'usable' => 1
+            ]);
+            return $this->successResponse([],'category.created');
+        }
     }
 
-    public function duplicateAccount($id)
-    {
-        $account = Account::find($id);
-        Account::create([
-            'name' => $account->name . ' copy',
-            'credit' => $account->credit,
-            'category_id' => $account->category_id,
-            'currency_id' => $account->currency_id,
-            'description' => $account->description,
-            'system' => 0,
-        ]);
-        $this->successResponse(__('message.created', ['model' => __('Account')]));
-    }
+
 
     public function journal(ListRequest $request)
     {

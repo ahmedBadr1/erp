@@ -71,9 +71,9 @@ class AccCategory extends MainModelSoft
         {
             if (!empty($model->parent_id)){
                 $parent = AccCategory::withCount('children','accounts','ancestors')->find($model->parent_id);
-                if ($parent->accounts_count > 0 ){
-                    return false ;
-                }
+//                if ($parent->accounts_count > 0 ){
+//                    return false ;
+//                }
                 $model->code =$parent->code .  str_pad( ((int)( $parent->children_count ?? 0) + $parent->accounts_count + 1 ),2, '0', STR_PAD_LEFT);
                 $model->credit = $parent->credit;
                 $model->usable = 1;

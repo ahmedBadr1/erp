@@ -21,7 +21,7 @@ class AccountResource extends JsonResource
             'credit' => $this->credit,
             'description' => $this->description,
             'opening_balance' => $this->opening_balance,
-            'opening_balance_date' => $this->opening_balance_date,
+            'opening_balance_date' => $this->opening_balance_date,//->format('m/d/Y'),
             'system' => $this->system,
             'active' => $this->active,
             'credit_sum' =>(int)  $this->credit_sum ?? 0 ,

@@ -19,6 +19,7 @@ class Account extends MainModelSoft
     protected $fillable = ['code', 'name', 'credit', 'description', 'opening_balance', 'opening_balance_date', 'system', 'active', 'acc_category_id', 'currency_id', 'status_id'];
 
     protected array $TYPES = ['credit', 'debit'];
+    protected $casts = ['opening_balance_date' => 'date'];
 
     public function category()
     {

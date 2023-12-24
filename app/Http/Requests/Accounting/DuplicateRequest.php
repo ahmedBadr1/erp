@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Accounting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateAccountRequest extends FormRequest
+class DuplicateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class UpdateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'description' => 'required|string',
-            'opening_balance' => 'nullable|numeric|gt:0',
-            'opening_balance_date' => 'nullable|date_format:d/m/Y',
+            'type' => ['required','in:account,category'],
+            'account'  => 'required_if:type,account|exists:accounts,code',
+            'category'  => 'required_if:type,category|exists:acc_categories,code',
+
         ];
     }
 }

@@ -81,7 +81,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
                 Route::post('/categories', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'categories'])->name('categories');
-                Route::post('/category/{slug}', [\App\Http\Controllers\Admin\Accounting\AccountsController::class, 'category'])->name('category.show');
+                Route::post('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'category'])->name('category.show');
 
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'store'])->name('store');
@@ -101,6 +101,9 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
                 Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
             });
+
+            Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('tree');
+            Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'duplicate'])->name('duplicate');
 
 
             Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
