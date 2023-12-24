@@ -23,8 +23,8 @@ class StoreTransactionTypeRequest extends FormRequest
     {
         return [
             'type' => 'required|in:ci,co',
-            'credit_account' => 'required|exists:accounts,id',
-            'debit_account' => 'required|exists:accounts,id',
+            'credit_account' => 'required|exists:accounts,code',
+            'debit_account' => 'required|exists:accounts,code',
             'amount' => 'required|numeric|gt:0',
             'description' => 'nullable|string',
         ];

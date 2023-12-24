@@ -8,7 +8,9 @@ use App\Models\System\Attachment;
 use App\Policies\System\AddressPolicy;
 use App\Policies\System\AttachmentPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
+use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -32,6 +34,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::before(function ($user, $ability) {
             return $user->id === 1 ? true : null;
         });
+
+//        Passport::tokensExpireIn(now()->addDays(15));
+//        Passport::refreshTokensExpireIn(now()->addDays(30));
+//        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
     }
 }

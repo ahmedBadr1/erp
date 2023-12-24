@@ -33,7 +33,7 @@ class TransactionController extends ApiController
 
     public function index()
     {
-        $transactions = Transaction::with('entries.account')->get();
+        $transactions = Transaction::with('entries.account')->latest()->get();
         return $this->successResponse(TransactionResource::collection($transactions));
     }
 
@@ -110,25 +110,29 @@ class TransactionController extends ApiController
     {
         $data = $request->validated();
 
-        DB::transaction(function () use ($data) {
+        $credit_account = Account::where('code',$data['credit_account'])->value('id');
+        $debit_account = Account::where('code',$data['debit_account'])->value('id');
+        if (!$credit_account || !$debit_account){
+            return $this->errorResponse('Accounts Not Fount',404);
+        }
+        DB::transaction(function () use ($data , $credit_account , $debit_account) {
             $transaction = Transaction::create([
                 'amount' => $data['amount'],
-                'description' => $data['description'] ?? $data['type'] == 'co' ? 'cash out' : 'cash in',
+                'description' => $data['description'] ?? (($data['type'] == 'ci' )? 'cash in' : 'cash out'),
                 'type' => $data['type'] ,
                 'due' => now(),//$validated['due']
                 'user_id' => auth('api')->id()
             ]);
             Entry::create([
                 'amount' => $data['amount'],
-                'credit' => 1,
-                'account_id' => $data['credit_account'],
+                'credit' => 1  ,
+                'account_id' =>$debit_account ,
                 'transaction_id' => $transaction->id
             ]);
-
             Entry::create([
                 'amount' => $data['amount'],
-                'credit' => 0,
-                'account_id' => $data['debit_account'],
+                'credit' => 0 ,
+                'account_id' => $credit_account ,
                 'transaction_id' => $transaction->id
             ]);
         });

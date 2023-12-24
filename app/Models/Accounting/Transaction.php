@@ -13,7 +13,7 @@ class Transaction extends MainModelSoft
 {
     use  LogsActivity;
 
-    protected $fillable = ['amount', 'type', 'description','due','user_id'];
+    protected $fillable = ['code','amount', 'type', 'description','due','user_id'];
 
     public static $expenses = ['cost of goods','rent','salary','Operating','Extraordinary','Accrued','Prepaid','Fixed'];
 
@@ -42,4 +42,17 @@ class Transaction extends MainModelSoft
             ->logOnlyDirty()
             ->useLogName('system');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $transactionCount = Transaction::where('type',$model->type)->count();
+//            if ($transaction) {
+//                return false;
+//            }
+            $model->code = $model->type .'-'. str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+        });
+    }
+
 }
