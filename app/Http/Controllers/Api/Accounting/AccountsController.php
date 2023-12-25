@@ -175,7 +175,6 @@ class AccountsController extends ApiController
     {
         $data = $request->validated();
         if ($data['type'] == 'account'){
-
             $account = Account::where('code',$data['account'])->first();
             Account::create([
                 'name' => $account->name . ' copy',
@@ -188,15 +187,24 @@ class AccountsController extends ApiController
             return $this->successResponse(null,__('message.created', ['model' => __('Account')]));
         }else{
             $category = AccCategory::where('code',$data['category'])->first();
+            $newName = $category->name ;
+            $slug = Str::slug($newName);
+            $counter = 1;
+            do {
+                $newName = $category->name .' ('. $counter .')';
+                $slug = Str::slug($newName);
+                $counter++;
+            }
+            while (AccCategory::where('name', $newName)->orWhere('slug', $slug)->exists()) ;
             AccCategory::create([
-                'name' => $category->name . ' copy',
-                'slug' => Str::slug($category->name . ' copy'),
+                'name' =>$newName,
+                'slug' =>  Str::slug($slug),
                 'credit' => $category->credit,
                 'parent_id' => $category->parent_id,
                 'system' => 0,
                 'usable' => 1
             ]);
-            return $this->successResponse([],'category.created');
+            return $this->successResponse(null,__('message.created', ['model' => __('Category')]));
         }
     }
 

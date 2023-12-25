@@ -52,9 +52,9 @@ class TransactionController extends ApiController
         return $this->successResponse($accounts);
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $code)
     {
-        $transaction = Transaction::with('entries.account')->first();
+        $transaction = Transaction::with('entries.account','user')->where('code',$code)->firstOrFail();
         return $this->successResponse(new  TransactionResource($transaction));
     }
 
@@ -88,10 +88,11 @@ class TransactionController extends ApiController
                 'user_id' => auth('api')->id()
             ]);
             foreach ($data['entries'] as $ent) {
+                $account = Account::where('code',$ent['account_id'])->value('id');
                 Entry::create([
                     'amount' => $ent['amount'],
                     'credit' => $ent['credit'],
-                    'account_id' => $ent['account_id'],
+                    'account_id' => $account,
                     'transaction_id' => $transaction->id
                 ]);
             }

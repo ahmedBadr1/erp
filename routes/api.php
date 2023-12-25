@@ -99,7 +99,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
                 Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
                 Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
-                Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
             });
 
             Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('tree');

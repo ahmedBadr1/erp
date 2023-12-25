@@ -26,7 +26,7 @@ class StoreTransactionRequest extends FormRequest
            'due' => 'nullable|date',
             'description' =>  'required|string',
             'entries' => 'required|array',
-            'entries.*.account_id' => ['required', 'exists:accounts,id',],
+            'entries.*.account_id' => ['required', 'exists:accounts,code',],
             'entries.*.amount' => ['required', 'numeric', 'gt:0'],
             'entries.*.credit' => ['required', 'boolean']
         ];
