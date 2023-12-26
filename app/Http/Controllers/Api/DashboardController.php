@@ -63,6 +63,7 @@ class DashboardController extends ApiController
         $user =  \auth('api')->user();
         $data = [];
         $data['message'] = 'welcome to our app';
+        $data['url'] = '/charts';
         $user->notify(new MainNotification($data));
         return $this->successResponse(NotificationResource::collection($user->unreadNotifications()->limit(5)->get()));
     }

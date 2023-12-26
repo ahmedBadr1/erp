@@ -18,13 +18,14 @@ class SendEmailJob implements ShouldQueue
 //    public $tries = 4;
     public $retryAfter = 30;
 
-    protected $data ;
+    protected $data ,$mail;
     /**
      * Create a new job instance.
      */
-    public function __construct($data)
+    public function __construct($data,$mail)
     {
        $this->data = $data;
+        $this->mail = $mail;
     }
 
     /**
@@ -32,7 +33,8 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $email = new VerificationMail($this->data);
+        $mail = "App\Mail\\" . $this->mail ;
+        $email = new $mail($this->data);
         Mail::to($this->data['email'])->send($email);
     }
 

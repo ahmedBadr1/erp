@@ -13,13 +13,11 @@ class InvitationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    private string $name ;
-    private  $url ;
+    private  $data ;
 
-    public function __construct($name , $url )
+    public function __construct($data  )
     {
-        $this->name = $name;
-        $this->url = $url;
+        $this->data = $data;
     }
 
     /**
@@ -40,8 +38,7 @@ class InvitationMail extends Mailable
         return new Content(
             view: 'emails.invitation_email',
             with  :[
-                'name' => $this->name,
-                'url' => $this->url
+                'data' => $this->data,
                 ]
         );
     }

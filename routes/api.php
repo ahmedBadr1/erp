@@ -26,7 +26,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     Route::group(['middleware' => ['auth:api',]], function () {
 
-        Route::post('invite', [\App\Http\Controllers\Api\Hr\UsersController::class, 'process'])->name('process');
+        Route::post('invite', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invite'])->name('invite');
+        Route::post('invitations', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invitations'])->name('invitations');
 
         Route::post('logout', [\App\Http\Controllers\Api\DashboardController::class, 'logout']);
 

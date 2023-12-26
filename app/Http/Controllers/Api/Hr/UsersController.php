@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Hr;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInveitationRequest;
+use App\Http\Resources\System\InvitationResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\SendEmailJob;
 use App\Mail\InvitationMail;
 use App\Models\System\Invitation;
 use App\Models\User;
@@ -21,7 +23,6 @@ use Spatie\Permission\Models\Role;
 
 class UsersController extends ApiController
 {
-    use SoftDeletes;
 
     public function __construct()
     {
@@ -194,31 +195,49 @@ class UsersController extends ApiController
         return $this->successResponse('success','User Deleted Successfully');
     }
 
-    public function process(StoreInveitationRequest $request)
+    public function invite(StoreInveitationRequest $request)
     {
-        //   dd($request->all());
-        $invitation = new Invitation($request->all());
-        $invitation->generateInvitationToken();
-        $invitation->sent_by = auth()->id();
-        $invitation->save();
-        $link = $invitation->getLink();
-        try{
-            Mail::to($invitation->email)->send(new InvitationMail(auth()->user()->name, $link));
-        }catch (\Exception $exception){
-            return $this->errorResponse(200,'Faild to send Mail');
-        }
-        return $this->successResponse($invitation);
-    }
+        $data = [
+            'email' => $request->get('email'),
+            'sent_by' => auth('api')->id(),
+            'role_id' => $request->get('role_id'),
+            'token' => $this->generateInvitationToken($request->get('email')),
+            'expire_at' => now()->addHours(24)
+        ];
 
-    public function invitations(): \Illuminate\Http\JsonResponse
-    {
-//        activity()
+        //        activity()
 //            ->causedBy(auth()->user())
 //            ->performedOn(email)
 //            ->event('invited')
 //            ->log('The user has invited by '.);
-        $invitations = Invitation::with(['sender'=> fn($q) => $q->select('id','name')])->orderBy('created_at', 'desc')->get();
 
-        return $this->successResponse($invitations);
+        $invitation = Invitation::create($data);
+        $data['link'] = $invitation->getLink();
+        $data['user'] = auth('api')->user()->name;
+        try{
+            dispatch(new SendEmailJob($data,'InvitationMail'));
+//            Mail::to($invitation->email)->send(new InvitationMail(auth('api')->user()->name, $link));
+        }catch (\Exception $exception){
+            return $this->errorResponse('Failed to send Mail',200);
+        }
+        return $this->successResponse( null,'Invitation Sent Successfully');
+    }
+
+    private function generateInvitationToken($email)
+    {
+        return md5(rand(0, 9) . $email . time());
+    }
+
+    public function invitations(Request $request)//: \Illuminate\Http\JsonResponse
+    {
+//    return $this->successResponse(!empty($request->get('registered')) );
+        $invitations = Invitation::with(['sender'=> fn($q) => $q->select('id','name')])
+            ->when($request->has('expired') && empty($request->get('expired')),fn($q)=>$q->where('expire_at', '>',now()))
+            ->when($request->has('expired') && !empty($request->get('expired')),fn($q)=>$q->where('expire_at', '<',now()))
+            ->when($request->has('registered') && empty($request->get('registered')),fn($q)=>$q->where('registered_at', null))
+            ->when($request->has('registered') && !empty($request->get('registered')),fn($q)=>$q->whereNotNull('registered_at'))
+            ->latest()->get();
+
+        return $this->successResponse(InvitationResource::collection($invitations));
     }
 }

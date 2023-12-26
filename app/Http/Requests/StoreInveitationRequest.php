@@ -22,7 +22,8 @@ class StoreInveitationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|unique:invitations|unique:users'
+            'email' => 'required|string|max:255|email|unique:invitations|unique:users',
+             'role_id'  => ['nullable', 'exists:roles,id'],
         ];
     }
 
@@ -35,7 +36,8 @@ class StoreInveitationRequest extends FormRequest
     {
         return [
             'email.unique:invitations' => 'Invitation with this email address already requested.',
-            'email.unique:users' => ' User with this email address already existed.'
+            'email.unique:users' => ' User with this email address already existed.',
+                'role_id.exists:roles' => 'Role Does not existed.'
 
         ];
     }

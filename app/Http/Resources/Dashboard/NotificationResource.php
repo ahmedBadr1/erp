@@ -4,6 +4,7 @@ namespace App\Http\Resources\Dashboard;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class NotificationResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class NotificationResource extends JsonResource
             'id' => $this->id,
             'from' => $this->data['from'] ?? null,
             'title' => $this->data['title'] ?? null,
-            'message' => $this->data['message'] ?? null,
+            'message' => Str::limit($this->data['message'],30) ?? null,
             'url' => $this->data['url'] ?? null,
             'created_at' => $this->created_at->diffForHumans()
 

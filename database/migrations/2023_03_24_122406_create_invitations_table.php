@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('invitations', function (Blueprint $table) {
             $table->increments('id');
             $table->string('email');
-            $table->string('invitation_token', 50)->nullable();
+            $table->string('token', 64)->nullable();
             $table->timestamp('expire_at')->nullable();
             $table->foreignIdFor(\Spatie\Permission\Models\Role::class)->nullable();
             $table->foreignId('sent_by')->references('id')->on('users');
