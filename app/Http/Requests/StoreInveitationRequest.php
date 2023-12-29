@@ -23,7 +23,7 @@ class StoreInveitationRequest extends FormRequest
     {
         return [
             'email' => 'required|string|max:255|email|unique:invitations|unique:users',
-             'role_id'  => ['nullable', 'exists:roles,id'],
+             'role'  => ['required', 'exists:roles,name'],
         ];
     }
 

@@ -84,7 +84,7 @@ class RolesController extends ApiController
     public function store(Request $request)
     {
         //dd($request);
-        if (auth()->user()->cannot('roles.create')) {
+        if (auth('api')->user()->cannot('roles.create')) {
             return $this->errorResponse('Unauthorized, you don\'t have access.');
         }
 

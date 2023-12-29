@@ -19,8 +19,14 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
     Route::group(['middleware' => ['guest:api']], function () {
         Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login'])->name('login');
         Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
-        Route::post('reg', [\App\Http\Controllers\Api\AuthController::class, 'reg']);
+        Route::post('check', [\App\Http\Controllers\Api\AuthController::class, 'check']);
         Route::get('docs', [\App\Http\Controllers\Api\AuthController::class, 'docs'])->name('docs');
+
+        Route::post('forget-password', [\App\Http\Controllers\Api\AuthController::class, 'forget']);
+        Route::post('check/password', [\App\Http\Controllers\Api\AuthController::class, 'checkPassword']);
+
+        Route::post('reset-password', [\App\Http\Controllers\Api\AuthController::class, 'reset']);
+
 
     });
 
@@ -28,6 +34,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
         Route::post('invite', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invite'])->name('invite');
         Route::post('invitations', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invitations'])->name('invitations');
+        Route::delete('invitations/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'deleteInvitation'])->name('invitations.delete');
+
 
         Route::post('logout', [\App\Http\Controllers\Api\DashboardController::class, 'logout']);
 

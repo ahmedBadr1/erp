@@ -52,6 +52,7 @@ class ConstantSeeder extends Seeder
                 "sales.invoices",
                 "sales.revenues",
                 "sales.returns",
+                "invitations",
             ];
 
         $permissions = [];

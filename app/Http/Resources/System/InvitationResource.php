@@ -20,7 +20,7 @@ class InvitationResource extends JsonResource
             'email' => $this->email,
             'expire_at' => $this->expire_at?->diffForHumans(),
             'registered_at' => $this->registered_at?->diffForHumans(),
-            'expire' => Carbon::parse($this->expire_at) < Carbon::now() ??  false,
+            'expire' => Carbon::parse($this->expire_at) < Carbon::now() ,
             'sender' => $this->whenLoaded('sender'),
             'role' => $this->whenLoaded('role')
         ];

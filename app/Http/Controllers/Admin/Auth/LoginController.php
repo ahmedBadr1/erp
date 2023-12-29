@@ -7,6 +7,7 @@ use App\Mail\VerificationMail;
 use App\Models\System\Invitation;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Mail;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
+    use AuthenticatesUsers,CanResetPassword;
 
     /**
      * Where to redirect users after login.

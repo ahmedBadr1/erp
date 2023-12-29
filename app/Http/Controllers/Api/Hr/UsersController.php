@@ -197,10 +197,11 @@ class UsersController extends ApiController
 
     public function invite(StoreInveitationRequest $request)
     {
+        $role = Role::findByName( $request->get('role'),'web')?->id ;
         $data = [
             'email' => $request->get('email'),
             'sent_by' => auth('api')->id(),
-            'role_id' => $request->get('role_id'),
+            'role_id' => $role ?? null,
             'token' => $this->generateInvitationToken($request->get('email')),
             'expire_at' => now()->addHours(24)
         ];
@@ -231,7 +232,7 @@ class UsersController extends ApiController
     public function invitations(Request $request)//: \Illuminate\Http\JsonResponse
     {
 //    return $this->successResponse(!empty($request->get('registered')) );
-        $invitations = Invitation::with(['sender'=> fn($q) => $q->select('id','name')])
+        $invitations = Invitation::with(['sender'=> fn($q) => $q->select('id','name'),'role'=> fn($q) => $q->select('id','name')])
             ->when($request->has('expired') && empty($request->get('expired')),fn($q)=>$q->where('expire_at', '>',now()))
             ->when($request->has('expired') && !empty($request->get('expired')),fn($q)=>$q->where('expire_at', '<',now()))
             ->when($request->has('registered') && empty($request->get('registered')),fn($q)=>$q->where('registered_at', null))
@@ -239,5 +240,20 @@ class UsersController extends ApiController
             ->latest()->get();
 
         return $this->successResponse(InvitationResource::collection($invitations));
+    }
+    public function deleteInvitation(Request $request,$id)
+    {
+
+        if (auth('api')->user()->cannot('invitations.delete')) {
+            return $this->errorResponse('Unauthorized, you don\'t have access.');
+        }
+
+
+        $invitation = Invitation::findOrFail($id);
+        if ($invitation->registered_at){
+            return $this->errorResponse('Invitation Already Used',200);
+        }
+        $invitation->delete();
+        return $this->successResponse('success','Invitation Deleted Successfully');
     }
 }
