@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\AccountRequest;
 use App\Http\Requests\Accounting\DuplicateRequest;
+use App\Http\Requests\Accounting\UpdateCategoryRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\TypeRequest;
 use App\Http\Requests\UpdateAccountRequest;
@@ -34,6 +35,8 @@ class AccountsController extends ApiController
         $this->middleware('permission:accounting.accounts.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:accounting.accounts.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accounting.accounts.delete', ['only' => ['destroy']]);
+
+
         $this->service = new AccountService();
     }
 
@@ -90,6 +93,22 @@ class AccountsController extends ApiController
         }
         $category = AccCategory::active()->where('code', $code)->firstOrFail() ;
         return $this->successResponse(isset($category) ? new AccCategoryResource($category) : null);
+    }
+
+    public function updateCategory(UpdateCategoryRequest $request,$code)
+    {
+        $category = AccCategory::where('code', $code)->first();
+        if (!$category){
+            return $this->errorResponse('Category Not Found',404);
+        }
+//        return $request->get('name') ;
+        try {
+            $category->update(['name'=>$request->get('name')])  ;
+        }catch (\Exception  $e){
+            return $this->errorResponse('something went wrong please try again',);
+        }
+        return $this->successResponse(null, __('message.updated', ['model' => __('names.category')]));
+
     }
 
 

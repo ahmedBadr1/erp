@@ -91,6 +91,8 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
                 Route::post('/categories', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'categories'])->name('categories');
                 Route::post('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'category'])->name('category.show');
+                Route::patch('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'updateCategory'])->name('category.update');
+
 
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'store'])->name('store');

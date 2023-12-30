@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('acc_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug')->nullable()->index();
-            $table->string('code')->nullable()->index();
+            $table->string('slug');//->nullable()->index();
+            $table->string('code')->unique()->index();//->nullable()->index();
             $table->boolean('credit');
             $table->foreignId('parent_id')
                 ->nullable()

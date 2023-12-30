@@ -26,7 +26,6 @@ class ListRequest extends FormRequest
             'orderBy'=> "string|nullable",
             'orderDesc' => "boolean|nullable",
             'limit' => "numeric|nullable",
-            'filter' => "numeric|nullable",
             'start_date' => "nullable|date",
             'end_date' => "nullable|date",
         ];

@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ListRequest;
+use App\Http\Resources\Dashboard\NotificationCollection;
 use App\Http\Resources\Dashboard\NotificationResource;
 use App\Notifications\MainNotification;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use  \App\Models\System\Notification;
 
 /**
  * @OA\Put(
@@ -40,38 +45,54 @@ class DashboardController extends ApiController
     public function index()
     {
         $user = \auth()->user();
-        return $this->successResponse($user,'','dashboard goes ere');
+        return $this->successResponse($user, '', 'dashboard goes ere');
     }
 
-    public function notifications()
+    public function notifications(ListRequest $request)
     {
-     //   $notifications = \auth()->user()->notifications();
-        $user =  Auth::guard('api')->user();
-
-        return $this->successResponse(NotificationResource::collection($user->notifications));
+        $notifications = Notification::query()
+            ->where("notifiable_type", 'users')
+            ->where("notifiable_id", Auth::guard('api')->id())
+            ->when($request->get('start_date'), function ($query) use ($request) {
+                $query->where('created_at', '>=', $request->get('start_date'));
+            })
+            ->when($request->get('end_date'), function ($query) use ($request) {
+                $query->where('created_at', '<=', $request->get('start_date'));
+            })
+            ->when($request->get('keywords'), function ($query) use ($request) {
+                $query->where('data', 'like', '%' . $request->get('keywords') . '%');
+            })
+            ->latest()
+            ->paginate($request->get('limit') ?? $this->limit);
+        auth('api')->user()->unreadNotifications->markAsRead();
+        return  new NotificationCollection($notifications);
     }
 
     public function markAsRead()
     {
-        $user =  \auth('api')->user();
+        $user = \auth('api')->user();
         $user->unreadNotifications->markAsRead();
         return $this->successResponse('success');
     }
 
     public function unreadNotifications()
     {
-        $user =  \auth('api')->user();
+        $user = \auth('api')->user();
+//        for ($i = 0; $i < 100; $i++) {
         $data = [];
-        $data['message'] = 'welcome to our app';
-        $data['url'] = '/charts';
-        $user->notify(new MainNotification($data));
+        $data['message'] = 'message '  ;// .$i  ;
+        $data['url'] = '/';
+//        $user->notify(new MainNotification($data));
+//        sleep(1);
+//        }
+
         return $this->successResponse(NotificationResource::collection($user->unreadNotifications()->limit(5)->get()));
     }
 
     public function count()
     {
-        $user =  \auth('api')->user();
-        return $this->successResponse(['count'=> $user->unreadNotifications()->count()]);
+        $user = \auth('api')->user();
+        return $this->successResponse(['count' => $user->unreadNotifications()->count()]);
     }
 
     public function profile()
@@ -85,47 +106,47 @@ class DashboardController extends ApiController
         //  dd($request->all());
         $user = Auth::user();
 
-        $this->validate($request,[
-            'name'=>'required|string',
-            'bio'=> 'nullable|string',
-            'email'=>'required|email',
-            'phone'=>'required|numeric',
-            'address'=> 'nullable|string',
-            'area'=> 'nullable|string',
-            'state'=> 'required',
-            'profile_photo'=> 'nullable|image',
-            'url'=> 'nullable|string',
+        $this->validate($request, [
+            'name' => 'required|string',
+            'bio' => 'nullable|string',
+            'email' => 'required|email',
+            'phone' => 'required|numeric',
+            'address' => 'nullable|string',
+            'area' => 'nullable|string',
+            'state' => 'required',
+            'profile_photo' => 'nullable|image',
+            'url' => 'nullable|string',
         ]);
 
         $input = $request->all();
 
         $path = 'uploads/profiles/photos';
-        if(!File::isDirectory($path)){
+        if (!File::isDirectory($path)) {
             File::makeDirectory($path, 0777, true, true);
         }
 
-        if(! isset($input['profile_photo'])){
-            $photoPath  = $user->profile->photo;
-        }else {
-            if(File::exists(storage_path().'/app/public/'.$user->profile->profile_photo)){
+        if (!isset($input['profile_photo'])) {
+            $photoPath = $user->profile->photo;
+        } else {
+            if (File::exists(storage_path() . '/app/public/' . $user->profile->profile_photo)) {
                 //dd('found');
-                File::delete(storage_path().'/app/public/'.$user->profile->profile_photo);
+                File::delete(storage_path() . '/app/public/' . $user->profile->profile_photo);
             }
-            $photoPath =  $input['profile_photo']->store($path,'public');
+            $photoPath = $input['profile_photo']->store($path, 'public');
             $user->profile->profile_photo = $photoPath;
 
         }
         //    dd($photoPath);
-        if($input['bio']){
+        if ($input['bio']) {
             $user->profile->bio = $input['bio'];
         }
-        if($input['address']){
+        if ($input['address']) {
             $user->profile->address = $input['address'];
         }
-        if($input['area']){
+        if ($input['area']) {
             $user->profile->area = $input['area'];
         }
-        if($input['url']){
+        if ($input['url']) {
             $user->profile->url = $input['url'];
         }
 
@@ -135,9 +156,9 @@ class DashboardController extends ApiController
 
     }
 
-    public function logout(Request $request )
+    public function logout(Request $request)
     {
-       // $request->user()->token()->revoke();
+        // $request->user()->token()->revoke();
 
         $user = auth()->user();
         if ($user && $user->token()) {
@@ -146,7 +167,7 @@ class DashboardController extends ApiController
             $token->delete();
             //   Activity::log('user\logout', $user);
         }
-        return $this->successResponse(['message'=>'logged out !']);
+        return $this->successResponse(['message' => 'logged out !']);
     }
 
 }

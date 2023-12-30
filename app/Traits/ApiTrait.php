@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\MessageBag;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;

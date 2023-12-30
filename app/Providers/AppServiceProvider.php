@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\Dashboard\NotificationCollection;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -35,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $langs = config('languages.langs');
         View::share('localeDirs', $localeDirs);
         View::share('langs', $langs);
+//        JsonResource::withoutWrapping();
 
     }
 }
