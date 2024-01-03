@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Dashboard\NotificationCollection;
 use App\Http\Resources\Dashboard\NotificationResource;
+use App\Http\Resources\System\UserProfileResource;
 use App\Notifications\MainNotification;
 use Illuminate\Http\Request;
 
@@ -68,10 +69,20 @@ class DashboardController extends ApiController
         return  new NotificationCollection($notifications);
     }
 
-    public function markAsRead()
+    public function markAllAsRead()
     {
         $user = \auth('api')->user();
         $user->unreadNotifications->markAsRead();
+        return $this->successResponse('success');
+    }
+
+    public function markAsRead(Request $request,$id)
+    {
+        try {
+           $notification = Notification::where('notifiable_id',auth('api')->id())->where("id",$id)->update(['read_at'=>now()]);
+        }catch (\Exception $e){
+            return $this->errorResponse($e->getMessage());
+        }
         return $this->successResponse('success');
     }
 
@@ -97,8 +108,7 @@ class DashboardController extends ApiController
 
     public function profile()
     {
-        $profile = auth()->user()->profile;
-        return $this->successResponse($profile);
+        return $this->successResponse(new UserProfileResource(auth('api')->user()));
     }
 
     public function profileUpdate(Request $request)
@@ -107,53 +117,44 @@ class DashboardController extends ApiController
         $user = Auth::user();
 
         $this->validate($request, [
-            'name' => 'required|string',
+            'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
             'bio' => 'nullable|string',
-            'email' => 'required|email',
-            'phone' => 'required|numeric',
-            'address' => 'nullable|string',
-            'area' => 'nullable|string',
-            'state' => 'required',
-            'profile_photo' => 'nullable|image',
-            'url' => 'nullable|string',
+            'phone' => 'nullable|numeric',
+            'urls' => 'nullable|array',
+            'urls.*' => 'nullable|string',
+//            'state' => 'required',
+            'image' => 'nullable|image',
         ]);
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $user->image = uploadFile($image,'users',$user->id,'image',true);
+            $user->save();
+        }
 
         $input = $request->all();
 
-        $path = 'uploads/profiles/photos';
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0777, true, true);
+        if (isset($input['first_name']) ) {
+            $user->name = ["first"=> $input['first_name'] ?? null ,"last"=>$input['last_name']];
         }
 
-        if (!isset($input['profile_photo'])) {
-            $photoPath = $user->profile->photo;
-        } else {
-            if (File::exists(storage_path() . '/app/public/' . $user->profile->profile_photo)) {
-                //dd('found');
-                File::delete(storage_path() . '/app/public/' . $user->profile->profile_photo);
-            }
-            $photoPath = $input['profile_photo']->store($path, 'public');
-            $user->profile->profile_photo = $photoPath;
-
-        }
-        //    dd($photoPath);
-        if ($input['bio']) {
+        if (isset($input['bio'])) {
             $user->profile->bio = $input['bio'];
         }
-        if ($input['address']) {
-            $user->profile->address = $input['address'];
+        if (isset($input['phone'])) {
+            $user->phone = $input['phone'];
         }
-        if ($input['area']) {
-            $user->profile->area = $input['area'];
-        }
-        if ($input['url']) {
-            $user->profile->url = $input['url'];
+//        if (isset($input['area'])) {
+//            $user->profile->area = $input['area'];
+//        }
+        if (isset($input['urls'])) {
+            $user->profile->urls = $input['urls'];
         }
 
         $user->push();
 
-        return $this->successResponse($user->profile);
-
+        return $this->successResponse(new UserProfileResource(auth('api')->user()),'Profile Updated Successfully');
     }
 
     public function logout(Request $request)

@@ -835,7 +835,7 @@ class ConstantSeeder extends Seeder
         $password = Hash::make('password');
 
         $user1 = \App\Models\User::factory()->create([
-            'name' => 'admin',
+            'name' => ["first"=>'ahmed' ,"last"=>'badr'],
             'username' => 'admin',
             'email' => 'admin@erp.com',
             'active' => true,
@@ -844,7 +844,7 @@ class ConstantSeeder extends Seeder
         $user1->assignRole(Role::where('name', 'admin')->value('id'));
 
         $user2 = \App\Models\User::factory()->create([
-            'name' => 'manager',
+            'name' => ["first"=>'mohamed' ,"last"=>'badr'],
             'username' => 'manager',
             'email' => 'manager@erp.com',
             'password' => $password,
@@ -852,7 +852,7 @@ class ConstantSeeder extends Seeder
         $user2->assignRole(Role::where('name', 'manager')->value('id'));
 
         $user3 = \App\Models\User::factory()->create([
-            'name' => 'employee',
+            'name' => ["first"=>'ali' ,"last"=>'zain'],
             'username' => 'employee',
             'email' => 'emp@erp.com',
             'password' => $password,

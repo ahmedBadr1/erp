@@ -24,6 +24,11 @@ class UserObserver
 //            $role = Role::findByName('admin','api');
 //            $user->assignRole($role);
 //        }
+        if(!$user->profile()->exists()){
+            $user->profile()->create([
+                'bio' => 'Employee'
+            ]);
+        }
     }
 
     /**

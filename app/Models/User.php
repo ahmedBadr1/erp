@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\AuthModel;
+use App\Models\System\Profile;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Models\Role;
 
 class User extends AuthModel
@@ -21,6 +23,9 @@ class User extends AuthModel
         'password',
         'otp','otp_expire_at','lang','image','phone','active'
     ];
+
+
+    protected $appends = ['fullName'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,6 +45,7 @@ class User extends AuthModel
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'name' => 'json',
     ];
 
 
@@ -47,4 +53,27 @@ class User extends AuthModel
 //    {
 //        return $this->hasMany(Role::class)->latest()->limit(1);
 //    }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    protected function name():Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => json_decode($value, true),
+            set: fn($value) => json_encode($value),
+        );
+    }
+
+    public function getFullNameAttribute()
+    {
+        return $this->name['first'] . ' ' . $this->name['last'] ;
+    }
+
+
+
+
+
 }

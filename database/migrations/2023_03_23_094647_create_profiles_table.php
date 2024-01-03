@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('bio')->nullable();
             $table->text('address')->nullable();
             $table->string('area')->nullable();
-            $table->string('photo')->nullable();
-            $table->string('url')->nullable();
-            $table->string('lang')->nullable();
+            $table->json('urls')->nullable();
             $table->foreignIdFor(User::class);
+            $table->foreignIdFor(\App\Models\Employee\Employee::class)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

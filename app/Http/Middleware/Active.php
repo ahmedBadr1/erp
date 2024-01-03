@@ -17,13 +17,18 @@ class Active
     public function handle(Request $request, Closure $next): Response
     {
         if( !auth()->user()->active){
-            Auth::logout();
 
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            return redirect()->route('admin.login')->with('error', __('message.suspended'));
+            if ($request->expectsJson()) {
+                \auth('api')->user()
+                    ->tokens()
+                    ->delete();
+                return response()->json(['error' => __('message.suspended')], 401);
+            } else {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('admin.login')->with('error', __('message.suspended'));
+            }
         }
         return $next($request);
     }

@@ -14,13 +14,14 @@ class UserRolesResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $image = $this->image ? asset('storage/'.$this->image) : null ;
         return [
             'id' => $this->id,
-            'name' => $this->name,
+            'name' => $this->fullName,
             'username' => $this->username,
             'email' => $this->email,
             'lang' => $this->lang,
-            'image' => $this->image,
+            'image' => $image,
             'active' => $this->active,
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
             "role" => $this->getRoleNames()[0],

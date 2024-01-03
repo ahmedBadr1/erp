@@ -30,7 +30,7 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     });
 
-    Route::group(['middleware' => ['auth:api',]], function () {
+    Route::group(['middleware' => ['auth:api','active']], function () {
 
         Route::post('invite', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invite'])->name('invite');
         Route::post('invitations', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invitations'])->name('invitations');
@@ -44,9 +44,11 @@ Route::group(['middleware' => ['cors', 'json.response']], function () {
 
         Route::group(['prefix' => 'notifications'], function () {
             Route::post('/', [\App\Http\Controllers\Api\DashboardController::class, 'notifications']);
-            Route::post('read', [\App\Http\Controllers\Api\DashboardController::class, 'markAsRead']);
+            Route::post('read', [\App\Http\Controllers\Api\DashboardController::class, 'markAllAsRead']);
             Route::post('unread', [\App\Http\Controllers\Api\DashboardController::class, 'unreadNotifications']);
             Route::post('count', [\App\Http\Controllers\Api\DashboardController::class, 'count']);
+            Route::post('read/{id}', [\App\Http\Controllers\Api\DashboardController::class, 'markAsRead']);
+
         });
 
         Route::group(['prefix' => 'users'], function () {

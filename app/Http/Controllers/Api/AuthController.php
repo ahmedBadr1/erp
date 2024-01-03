@@ -109,7 +109,7 @@ class AuthController extends ApiController
     public function logout()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::guard('api')->user();
             // Revoke current user token
             $user
                 ->tokens()
