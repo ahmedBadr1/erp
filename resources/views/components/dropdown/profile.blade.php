@@ -10,7 +10,7 @@
             :aria-expanded="open"
         >
             <img class="w-8 h-8 rounded-full mx-2" src="{{ Auth::user()->image ?? asset('images/profile.png') }}" width="32" height="32"
-                 alt="{{ Auth::user()->name }}"/>
+                 alt="{{ Auth::user()->fullName }}"/>
             <div class="flex items-center truncate">
                 <span
                     class="truncate ml-2 text-sm font-medium dark:text-slate-300 group-hover:text-slate-800 dark:group-hover:text-slate-200">{{ Auth::user()->name }}</span>

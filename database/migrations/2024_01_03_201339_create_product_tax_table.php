@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
+        Schema::create('product_tax', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('type')->nullable();
-            $table->string('group')->nullable();
-            $table->string('logo')->nullable();
-            $table->boolean('active')->default(true);
+            $table->foreignIdFor(\App\Models\Inventory\Product::class);
+            $table->foreignIdFor(\App\Models\System\Tax::class);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('product_tax');
     }
 };

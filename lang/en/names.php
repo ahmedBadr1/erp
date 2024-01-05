@@ -517,7 +517,7 @@ return [
     "upload-file" => "رفع الملف",
     "upload-start" => "رفع البداية",
     "upload-url" => "رفع الرابط",
-    "user" => "المستخدم",
+    "user" => "User",
     "user-not-found" => "المستخدم غير موجود",
     "users" => "المستخدمين",
     "vacations" => "الاجازات",

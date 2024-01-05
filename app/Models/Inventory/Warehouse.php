@@ -5,6 +5,7 @@ namespace App\Models\Inventory;
 
 use App\Models\Employee\Employee;
 use App\Models\MainModelSoft;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ class Warehouse extends MainModelSoft
     protected $fillable = [
         'name',
         'type',
-        'location',
+        'address',
         'manager_id',
     ];
 
@@ -33,17 +34,17 @@ class Warehouse extends MainModelSoft
     }
     public function manager()
     {
-        return $this->belongsTo(Employee::class,'manager_id');
+        return $this->belongsTo(User::class,'manager_id');
     }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->setDescriptionForEvent(fn(string $eventName) => "This Department has been {$eventName}")
+            ->setDescriptionForEvent(fn(string $eventName) => "Warehouse has been {$eventName}")
             ->logOnly([
                 'name',
                 'type',
-                'location',
+                'address',
                 'manager_id',])
             ->logOnlyDirty()
             ->useLogName('system');

@@ -35,12 +35,10 @@ return new class extends Migration
             $table->string('barcode')->nullable();
             $table->string('hs_code')->nullable();
             $table->string('batch_number')->nullable();
-            $table->foreignId('tax1_id')->nullable()->references('id')->on('taxes');
-            $table->foreignId('tax2_id')->nullable()->references('id')->on('taxes');
             $table->foreignIdFor(\App\Models\Inventory\Unit::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Brand::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
-            $table->foreignIdFor(App\Models\Employee\Employee::class)->nullable();
+            $table->foreignIdFor(App\Models\User::class)->nullable();
 
             $table->decimal('weight', 10, 2)->nullable();
             $table->decimal('width', 10, 2)->nullable();
@@ -58,7 +56,7 @@ return new class extends Migration
             $table->boolean('returnable')->default(true);
             $table->boolean('active')->default(true);
 
-            $table->foreignIdFor(\App\Models\Accounting\AccCategory::class)->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\InvCategory::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

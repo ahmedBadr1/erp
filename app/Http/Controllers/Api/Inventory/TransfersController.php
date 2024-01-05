@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Accounting;
+namespace App\Http\Controllers\Api\Inventory;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
@@ -16,7 +16,7 @@ use App\Services\Accounting\ItemsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TransactionController extends ApiController
+class TransfersController extends ApiController
 {
     public function __construct()
     {

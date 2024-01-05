@@ -17,7 +17,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Account;
 use App\Models\System\Currency;
-use App\Services\Accounting\AccountService;
+use App\Services\Accounting\WarehouseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +37,7 @@ class AccountsController extends ApiController
         $this->middleware('permission:accounting.accounts.delete', ['only' => ['destroy']]);
 
 
-        $this->service = new AccountService();
+        $this->service = new WarehouseService();
     }
 
 

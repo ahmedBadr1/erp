@@ -102,7 +102,7 @@ class ConstantSeeder extends Seeder
         Warehouse::factory()->create([
             'name' => 'main',
             'type' => 'materials',
-            'location' => 'factory',
+            'address' => 'factory',
         ]);
 
         Tax::factory()->create([
@@ -120,7 +120,7 @@ class ConstantSeeder extends Seeder
         \App\Models\Crm\Client::factory(3)->create();
         \App\Models\Crm\Action::factory(10)->create();
         Supplier::factory(3)->create();
-        Product::factory(10)->create();
+        Product::factory(100)->create();
         Account::factory(100)->create();
         Warehouse::factory(2)->create();
         Bill::factory(10)->create()->each(function ($bill){
@@ -216,6 +216,18 @@ class ConstantSeeder extends Seeder
                 'type' => 'table_limit',
                 'key' => 'table_limit',
                 'value' => '100',
+                'group' => 'setting',
+            ],
+            [
+                'type' => 'pricing',
+                'key' => 'pricing',
+                'value' => 'avg_cost',
+                'group' => 'setting',
+            ],
+            [
+                'type' => 'emails',
+                'key' => 'emails',
+                'value' => 'false',
                 'group' => 'setting',
             ],
         ];

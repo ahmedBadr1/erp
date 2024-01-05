@@ -28,6 +28,7 @@ class ListRequest extends FormRequest
             'limit' => "numeric|nullable",
             'start_date' => "nullable|date",
             'end_date' => "nullable|date",
+            'current_page'=> "numeric|nullable",
         ];
     }
 }

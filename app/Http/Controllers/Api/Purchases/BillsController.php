@@ -7,7 +7,7 @@ use App\Http\Requests\ListRequest;
 use App\Http\Requests\Purchases\BillRequest;
 use App\Http\Resources\Inventory\ProductResource;
 use App\Http\Resources\Purchases\BillsResource;
-use App\Http\Resources\Purchases\VendorsResource;
+use App\Http\Resources\Purchases\SuppliersResource;
 use App\Models\Inventory\Item;
 use App\Models\Inventory\Product;
 use App\Models\Purchases\Bill;
@@ -48,7 +48,7 @@ class BillsController extends Controller
 
     public function searchVendor(ListRequest $request): \Illuminate\Http\JsonResponse
     {
-        $vendors = VendorsResource::collection(Vendor::search($request->keywords)->take($request->limit)->get());
+        $vendors = SuppliersResource::collection(Vendor::search($request->keywords)->take($request->limit)->get());
         return $this->successResponse(['vendors' => $vendors]);
     }
 

@@ -28,7 +28,6 @@ return new class extends Migration
 
             $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
 
-            $table->foreignIdFor(\App\Models\Sales\Invoice::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Product::class)->nullable();
 
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class)->nullable();
@@ -36,6 +35,7 @@ return new class extends Migration
 
             $table->dateTime('expire_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -8,21 +8,21 @@ use App\Http\Requests\Purchases\StoreVendorRequest;
 use App\Http\Requests\System\StoreContact;
 use App\Http\Resources\Hr\EmployeesResource;
 use App\Http\Resources\Purchases\ShowVendorResource;
-use App\Http\Resources\Purchases\VendorsResource;
+use App\Http\Resources\Purchases\SuppliersResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccCategory;
-use App\Models\Accounting\Currency;
 use App\Models\Hr\Employee;
 use App\Models\Purchases\Payment;
-use App\Models\Purchases\Vendor;
+use App\Models\Purchases\Supplier;
 use App\Models\System\Contact;
 use App\Models\System\Country;
+use App\Models\System\Currency;
 use App\Models\System\Location;
 use App\Models\System\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class VendorsController extends Controller
+class SuppliersController extends Controller
 {
     public function __construct()
     {
@@ -33,7 +33,7 @@ class VendorsController extends Controller
     {
         $input = $request->all();
         //
-        return  VendorsResource::collection( Vendor::search($input['keywords'])
+        return  SuppliersResource::collection( Supplier::search($input['keywords'])
 //            ->with('locations','employee')
 //            ->orderBy($input['orderBy'], $input['orderDesc'] ? 'desc' : 'asc')
             ->paginate($input['limit']));

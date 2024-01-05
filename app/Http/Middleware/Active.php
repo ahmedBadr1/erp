@@ -23,12 +23,12 @@ class Active
                     ->tokens()
                     ->delete();
                 return response()->json(['error' => __('message.suspended')], 401);
-            } else {
+            }
+
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
                 return redirect()->route('admin.login')->with('error', __('message.suspended'));
-            }
         }
         return $next($request);
     }

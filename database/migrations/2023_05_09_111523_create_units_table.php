@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('type')->nullable();
             $table->string('group');
-            $table->float('conversion_factor',16);
+            $table->double('conversion_factor');
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

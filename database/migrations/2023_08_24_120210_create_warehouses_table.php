@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type')->default('material');
-            $table->string('location');
+            $table->string('address')->nullable();
             $table->foreignId('manager_id')
                 ->nullable()
                 ->references('id')
-                ->on('employees')
+                ->on('users')
                 ->onUpdate('cascade');
             $table->boolean('active')->default(true);
             $table->timestamps();

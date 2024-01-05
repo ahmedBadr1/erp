@@ -19,7 +19,7 @@ class WarehouseFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'location' => $this->faker->address(),
+            'address' => $this->faker->address(),
 //            'manager_id' => Employee::all()->random()->value('id') ?? null,
         ];
     }

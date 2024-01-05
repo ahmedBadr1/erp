@@ -15,6 +15,11 @@ class CheckLocale
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->expectsJson()){
+            $local = ($request->hasHeader('X_Lang')) ? $request->header('X_Lang') : "ar";
+            app()->setLocale($local);
+            return $next($request);
+        }
         if(session()->has('locale')) {
             app()->setLocale(session('locale'));
             app()->setLocale(config('app.locale'));

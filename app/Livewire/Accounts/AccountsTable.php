@@ -4,7 +4,7 @@ namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\BasicTable;
 use App\Models\Accounting\Account;
-use App\Services\Accounting\AccountService;
+use App\Services\Accounting\WarehouseService;
 use Livewire\Component;
 
 class AccountsTable extends BasicTable
@@ -16,7 +16,7 @@ class AccountsTable extends BasicTable
     {
 
 //        $this->start_date = now()->addDays(7)->format('d/m/Y');
-        $service = new AccountService();
+        $service = new WarehouseService();
         return view('livewire.accounts.accounts-table', [
             'accounts' => $service->search($this->search)
                 ->when($this->start_date, function ($query) {

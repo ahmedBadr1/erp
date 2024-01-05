@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers\Api\System;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Controller;
+use App\Http\Requests\ListRequest;
+use App\Http\Requests\Setting\UpdateSettingRequest;
+use App\Http\Resources\System\SettingResource;
 use App\Models\Programs\Bylaw;
 use App\Models\Programs\Faculty;
 use App\Models\Programs\Program;
@@ -11,65 +15,73 @@ use App\Models\System\Log;
 use App\Models\System\Paginator;
 use App\Models\System\Setting;
 use App\Models\System\System;
+use Hamcrest\Core\Set;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
-class SettingController extends Controller
+class SettingController extends ApiController
 {
 
-    public function settings(Request $request)
+    public function __construct()
     {
+        parent::__construct();
+        $this->class = "setting";
+        $this->table = "settings";
+        $this->middleware('auth');
+        $this->middleware('permission:setting.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:setting.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:setting.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:setting.delete', ['only' => ['destroy']]);
 
-        $query = Setting::select('*');
 
-        $query = ($request->faculty_id) ? $query->whereFacultyId($request->faculty_id) : $query;
-        $query = ($request->bylaw_id) ? $query->whereBylawId($request->bylaw_id) : $query;
-        $query = ($request->program_id) ? $query->whereProgramId($request->program_id) : $query;
-        $query = ($request->term_id) ? $query->whereTermId($request->term_id) : $query;
-        $query = ($request->name) ? $query->where('name', $request->name) : $query;
-        $lookup = [];
-        if ($request->no_lookup != true) {
-            $lookup = [
-                "faculties" => Faculty::whereRemoved(0)->select('name as faculty_name', 'name_local as faculty_name_local', 'id')->get(),
-                "bylaws" => Bylaw::whereRemovedAndFacultyId(0, $request->faculty_id)->select('name as bylaw_name', 'name_local as bylaw_name_local', 'id')->get(),
-                "programs" => Program::whereRemovedAndBylawId(0, $request->bylaw_id)->select('name as name', 'name_local as name_local', 'id')->get(),
-                "terms" => Term::whereRemoved(0)->select('name', 'name_local', 'id')->orderBy('year', 'DESC')->get(),
-            ];
-        }
-
-        return Paginator::process('settings', $request, $query, ['lookup' => $lookup, 'ignore_removed' => true, 'ignore_text_search' => true]);
+//        $this->service = new SettingService();
     }
 
-    public function put(Request $request, Setting $setting = null)
+
+    public function index(ListRequest $request)
     {
 
-        $new = false;
+        $query = Setting::query();
 
-        $exist = Setting::whereProgramIdAndFacultyIdAndTermIdAndName($request->program_id, $request->faculty_id, $request->term_id, $request->name);
-        $exist = $setting? $exist->where('id', '!=', $setting->id)->first() : $exist->first();
+        $query = ($request->group) ? $query->where('group',$request->group) : $query;
+        $query = ($request->type) ? $query->where('type',$request->type) : $query;
+        $query = ($request->key) ? $query->where('key', $request->key) : $query;
 
-
-        if ($exist) {
-            return $this->errorResponse(System::ERROR_ITEM_ALREADY_EXISTS);
-        }
-
-        if (!$setting) {
-
-            $new = true;
-            $setting = new Setting();
-        }
-
-        $setting->fill($request->all());
-        $setting->save();
-
-        Log::log(($new) ? 'setting\add' : 'setting\edit', $setting);
-
-        return $this->successResponse($setting->data(System::DATA_BRIEF));
+        return $this->successResponse(SettingResource::collection($query->get()));
     }
 
-    public function get(Request $request, Setting $setting, $details = System::DATA_DETAILS)
+    public function show(Request $request, $id)
     {
-        return $this->successResponse($setting->data($details));
+        $setting = Setting::whereId($id)->orWhere('key',$id)->firstOrFail();
+        Gate::authorize('show',$setting);
+        return $this->successResponse(new SettingResource($setting));
     }
+
+    public function update(UpdateSettingRequest $request,  $id =null )
+    {
+        if (isset($id)){
+            $setting = Setting::whereId($id)->orWhere('key',$id)->firstOrFail();
+            $oldValue = $setting->value;
+            $setting->update(['value'=> $request->get('value')]);
+            return $this->successResponse(null,'Setting Updated Successfully');
+        }
+//        return  $request->get('settings') ;
+//        $set = [] ;
+        foreach ($request->get('settings') as $key => $value){
+//            $set[$key] = $value ;
+            Setting::where('key',$key)->update(['value'=>$value]);
+        }
+//        return $set;
+
+//        activity()
+//            ->performedOn($setting)
+//            ->causedBy(auth()->user())
+//            ->withProperties(['value' => $request->get('value')])
+//            ->log( auth()->user()->username .' Change ' . $setting->key. ' Setting From '. $oldValue .' To '. $setting->value);
+        return $this->successResponse(null,'Settings Updated Successfully');
+    }
+
+
 
     public function remove(Request $request, Setting $setting)
     {

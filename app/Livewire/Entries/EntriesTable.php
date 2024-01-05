@@ -3,7 +3,7 @@
 namespace App\Livewire\Entries;
 
 use App\Livewire\Basic\BasicTable;
-use App\Services\Accounting\EntryService;
+use App\Services\Accounting\ProductService;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -15,7 +15,7 @@ class EntriesTable extends BasicTable
     {
 
 //        $this->start_date = now()->addDays(7)->format('d/m/Y');
-        $service = new EntryService();
+        $service = new ProductService();
         return view('livewire.entries.entries-table', [
             'entries' => $service->search($this->search)
                 ->when($this->start_date, function ($query) {

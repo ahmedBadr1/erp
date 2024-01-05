@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Livewire\Basic\BasicTable;
 use App\Models\Accounting\Transaction;
-use App\Services\Accounting\EntryService;
-use App\Services\Accounting\TransactionService;
+use App\Services\Accounting\ProductService;
+use App\Services\Accounting\ItemsService;
 use Livewire\Component;
 
 class Posting extends BasicTable
@@ -17,7 +17,7 @@ class Posting extends BasicTable
     {
 
 //        $this->start_date = now()->addDays(7)->format('d/m/Y');
-        $service = new TransactionService();
+        $service = new ItemsService();
         return view('livewire.posting', [
             'transactions' => $service->search($this->search)
                 ->when($this->start_date, function ($query) {

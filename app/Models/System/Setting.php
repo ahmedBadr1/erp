@@ -6,22 +6,25 @@ use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Setting extends MainModelSoft
 {
+    use LogsActivity ;
     protected $table = 'settings';
     protected $fillable = [
         'group','type','key', 'value','locale','autoload','parent_id'
     ];
 
-    protected $casts = ['value'=>'array'];
-    protected function name(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => json_decode($value, true),
-            set: fn ($value) => json_encode($value),
-        );
-    }
+//    protected $casts = ['value'=>'array'];
+//    protected function value(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn ($value) => json_decode($value, true),
+//            set: fn ($value) => json_encode($value),
+//        );
+//    }
     public function insertSetting($type, $key,$value,$autoload = 1,$group = NULL,$locale = 'en',$parent_id = NULL) {
 
         $this->type    = $type;
@@ -96,5 +99,15 @@ class Setting extends MainModelSoft
 
     public function parentID() {
         return $this->belongsTo(Setting::class, 'parent_id')->withDefault(['name' => __('None')]);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(fn(string $eventName) => "Setting has been {$eventName}")
+            ->logOnly([ 'group', 'value', 'lang', 'type','autoload'])
+            ->logOnlyDirty()
+            ->useLogName('system');
+        // Chain fluent methods for configuration options
     }
 }

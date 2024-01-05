@@ -8,7 +8,7 @@ use App\Http\Requests\ListRequest;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
-use App\Services\Accounting\EntryService;
+use App\Services\Accounting\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +24,7 @@ class EntriesController extends ApiController
         $this->middleware('permission:accounting.entries.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:accounting.entries.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accounting.entries.delete', ['only' => ['destroy']]);
-        $this->service = new EntryService();
+        $this->service = new ProductService();
     }
 
     public function index(){

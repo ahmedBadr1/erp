@@ -27,6 +27,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        CheckLocale::class
 
     ];
 
@@ -43,7 +44,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            CheckLocale::class
+
         ],
 
         'api' => [
@@ -51,7 +52,6 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             ForceJsonResponse::class,
-            Cors::class
         ],
     ];
 
@@ -79,7 +79,6 @@ class Kernel extends HttpKernel
 //        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'locale' => CheckLocale::class,
         'active' => Active::class,
-        'cors' => Cors::class,
         'json.response' => \App\Http\Middleware\ForceJsonResponse::class,
     ];
 }
