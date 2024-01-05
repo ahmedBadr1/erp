@@ -44,7 +44,7 @@
 
     <!-- Content -->
     <div class="relative">
-        <h1 class="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">{{__('Good afternoon')}}, {{ Auth::user()->name }} 👋</h1>
+        <h1 class="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">{{__('Good afternoon')}}, {{ Auth::user()->username }} 👋</h1>
         <p class="dark:text-indigo-200">{{ __("Here is what's happening with your projects today:") }}</p>
     </div>
 
