@@ -9,7 +9,7 @@
             @click.prevent="open = !open"
             :aria-expanded="open"
         >
-            <img class="w-8 h-8 rounded-full mx-2" src="{{ Auth::user()->image ?? asset('images/profile.png') }}" width="32" height="32"
+            <img class="w-8 h-8 rounded-full mx-2" src="{{ Auth::user()->image ? asset('storage/'.Auth::user()->image) : asset('images/profile.png') }}" width="32" height="32"
                  alt="{{ Auth::user()->fullName }}"/>
             <div class="flex items-center truncate">
                 <span
