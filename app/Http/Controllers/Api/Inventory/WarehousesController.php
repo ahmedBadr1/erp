@@ -54,7 +54,7 @@ class WarehousesController extends ApiController
     }
 
 
-    public function index(Request $request)
+    public function index(ListRequest $request)
     {
         if (auth('api')->user()->cannot('inventory.warehouses.index')) {
             return $this->deniedResponse(null, null, 403);
@@ -68,7 +68,7 @@ class WarehousesController extends ApiController
                 $query->where('created_at', '<=', $request->get('start_date'));
             })
             ->latest()
-            ->paginate($request->get('limit') ?? $this->limit);
+            ->paginate($request->get('per_page') ?? $this->limit);
         return $this->resourceResponse(new WarehouseCollection($warehouses));
     }
 

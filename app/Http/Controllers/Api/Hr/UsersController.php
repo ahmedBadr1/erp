@@ -214,7 +214,7 @@ class UsersController extends ApiController
 
         $invitation = Invitation::create($data);
         $data['link'] = $invitation->getLink();
-        $data['user'] = auth('api')->user()->name;
+        $data['user'] = auth('api')->user()->fullName;
         try{
             dispatch(new SendEmailJob($data,'InvitationMail'));
 //            Mail::to($invitation->email)->send(new InvitationMail(auth('api')->user()->name, $link));
@@ -257,3 +257,4 @@ class UsersController extends ApiController
         return $this->successResponse('success','Invitation Deleted Successfully');
     }
 }
+

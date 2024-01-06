@@ -17,7 +17,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Accounting\AccCategory;
 use App\Models\Accounting\Account;
 use App\Models\System\Currency;
-use App\Services\Accounting\WarehouseService;
+use App\Services\Inventory\WarehouseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;

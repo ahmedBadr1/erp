@@ -24,11 +24,12 @@ class ListRequest extends FormRequest
         return [
             'keywords' => "string|nullable",
             'orderBy'=> "string|nullable",
-            'orderDesc' => "boolean|nullable",
-            'limit' => "numeric|nullable",
+            'orderDesc' => "nullable|string|in:asc,desc",
+            'per_page' => "numeric|nullable",
             'start_date' => "nullable|date",
             'end_date' => "nullable|date",
             'current_page'=> "numeric|nullable",
+            'export' => "nullable|string|in:csv,excel,pdf",
         ];
     }
 }

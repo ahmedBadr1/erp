@@ -89,17 +89,17 @@ Route::group(['middleware' => [ 'json.response']], function () {
                 'prefix' => 'accounts',
                 'as' => 'accounts.',
             ], function () {
-                Route::post('/', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'index'])->name('index');
-                Route::post('/list', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'list'])->name('list');
-                Route::post('/categories', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'categories'])->name('categories');
-                Route::post('/categories/{code}', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'category'])->name('category.show');
-                Route::patch('/categories/{code}', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'updateCategory'])->name('category.update');
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
+                Route::post('/categories', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'categories'])->name('categories');
+                Route::post('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'category'])->name('category.show');
+                Route::patch('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'updateCategory'])->name('category.update');
 
 
-                Route::post('/create', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'create'])->name('create');
-                Route::post('/store', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'store'])->name('store');
-                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'show'])->name('show');
-                Route::patch('/{code}', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'update'])->name('update');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'store'])->name('store');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');
+                Route::patch('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'update'])->name('update');
             });
 
             Route::group([
@@ -115,12 +115,12 @@ Route::group(['middleware' => [ 'json.response']], function () {
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'show'])->name('show');
             });
 
-            Route::post('/tree', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'tree'])->name('tree');
-            Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'duplicate'])->name('duplicate');
+            Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('tree');
+            Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'duplicate'])->name('duplicate');
 
 
-            Route::post('/journal', [\App\Http\Controllers\Api\Accounting\WarehousesController::class, 'journal'])->name('journal');
-            Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'index'])->name('index');
+            Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
+            Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
 
 
             Route::group([
@@ -181,6 +181,7 @@ Route::group(['middleware' => [ 'json.response']], function () {
             ], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'list'])->name('list');
+                Route::get('/download', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'download'])->name('download');
 
                 Route::post('/create', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'store'])->name('store');

@@ -4,7 +4,7 @@ namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\BasicTable;
 use App\Models\Accounting\Account;
-use App\Services\Accounting\WarehouseService;
+use App\Services\Inventory\WarehouseService;
 use Livewire\Component;
 
 class AccountsTable extends BasicTable

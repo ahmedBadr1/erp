@@ -2,6 +2,7 @@
 
 namespace App\Services\Inventory;
 
+use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
 use App\Models\Accounting\Entry;
 use App\Models\Crm\Client;
@@ -64,8 +65,8 @@ class ProductService extends MainService
         }
     }
 
-    public function export()
+    public function export($collection =null)
     {
-        return Excel::download(new ProductsExport, 'products_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ProductsExport($collection), 'products_'.date('d-m-Y').'.xlsx');
     }
 }

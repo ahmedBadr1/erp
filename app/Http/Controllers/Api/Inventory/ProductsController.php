@@ -21,6 +21,7 @@ use App\Models\Purchases\Supplier;
 use App\Models\System\Tax;
 use App\Models\User;
 use App\Services\Inventory\ProductService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,21 +42,32 @@ class ProductsController extends ApiController
         $this->service = new ProductService();
     }
 
+    public function download(Request $request)
+    {
+        return $this->service->export();
+    }
+
     public function index(ListRequest $request){
         if (auth('api')->user()->cannot('inventory.products.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $products = $this->service->search($request->get('keywords'))
+//        return $this->successResponse(Carbon::parse($request->get('end_date')))  ;
+        $query = $this->service->search($request->get('keywords'))
             ->with('unit')
             ->withCount('items')
             ->when($request->get('start_date'), function ($query) use ($request) {
-                $query->where('created_at', '>=', $request->get('start_date'));
+                $query->where('created_at', '>=', Carbon::parse($request->get('start_date')));
             })
             ->when($request->get('end_date'), function ($query) use ($request) {
-                $query->where('created_at', '<=', $request->get('start_date'));
+                $query->where('created_at', '<=', Carbon::parse($request->get('end_date')));
             })
-            ->latest()
-            ->paginate($request->get('limit') ?? $this->limit,null,null,$request->get('current_page')?? 1);
+            ->orderBy($request->get('orderBy') ?? $this->orderBy,$request->get('orderDesc') ?? $this->orderDesc);
+            if ($request->get("export") == 'excel'){
+                $products= $query->get() ;
+                return $this->service->export($products);
+            }
+            $products= $query->paginate($request->get('per_page') ?? $this->limit,null,null,$request->get('current_page')?? 1);
+
 //        return new ProductCollection($products) ;
        return $this->resourceResponse(new ProductCollection($products));
     }
