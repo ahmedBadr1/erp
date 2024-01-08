@@ -6,15 +6,15 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\AccountRequest;
 use App\Http\Requests\Accounting\DuplicateRequest;
-use App\Http\Requests\Accounting\UpdateCategoryRequest;
+use App\Http\Requests\Accounting\UpdateNodeRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\TypeRequest;
 use App\Http\Requests\UpdateAccountRequest;
-use App\Http\Resources\Accounting\AccCategoryResource;
+use App\Http\Resources\Accounting\NodeResource;
 use App\Http\Resources\Accounting\AccountChartResource;
 use App\Http\Resources\Accounting\AccountResource;
 use App\Http\Resources\UserResource;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use App\Models\Accounting\Account;
 use App\Models\System\Currency;
 use App\Services\Inventory\WarehouseService;
@@ -49,9 +49,9 @@ class AccountsController extends ApiController
         }
         $accounts = Account::active()->get(['name', 'code','credit','system','active']);
         if ($request->has('type')){
-            $cashCategory = AccCategory::active()->with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
-            $cashAccounts = collect($cashCategory->accounts);
-            foreach ($cashCategory->descendants as $child) {
+            $cashNode = Node::active()->with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
+            $cashAccounts = collect($cashNode->accounts);
+            foreach ($cashNode->descendants as $child) {
                 $cashAccounts = $cashAccounts->merge($child->accounts);
             }
             return $this->successResponse(['accounts' => AccountChartResource::collection($accounts),'cashAccounts' => AccountChartResource::collection($cashAccounts)]);
@@ -73,41 +73,41 @@ class AccountsController extends ApiController
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $tree = AccCategory::tree()->withCount('children')->with('accounts')->get()->toTree();
-        return $this->successResponse(AccCategoryResource::collection($tree));
+        $tree = Node::tree()->withCount('children')->with('accounts')->get()->toTree();
+        return $this->successResponse(NodeResource::collection($tree));
     }
 
-    public function categories(Request $request)
+    public function nodes(Request $request)
     {
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $accounts = AccCategory::active()->pluck('name', 'code')->toArray();
-        return $this->successResponse(['accounts' => $accounts]);
+        $nodes = Node::active()->pluck('name', 'code')->toArray();
+        return $this->successResponse(['nodes' => $nodes]);
     }
 
-    public function category(Request $request,$code)
+    public function node(Request $request,$code)
     {
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $category = AccCategory::active()->where('code', $code)->firstOrFail() ;
-        return $this->successResponse(isset($category) ? new AccCategoryResource($category) : null);
+        $node = Node::active()->where('code', $code)->firstOrFail() ;
+        return $this->successResponse(isset($node) ? new NodeResource($node) : null);
     }
 
-    public function updateCategory(UpdateCategoryRequest $request,$code)
+    public function updateNode(UpdateNodeRequest $request, $code)
     {
-        $category = AccCategory::where('code', $code)->first();
-        if (!$category){
-            return $this->errorResponse('Category Not Found',404);
+        $node = Node::where('code', $code)->first();
+        if (!$node){
+            return $this->errorResponse('Node Not Found',404);
         }
 //        return $request->get('name') ;
         try {
-            $category->update(['name'=>$request->get('name')])  ;
+            $node->update(['name'=>$request->get('name')])  ;
         }catch (\Exception  $e){
             return $this->errorResponse('something went wrong please try again',);
         }
-        return $this->successResponse(null, __('message.updated', ['model' => __('names.category')]));
+        return $this->successResponse(null, __('message.updated', ['model' => __('Node')]));
 
     }
 
@@ -120,34 +120,34 @@ class AccountsController extends ApiController
         }
 
         if ($request->has('code')) {
-            $account = Account::with('category', 'currency')->where('code',$request->get('code'))->firstorFail();
+            $account = Account::with('node', 'currency')->where('code',$request->get('code'))->firstorFail();
         }
 
-        $categories = AccCategory::isLeaf()->active()->pluck('name', 'id')->toArray();
+        $nodes = Node::isLeaf()->active()->pluck('name', 'id')->toArray();
         $currencies = Currency::active()->pluck('name', 'id')->toArray();
-        return $this->successResponse(['categories' => $categories, 'currencies' => $currencies, 'account' => isset($account) ? new AccountResource($account) : null]);
+        return $this->successResponse(['nodes' => $nodes, 'currencies' => $currencies, 'account' => isset($account) ? new AccountResource($account) : null]);
     }
 
     public function store(AccountRequest $request)
     {
         $input = $request->all();
 
-        $category = AccCategory::isLeaf()->withCount('accounts')->whereId($input['acc_category_id'])->first();
-        if (!$category) {
-            return $this->errorResponse(__('Category Not Found'), 200);
+        $node = Node::isLeaf()->withCount('accounts')->whereId($input['node_id'])->first();
+        if (!$node) {
+            return $this->errorResponse(__('Node Not Found'), 200);
         }
 
-//        return $category->id ;
-        DB::transaction(function () use ($input, $category) {
+//        return $node->id ;
+        DB::transaction(function () use ($input, $node) {
             $account = Account::create([
                 'name' => $input['name'],
-//                'code' => $category->id . ((int)$category->accounts_count + 1),
+//                'code' => $node->id . ((int)$node->accounts_count + 1),
                 'description' => $input['description'],
                 'currency_id' => $input['currency_id'],
-                'acc_category_id' => $category->id,
-                'opening_balance' => $input['opening_balance'] ?? null,
+                'node_id' => $node->id,
+                'd_opening' => $input['opening_balance'] ?? null,
                 'opening_balance_date' => $input['opening_balance_date'] ?? null,
-                'credit' => $category->credit,
+                'credit' => $node->credit,
 
             ]);
 //                if ($validated['opening_balance']){
@@ -198,32 +198,34 @@ class AccountsController extends ApiController
             Account::create([
                 'name' => $account->name . ' copy',
                 'credit' => $account->credit,
-                'acc_category_id' => $account->acc_category_id,
+                'node_id' => $account->node_id,
+                'account_type_id' => $account->account_type_id,
                 'currency_id' => $account->currency_id,
                 'description' => $account->description,
                 'system' => 0,
             ]);
             return $this->successResponse(null,__('message.created', ['model' => __('Account')]));
         }else{
-            $category = AccCategory::where('code',$data['category'])->first();
-            $newName = $category->name ;
+            $node = Node::where('code',$data['node'])->first();
+            $newName = $node->name ;
             $slug = Str::slug($newName);
             $counter = 1;
             do {
-                $newName = $category->name .' ('. $counter .')';
+                $newName = $node->name .' ('. $counter .')';
                 $slug = Str::slug($newName);
                 $counter++;
             }
-            while (AccCategory::where('name', $newName)->orWhere('slug', $slug)->exists()) ;
-            AccCategory::create([
+            while (Node::where('name', $newName)->orWhere('slug', $slug)->exists()) ;
+            Node::create([
                 'name' =>$newName,
                 'slug' =>  Str::slug($slug),
-                'credit' => $category->credit,
-                'parent_id' => $category->parent_id,
+                'credit' => $node->credit,
+                'account_type_id' => $node->account_type_id,
+                'parent_id' => $node->parent_id,
                 'system' => 0,
                 'usable' => 1
             ]);
-            return $this->successResponse(null,__('message.created', ['model' => __('Category')]));
+            return $this->successResponse(null,__('message.created', ['model' => __('Node')]));
         }
     }
 
@@ -239,7 +241,7 @@ class AccountsController extends ApiController
             ->when($request->get('end_date'), function ($query) use ($request) {
                 $query->where('created_at', '<=', $request->get('start_date'));
             })
-            ->with('category')
+            ->with('node')
             ->withSum(['entries as credit_sum' => function ($query) {
                 $query->where('credit', true);
             }], 'amount')
@@ -254,7 +256,7 @@ class AccountsController extends ApiController
     public function show(Request $request, $code)
     {
 
-        $account = Account::with(['entries.transaction', 'category','currency','status'])
+        $account = Account::with(['entries.transaction', 'node','currency','status'])
             ->withSum(['entries as credit_sum' => function ($query) {
                 $query->where('locked', false)->where('post', false)->where('credit', true);
             }], 'amount')

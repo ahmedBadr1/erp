@@ -6,8 +6,10 @@ use App\Filters\ByCode;
 use App\Filters\ByIso3;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListRequest;
+use App\Http\Requests\System\BookmarkRequest;
 use App\Http\Resources\System\AddressResource;
 use App\Http\Resources\System\AttachmentResource;
+use App\Http\Resources\System\BookmarkResource;
 use App\Http\Resources\System\CityResource;
 use App\Http\Resources\System\ContactResource;
 use App\Http\Resources\System\CountryResource;
@@ -19,6 +21,7 @@ use App\Http\Resources\System\TaxResource;
 use App\Http\Resources\System\TicketResource;
 use App\Models\System\Address;
 use App\Models\System\Attachment;
+use App\Models\System\Bookmark;
 use App\Models\System\City;
 use App\Models\System\Contact;
 use App\Models\System\Country;
@@ -142,6 +145,24 @@ class SystemController extends ApiController
     public function getTag(Request $request,int $id)
     {
         return $this->successResponse(new TagResource(Tag::active()->whereId($id)->firstOrFail()));
+    }
+
+    public function bookmarks(Request $request)
+    {
+        $bookmarks = auth('api')->user()->bookmarks()->get();
+        return $this->successResponse(BookmarkResource::collection($bookmarks));
+    }
+
+    public function toggleBookmark(BookmarkRequest $request)
+    {
+        $userId = auth('api')->id();
+        $bookmark = Bookmark::where('user_id',$userId)->where('link',$request->link)->first();
+        if ($bookmark){
+            $bookmark->delete() ;
+            return $this->successResponse(auth('api')->user()->bookmarks()->pluck("link")->toArray(),__('message.deleted',['model'=>__('Bookmark')]));
+        }
+        auth('api')->user()->bookmarks()->create($request->validated());
+        return $this->successResponse( auth('api')->user()->bookmarks()->pluck("link")->toArray(),__('message.created',['model'=>__('Bookmark')]));
     }
 
 }

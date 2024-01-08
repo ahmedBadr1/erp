@@ -91,9 +91,9 @@ Route::group(['middleware' => [ 'json.response']], function () {
             ], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
-                Route::post('/categories', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'categories'])->name('categories');
-                Route::post('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'category'])->name('category.show');
-                Route::patch('/categories/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'updateCategory'])->name('category.update');
+                Route::post('/nodes', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'nodes'])->name('nodes');
+                Route::post('/nodes/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'node'])->name('nodes.show');
+                Route::patch('/nodes/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'updateNode'])->name('nodes.update');
 
 
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
@@ -127,16 +127,16 @@ Route::group(['middleware' => [ 'json.response']], function () {
                 'prefix' => 'entries',
                 'as' => 'entries.',
             ], function () {
-                Route::get('/', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'index'])->name('index');
-                Route::get('/create', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'create'])->name('create');
-                Route::get('/edit/{user_id}', [\App\Http\Controllers\Admin\Accounting\EntriesController::class, 'edit'])->name('edit');
+                Route::get('/', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'index'])->name('index');
+                Route::get('/create', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'create'])->name('create');
+                Route::get('/edit/{user_id}', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'edit'])->name('edit');
             });
 
 
-            Route::get('/posting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'posting'])->name('posting');
-            Route::get('/unposting', [\App\Http\Controllers\Admin\Accounting\TransfersController::class, 'unposting'])->name('unposting');
+            Route::get('/posting', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'posting'])->name('posting');
+            Route::get('/unposting', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'unposting'])->name('unposting');
 
-            Route::get('/reports', [\App\Http\Controllers\Admin\Accounting\ReportsController::class, 'index'])->name('reports');
+            Route::get('/reports', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'index'])->name('reports');
         });
 
 
@@ -241,6 +241,9 @@ Route::group(['middleware' => [ 'json.response']], function () {
             Route::post('tags/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getTag']);
             Route::post('contacts/{contact}', [\App\Http\Controllers\Api\SystemController::class, 'getContact']);
             Route::post('tickets/{ticket}', [\App\Http\Controllers\Api\SystemController::class, 'getTicket']);
+
+            Route::post('bookmarks', [\App\Http\Controllers\Api\SystemController::class, 'bookmarks']);
+            Route::post('bookmarks/toggle', [\App\Http\Controllers\Api\SystemController::class, 'toggleBookmark']);
 
         });
 

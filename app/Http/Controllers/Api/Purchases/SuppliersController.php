@@ -10,7 +10,7 @@ use App\Http\Resources\Hr\EmployeesResource;
 use App\Http\Resources\Purchases\ShowVendorResource;
 use App\Http\Resources\Purchases\SuppliersResource;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use App\Models\Hr\Employee;
 use App\Models\Purchases\Payment;
 use App\Models\Purchases\Supplier;

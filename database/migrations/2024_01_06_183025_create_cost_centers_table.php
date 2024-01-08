@@ -11,19 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('acc_categories', function (Blueprint $table) {
+        Schema::create('cost_centers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug');//->nullable()->index();
             $table->string('code')->unique()->index();//->nullable()->index();
-            $table->boolean('credit');
             $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')
-                ->on('acc_categories')
+                ->on('cost_centers')
                 ->onUpdate('cascade');
             $table->boolean('active')->default(1);
-            $table->boolean('usable')->default(0);
             $table->boolean('system')->default(0);
             $table->timestamps();
             $table->softDeletes();
@@ -35,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('acc_categories');
+        Schema::dropIfExists('cost_centers');
     }
 };

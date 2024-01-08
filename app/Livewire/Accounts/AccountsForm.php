@@ -4,7 +4,7 @@ namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\BasicForm;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use App\Models\System\Currency;
@@ -30,24 +30,24 @@ class AccountsForm extends  BasicForm
     #[Rule('required|boolean')]
     public $active = true;
 
-    #[Rule('required|exists:acc_categories,id')]
-    public $category_id ;
+    #[Rule('required|exists:nodes,id')]
+    public $node_id ;
 
     #[Rule('required|exists:currencies,id')]
     public $currency_id ;
 
 
     public $account  ;
-    public $categories = [] ;
+    public $nodes = [] ;
     public $currencies = [] ;
 
     public function mount($id = null){
         if ($id) {
-            $this->account = Account::with('category','currency')->whereId($id)->first() ;
+            $this->account = Account::with('node','currency')->whereId($id)->first() ;
             $this->name = $this->account->name ;
             $this->type = $this->account->type ;
             $this->active = $this->account->active ;
-            $this->category_id = $this->account->category_id ;
+            $this->node_id = $this->account->node_id ;
             $this->currency_id = $this->account->currency_id ;
             $this->description = $this->account->description ;
             $this->title = 'edit';
@@ -57,7 +57,7 @@ class AccountsForm extends  BasicForm
     }
     public function render()
     {
-        $this->categories = AccCategory::isLeaf()->active()->pluck('name','id')->toArray();
+        $this->nodes = Node::isLeaf()->active()->pluck('name','id')->toArray();
         $this->currencies = Currency::active()->pluck('name','id')->toArray();
         return view('livewire.accounts.accounts-form');
     }
@@ -73,22 +73,22 @@ class AccountsForm extends  BasicForm
             ]);
             $this->toast( __('message.updated', ['model' => __('names.account')]));
         }else{
-            $category = AccCategory::withCount('accounts')->whereId($validated['category_id'])->first();
-            if (!$category){
-                $this->toast(__('Category Not Found'),'error');
+            $node = Node::withCount('accounts')->whereId($validated['node_id'])->first();
+            if (!$node){
+                $this->toast(__('Node Not Found'),'error');
                 return ;
             }
 
-            DB::transaction(function () use ($validated,$category){
+            DB::transaction(function () use ($validated,$node){
                 $account =  Account::create([
                     'name' => $validated['name'],
-                    'code' => $category->id . ((int)$category->accounts_count + 1),
+                    'code' => $node->id . ((int)$node->accounts_count + 1),
                     'description' => $validated['description'],
                     'currency_id' => $validated['currency_id'],
-                    'category_id' => $validated['category_id'],
+                    'node_id' => $validated['node_id'],
                     'opening_balance' => $validated['opening_balance'],
                     'opening_balance_date' => $validated['opening_balance_date'],
-                    'credit'  => $category->credit,
+                    'credit'  => $node->credit,
 
                 ]);
 //                if ($validated['opening_balance']){

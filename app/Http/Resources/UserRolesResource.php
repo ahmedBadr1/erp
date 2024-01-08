@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\System\BookmarkResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,6 +24,7 @@ class UserRolesResource extends JsonResource
             'lang' => $this->lang,
             'image' => $image,
             'active' => $this->active,
+            'bookmarks' => BookmarkResource::collection($this->whenLoaded('bookmarks')),
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
             "role" => $this->getRoleNames()[0],
             "permissions" => $this->getPermissionsViaRoles()->pluck("name"),

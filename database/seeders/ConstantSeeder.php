@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 
 use App\Models\Accounting\Account;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\AccountType;
+use App\Models\Accounting\CostCenter;
+use App\Models\Accounting\Node;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
 use App\Models\Inventory\Item;
@@ -111,17 +113,22 @@ class ConstantSeeder extends Seeder
             'active' => true
         ]);
 
-        $this->seedCategories();
+        $this->seedTypes();
+
+        $this->seedNodes();
 
         $this->seedCurrencies();
 
         $this->seedUnits();
+        CostCenter::factory()->create(['name'=>'مركز تكلفة رئيسي',"code"=>"01",'system' => 1,'parent_id'=>null]);
 
         \App\Models\Crm\Client::factory(3)->create();
         \App\Models\Crm\Action::factory(10)->create();
         Supplier::factory(3)->create();
         Product::factory(100)->create();
         Account::factory(100)->create();
+        CostCenter::factory(10)->create();
+
         Warehouse::factory(2)->create();
         Bill::factory(10)->create()->each(function ($bill){
             $bill->items()->saveMany(Item::factory(rand(2,5))->create());
@@ -156,11 +163,13 @@ class ConstantSeeder extends Seeder
     public function addModelsNotCrud()
     {
         $permissions = [
-            'dashboard',
-            "reports",
-            "accounting.chart",
-            "accounting.cash_in",
-            "accounting.cash_out",
+            "accounting.data.chart",
+            "accounting.data.centers",
+            "accounting.data.taxes",
+            "accounting.data.currencies",
+            "accounting.transactions.cash_in",
+            "accounting.transactions.cash_out",
+            "accounting.reports.cash",
             "accounting.posting",
             "accounting.unposting",
             "accounting.reports",
@@ -578,9 +587,9 @@ class ConstantSeeder extends Seeder
     /**
      * @return array
      */
-    public function seedCategories()
+    public function seedNodes()
     {
-        $categories = [
+        $nodes = [
             ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0],
             ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1],
             ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1],
@@ -667,13 +676,13 @@ class ConstantSeeder extends Seeder
 
 
         ];
-        foreach ($categories as $key => $cat) {
-            AccCategory::factory()->create([
-                'code' => $cat['code'] ?? null,
-                'name' => $cat['name'],
-                'slug' => Str::slug($cat['name']),
-                'credit' => $cat['credit'] ?? null,
-                'parent_id' => $cat['parent_id'],
+        foreach ($nodes as $key => $node) {
+            Node::factory()->create([
+                'code' => $node['code'] ?? null,
+                'name' => $node['name'],
+                'slug' => Str::slug($node['name']),
+                'credit' => $node['credit'] ?? null,
+                'parent_id' => $node['parent_id'],
             ]);
         }
         return true;
@@ -685,42 +694,42 @@ class ConstantSeeder extends Seeder
     public function seedCurrencies(): string
     {
         $currencies = [
-            'EGP' => 'Egyptian Pound',
-            'USD' => 'US Dollar',
-            'EUR' => 'Euro',
-            'SAR' => 'Saudi Riyal',
-            'QAR' => 'Qatari Riyal',
-            'IQD' => 'Iraqi Dinar',
-            'IRR' => 'Iranian Rial',
-            'JOD' => 'Jordanian Dinar',
-            'KWD' => 'Kuwaiti Dinar',
-            'LBP' => 'Lebanese Pound',
-            'LYD' => 'Libyan Dinar',
-            'MAD' => 'Moroccan Dirham',
-            'OMR' => 'Omani Rial',
-            'SYP' => 'Syrian Pound',
-            'TND' => 'Tunisian Dinar',
-            'YER' => 'Yemeni Rial',
-            'JPY' => 'Japanese Yen',
-            'GBP' => 'British Pound',
-            'AUD' => 'Australian Dollar',
-            'CAD' => 'Canadian Dollar',
-            'CHF' => 'Swiss Franc',
-            'CNY' => 'Chinese Yuan',
-            'HKD' => 'Hong Kong Dollar',
-            'NZD' => 'New Zealand Dollar',
-            'SEK' => 'Swedish Krona',
-            'KRW' => 'South Korean Won',
-            'SGD' => 'Singapore Dollar',
-            'NOK' => 'Norwegian Krone',
-            'MXN' => 'Mexican Peso',
-            'INR' => 'Indian Rupee',
-            'RUB' => 'Russian Ruble',
-            'ZAR' => 'South African Rand',
-            'TRY' => 'Turkish Lira',
-            'BRL' => 'Brazilian Real',
-            'AED' => 'United Arab Emirates Dirham',
-            'BHD' => 'Bahraini Dinar',
+            'جم' => 'EGP',
+            '$' => 'USD',
+//            'EUR' => 'Euro',
+//            'SAR' => 'Saudi Riyal',
+//            'QAR' => 'Qatari Riyal',
+//            'IQD' => 'Iraqi Dinar',
+//            'IRR' => 'Iranian Rial',
+//            'JOD' => 'Jordanian Dinar',
+//            'KWD' => 'Kuwaiti Dinar',
+//            'LBP' => 'Lebanese Pound',
+//            'LYD' => 'Libyan Dinar',
+//            'MAD' => 'Moroccan Dirham',
+//            'OMR' => 'Omani Rial',
+//            'SYP' => 'Syrian Pound',
+//            'TND' => 'Tunisian Dinar',
+//            'YER' => 'Yemeni Rial',
+//            'JPY' => 'Japanese Yen',
+//            'GBP' => 'British Pound',
+//            'AUD' => 'Australian Dollar',
+//            'CAD' => 'Canadian Dollar',
+//            'CHF' => 'Swiss Franc',
+//            'CNY' => 'Chinese Yuan',
+//            'HKD' => 'Hong Kong Dollar',
+//            'NZD' => 'New Zealand Dollar',
+//            'SEK' => 'Swedish Krona',
+//            'KRW' => 'South Korean Won',
+//            'SGD' => 'Singapore Dollar',
+//            'NOK' => 'Norwegian Krone',
+//            'MXN' => 'Mexican Peso',
+//            'INR' => 'Indian Rupee',
+//            'RUB' => 'Russian Ruble',
+//            'ZAR' => 'South African Rand',
+//            'TRY' => 'Turkish Lira',
+//            'BRL' => 'Brazilian Real',
+//            'AED' => 'United Arab Emirates Dirham',
+//            'BHD' => 'Bahraini Dinar',
 
         ];
 
@@ -871,4 +880,32 @@ class ConstantSeeder extends Seeder
         ]);
         $user3->assignRole(Role::where('name', 'employee')->value('id'));
     }
+
+    /**
+     * @return string
+     */
+    public function seedTypes(): string
+    {
+        $types = [
+            'أصل متداول' => 'أصل متداول',
+            'أصل ثابت' => 'أصل ثابت',
+            'رأس المال' => 'رأس المال',
+            'مصروف' => '-',
+            'نقدية' => 'نقدية',
+            'إيراد' => '-',
+            'مخزون' => '-',
+            'إستثمار' => '-',
+            'مورد' => '-',
+            'عميل' => '-',
+        ];
+
+        foreach ($types as $key => $val) {
+            AccountType::factory()->create([
+                'name' => $key,
+                'description' => $val
+            ]);
+        }
+        return true;
+    }
+
 }

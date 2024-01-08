@@ -16,14 +16,18 @@ class Account extends MainModelSoft
 {
     use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'credit', 'description', 'opening_balance', 'opening_balance_date', 'system', 'active', 'acc_category_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'credit', 'description','account_type_id', 'c_opening', 'd_opening', 'credit_limit','debit_limit', 'opening_balance_date', 'system', 'active', 'node_id', 'currency_id', 'status_id'];
 
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_balance_date' => 'date'];
 
-    public function category()
+    public function type()
     {
-        return $this->belongsTo(AccCategory::class,'acc_category_id');
+        return $this->belongsTo(AccountType::class,'account_type_id');
+    }
+    public function node()
+    {
+        return $this->belongsTo(Node::class,'node_id');
     }
 
     public function currency()
@@ -55,7 +59,7 @@ class Account extends MainModelSoft
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Account has been {$eventName}")
-            ->logOnly(['code', 'name', 'type', 'description', 'active', 'acc_category_id', 'currency_id', 'status_id',])
+            ->logOnly(['code', 'name', 'type', 'description', 'active', 'node_id', 'currency_id', 'status_id',])
             ->logOnlyDirty()
             ->useLogName('system');
     }
@@ -64,12 +68,12 @@ class Account extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
-            $category = AccCategory::withCount('children', 'accounts', 'ancestors')->find($model->acc_category_id);
-            if ($category->children_count > 0) {
+            $node = Node::withCount('children', 'accounts', 'ancestors')->find($model->node_id);
+            if ($node->children_count > 0) {
                 return false;
             }
-            $model->code = $category->code . str_pad(((int)$category->children_count + $category->accounts_count + 1), 4, '0', STR_PAD_LEFT);
-            $model->credit = $category->credit;
+            $model->code = $node->code . str_pad(((int)$node->children_count + $node->accounts_count + 1), 4, '0', STR_PAD_LEFT);
+            $model->credit = $node->credit;
         });
     }
 }

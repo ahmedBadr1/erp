@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\AuthModel;
+use App\Models\System\Bookmark;
 use App\Models\System\Profile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Models\Role;
@@ -59,6 +60,11 @@ class User extends AuthModel
         return $this->hasOne(Profile::class);
     }
 
+    public function bookmarks()
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
     protected function name():Attribute
     {
         return Attribute::make(
@@ -71,6 +77,7 @@ class User extends AuthModel
     {
         return $this->name['first'] . ' ' . $this->name['last'] ;
     }
+
 
 
 

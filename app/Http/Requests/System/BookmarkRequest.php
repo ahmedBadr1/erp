@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Accounting;
+namespace App\Http\Requests\System;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends FormRequest
+class BookmarkRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class UpdateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-//            'description' => 'required|string',
+           'link' => 'required|string',
+            'title' => 'required|string',
         ];
     }
 }

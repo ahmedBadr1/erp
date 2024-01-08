@@ -41,7 +41,7 @@ class TransfersController extends ApiController
     {
         $input = $request->all();
         //
-        return TransactionsResourses::collection(Transaction::search($input['keywords'])
+        return TransactionsResourse::collection(Transaction::search($input['keywords'])
 //            ->orderBy($input['orderBy'], $input['orderDesc'] ? 'desc' : 'asc')
             ->paginate($input['limit']));
     }

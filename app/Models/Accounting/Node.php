@@ -11,16 +11,19 @@ use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Traits\HasAdjacencyList;
 
 
-class AccCategory extends MainModelSoft
+class Node extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-//    protected $table = 'acc_categories';
 
     public static $types = ['account', 'product'];
 
-    protected $fillable = ['name', 'parent_id', 'active', 'usable', 'system'];
+    protected $fillable = ['name', 'parent_id',"account_type_id", 'active', 'usable', 'system'];
 
+    public function type()
+    {
+        return $this->belongsTo(AccountType::class,'account_type_id');
+    }
     public function accounts()
     {
         return $this->hasMany(Account::class)->withTrashed();
@@ -41,20 +44,6 @@ class AccCategory extends MainModelSoft
 //        return $this->hasMany(__CLASS__,'parent_id');
 //    }
 
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
-
-    public function scopeAccount($query)
-    {
-        return $query->where('type', 'account');
-    }
-
-    public function scopeProduct($query)
-    {
-        return $query->where('type', 'product');
-    }
 
     public static function search($search)
     {
@@ -71,7 +60,7 @@ class AccCategory extends MainModelSoft
         parent::boot();
         static::creating(function ($model) {
             if (!empty($model->parent_id)) {
-                $parent = AccCategory::withCount('children', 'accounts', 'ancestors')->find($model->parent_id);
+                $parent = Node::withCount('children', 'accounts', 'ancestors')->find($model->parent_id);
 //                if ($parent->accounts_count > 0 ){
 //                    return false ;
 //                }
@@ -84,18 +73,6 @@ class AccCategory extends MainModelSoft
                 $model->usable = 1;
             }
         });
-//        static::created(function ($model) {
-//            if ($model->children()->exists()) {
-//                $model->usable = 0;
-//                $model->save();
-//            }
-//        });
-//        static::updated(function ($model) {
-//            if ($model->children()->exists()) {
-//                $model->usable = 0;
-//                $model->save();
-//            }
-//        });
     }
 
 

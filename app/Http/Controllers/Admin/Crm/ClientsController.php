@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Crm;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\MainController;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use App\Models\Crm\Client;
 use App\Models\System\Status;
 use Illuminate\Http\RedirectResponse;

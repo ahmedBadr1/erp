@@ -4,7 +4,7 @@ namespace App\Livewire\Accounts;
 
 use App\Livewire\Basic\Toast;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -13,14 +13,14 @@ class Charts extends Component
     use Toast;
     public function render()
     {
-        $charts = AccCategory::tree()->withCount('children')->with('accounts')->get()->toTree();
+        $charts = Node::tree()->withCount('children')->with('accounts')->get()->toTree();
 
         return view('livewire.accounts.charts',compact('charts'));
     }
 
     public function duplicateCategory($id){
-        $category = AccCategory::find($id);
-        AccCategory::create([
+        $category = Node::find($id);
+        Node::create([
            'name' => $category->name . ' copy',
             'slug' => Str::slug($category->name . ' copy'),
             'credit' => $category->credit,

@@ -48,7 +48,7 @@ class TransactionController extends ApiController
 
     public function create()
     {
-        $accounts = Account::with(['category' => fn($q) => $q->select('id', 'name')])->get(['id', 'name', 'acc_category_id']);
+        $accounts = Account::with(['node' => fn($q) => $q->select('id', 'name')])->get(['id', 'name', 'node_id']);
         return $this->successResponse($accounts);
     }
 

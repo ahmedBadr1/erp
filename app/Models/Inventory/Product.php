@@ -2,7 +2,7 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Accounting\AccCategory;
+use App\Models\Accounting\Node;
 use App\Models\Employee\Employee;
 use App\Models\MainModelSoft;
 use App\Models\System\Tax;
