@@ -156,13 +156,13 @@ class SystemController extends ApiController
     public function toggleBookmark(BookmarkRequest $request)
     {
         $userId = auth('api')->id();
-        $bookmark = Bookmark::where('user_id',$userId)->where('link',$request->link)->first();
+        $bookmark = Bookmark::where('user_id',$userId)->where('path',$request->path)->first();
         if ($bookmark){
             $bookmark->delete() ;
-            return $this->successResponse(auth('api')->user()->bookmarks()->pluck("link")->toArray(),__('message.deleted',['model'=>__('Bookmark')]));
+            return $this->successResponse(BookmarkResource::collection(auth('api')->user()->bookmarks()->get()),__('message.deleted',['model'=>__('Bookmark')]));
         }
         auth('api')->user()->bookmarks()->create($request->validated());
-        return $this->successResponse( auth('api')->user()->bookmarks()->pluck("link")->toArray(),__('message.created',['model'=>__('Bookmark')]));
+        return $this->successResponse(BookmarkResource::collection(auth('api')->user()->bookmarks()->get()),__('message.created',['model'=>__('Bookmark')]));
     }
 
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bookmark extends MainModel
 {
-  protected $fillable = ['link','title','user_id'];
+  protected $fillable = ['path','label','user_id'];
 
   public function user()
   {

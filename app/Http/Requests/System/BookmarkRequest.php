@@ -22,8 +22,8 @@ class BookmarkRequest extends FormRequest
     public function rules(): array
     {
         return [
-           'link' => 'required|string',
-            'title' => 'required|string',
+           'path' => 'required|string',
+            'label' => 'required|string',
         ];
     }
 }

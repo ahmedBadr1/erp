@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('bookmarks', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\User::class);
-            $table->string('link');
-            $table->string('title');
+            $table->string('path');
+            $table->string('label');
             $table->timestamps();
         });
     }

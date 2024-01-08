@@ -15,8 +15,8 @@ class BookmarkResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'link' => $this->link,
-            'title' => $this->title,
+            'path' => $this->path,
+            'label' => $this->label,
         ];
     }
 }
