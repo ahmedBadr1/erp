@@ -14,7 +14,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Account extends MainModelSoft
 {
-    use LogsActivity;
+//    use LogsActivity;
 
     protected $fillable = ['code', 'name', 'credit', 'description','account_type_id', 'c_opening', 'd_opening', 'credit_limit','debit_limit', 'opening_balance_date', 'system', 'active', 'node_id', 'currency_id', 'status_id'];
 

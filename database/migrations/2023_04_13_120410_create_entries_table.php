@@ -16,8 +16,8 @@ return new class extends Migration
             $table->boolean('credit');
             $table->bigInteger('amount');
             $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Transaction::class)->nullable();
-            $table->boolean('post')->default(false);
+            $table->foreignIdFor(\App\Models\Accounting\Ledger::class)->nullable();
+            $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);
             $table->timestamps();
             $table->softDeletes();

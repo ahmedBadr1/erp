@@ -11,24 +11,24 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Entry extends MainModelSoft
 {
-    use  LogsActivity ;
+//    use  LogsActivity ;
 
-    protected $fillable = ['amount','credit','account_id','transaction_id'];
+    protected $fillable = ['amount','credit','account_id','ledger_id'];
 
     public function account()
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function transaction()
+    public function ledger()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(Ledger::class);
     }
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Entry has been {$eventName}")
-            ->logOnly(['debit','credit','account_id'])
+            ->logOnly(['credit','account_id'])
             ->logOnlyDirty()
             ->useLogName('system');
     }

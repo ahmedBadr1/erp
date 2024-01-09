@@ -3,6 +3,7 @@
 namespace Database\Factories\Accounting;
 
 use App\Models\Accounting\Account;
+use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,11 +20,11 @@ class EntryFactory extends Factory
     public function definition(): array
     {
         return [
-            'amount' => $this->faker->numberBetween(100,200000),
+//            'amount' => $this->faker->numberBetween(100,200000),
             'credit' => $this->faker->boolean(30),
 //            'description'=>$this->faker->realText(),
-            'account_id'=> Account::all()->random()->id,
-            'transaction_id'=> Transaction::all()->random()->id,
+            'account_id'=> rand(1,100),// Account::all()->random()->id,
+//            'ledger_id'=> Ledger::all()->random()->id,
         ];
     }
 }

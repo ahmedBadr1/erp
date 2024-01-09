@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('ledgers', function (Blueprint $table) {
             $table->id();
-            $table->string('code');//->index()->unique();
             $table->decimal('amount',15,2);
-            $table->string('type')->index();
             $table->text('description')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\Accounting\Ledger::class);
-            $table->foreignIdFor(\App\Models\Accounting\Account::class);
+            $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
             $table->foreignIdFor(\App\Models\User::class);
-            $table->nullableMorphs('reference');
             $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);
             $table->boolean('system')->default(true);
@@ -35,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('ledgers');
     }
 };

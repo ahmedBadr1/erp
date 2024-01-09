@@ -19,7 +19,7 @@ class EntryResource extends JsonResource
             'id' => $this->id,
             'credit' => $this->credit,
             'amount' => $this->amount,
-            'post' => $this->post,
+            'posted' => $this->post,
             'locked' => $this->locked,
             'created_at' => $this->created_at->format('d/m/Y'),
             'account' =>  new AccountChartResource($this->whenLoaded('account')),

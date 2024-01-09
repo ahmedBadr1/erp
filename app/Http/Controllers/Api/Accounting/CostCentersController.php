@@ -10,34 +10,37 @@ use App\Http\Requests\Accounting\UpdateNodeRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\TypeRequest;
 use App\Http\Requests\UpdateAccountRequest;
+use App\Http\Resources\Accounting\CostCenterResource;
 use App\Http\Resources\Accounting\NodeResource;
 use App\Http\Resources\Accounting\AccountChartResource;
 use App\Http\Resources\Accounting\AccountResource;
 use App\Http\Resources\UserResource;
+use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Node;
 use App\Models\Accounting\Account;
 use App\Models\System\Currency;
-use App\Services\Accounting\AccountService;
+use App\Services\Accounting\CostCenterService;
 use App\Services\Inventory\WarehouseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class AccountsController extends ApiController
+class CostCentersController extends ApiController
 {
     public function __construct()
     {
         parent::__construct();
-        $this->class = "accounts";
-        $this->table = "accounts";
+        $this->class = "centers";
+        $this->table = "centers";
         $this->middleware('auth');
-        $this->middleware('permission:accounting.accounts.view', ['only' => ['index', 'show']]);
-        $this->middleware('permission:accounting.accounts.create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:accounting.accounts.edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:accounting.accounts.delete', ['only' => ['destroy']]);
+        $this->middleware('permission:accounting.centers.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:accounting.centers.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:accounting.centers.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:accounting.centers.delete', ['only' => ['destroy']]);
 
-        $this->service = new AccountService();
+
+        $this->service = new CostCenterService();
     }
 
 
@@ -70,11 +73,11 @@ class AccountsController extends ApiController
 
     public function tree()
     {
-        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+        if (auth('api')->user()->cannot('accounting.centers.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $tree = Node::tree()->withCount('children')->with('accounts')->get()->toTree();
-        return $this->successResponse(NodeResource::collection($tree));
+        $tree = CostCenter::tree()->withCount('children')->get()->toTree();
+        return $this->successResponse(CostCenterResource::collection($tree));
     }
 
     public function nodes(Request $request)

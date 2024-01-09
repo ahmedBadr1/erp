@@ -27,7 +27,7 @@ class Posting extends BasicTable
                     $query->where('created_at','<=', $this->end_date);
                 })
                 ->with(['entries' => fn($q) => $q->with(['account' => fn($q) => $q->select('accounts.id','accounts.name')])])
-                ->where('post',0)
+                ->where('posted',0)
                 ->orderBy($this->orderBy, $this->orderDesc ? 'desc' : 'asc')
                 ->paginate($this->perPage),
         ]);
@@ -35,7 +35,7 @@ class Posting extends BasicTable
 
     public function save(){
 //        dd($this->checks);
-        Transaction::whereIn('id',array_keys($this->checks))->update(['post'=>true]);
+        Transaction::whereIn('id',array_keys($this->checks))->update(['posted'=>true]);
         $this->toast(__("Transaction Has Been Posted"));
         return ;
     }

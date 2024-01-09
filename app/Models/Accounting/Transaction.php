@@ -12,30 +12,28 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Transaction extends MainModelSoft
 {
-    use  LogsActivity;
+//    use  LogsActivity;
 
-    protected $fillable = ['code','amount', 'type', 'description','due','user_id'];
+    protected $fillable = ['code','amount', 'type', 'description','due','ledger_id','account_id','user_id','posted','locked','system'];
 
-    public static $expenses = ['cost of goods','rent','salary','Operating','Extraordinary','Accrued','Prepaid','Fixed'];
 
     protected $casts = ['due' => 'datetime'];
 
     public static array $TYPES = ['so','si','po','ex','ci',"co"];
 
-    public static array $METHODS = ['cash','bank'];
-
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    public function entries()
+
+    public function ledger()
     {
-        return $this->hasMany(Entry::class);
+        return $this->belongsTo(Ledger::class);
     }
 
-    public function accounts()
+    public function account()
     {
-        return $this->hasManyThrough(Account::class,Entry::class);
+        return $this->belongsTo(Account::class);
     }
 
 
@@ -52,12 +50,14 @@ class Transaction extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
-            $transactionCount = Transaction::where('type',$model->type)->count();
-//            if ($transaction) {
-//                return false;
-//            }
-            $model->code = $model->type .'-'. str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+            if(! $model->code){
+                $transactionCount = Transaction::where('type',$model->type)->count();
+                if (!$transactionCount) {
+                    $transactionCount = 1 ;
+                }
+                $model->code = $model->type .'-'. $transactionCount +1 ;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+            }
+
         });
     }
-
 }
