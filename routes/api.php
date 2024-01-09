@@ -106,13 +106,13 @@ Route::group(['middleware' => [ 'json.response']], function () {
                 'prefix' => 'transactions',
                 'as' => 'transactions.',
             ], function () {
-                Route::post('/', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'index'])->name('index');
-                Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'list'])->name('list');
-                Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'create'])->name('create');
-                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'store'])->name('store');
-                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'storeType'])->name('storeType');
-                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'edit'])->name('edit');
-                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'show'])->name('show');
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
+                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
+                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
             });
 
             Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('tree');

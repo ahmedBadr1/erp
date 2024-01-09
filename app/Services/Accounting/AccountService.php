@@ -52,6 +52,20 @@ class AccountService extends MainService
         }
     }
 
+    public function updateBalance($account_id)
+    {
+        try {
+            $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
+            $totalCredit = (int) $account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
+            $totalDebit =(int)  $account->entries->where('credit', 0)->sum('amount') + $account->d_opening ;
+            $account->balance =$account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+            $account->save();
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+        return true ;
+    }
+
     public function destroy($account)
     {
         if ($account->projects_count > 0) {
@@ -63,6 +77,6 @@ class AccountService extends MainService
 
     public function export()
     {
-        return Excel::download(new AccountsExport, 'accounts_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new AccountsExport, 'accounts_' . date('d-m-Y') . '.xlsx');
     }
 }

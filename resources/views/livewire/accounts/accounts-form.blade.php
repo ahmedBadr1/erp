@@ -32,8 +32,8 @@
                                   placeholder="{{ __('Balance') }}"></x-input.text>
                 </x-form.group>
                 <x-form.group name="due" cols="4">
-                    <x-input.label :value="__('names.opening_balance_date')" :required="true"></x-input.label>
-                    <input wire:model.live="opening_balance_date" type="date"
+                    <x-input.label :value="__('names.opening_date')" :required="true"></x-input.label>
+                    <input wire:model.live="opening_date" type="date"
                            class=" w-full px-4 py-2 appearance-none bg-gray-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md active:border-slate-500 dark:active:bg-slate-600 focus:bg-gray-200  dark:focus:bg-slate-600 "
                     />
                 </x-form.group>

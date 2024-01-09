@@ -112,7 +112,7 @@ class SuppliersController extends Controller
                'currency_id' => $validated['currency_id'],
                'category_id' => 2,
                 'opening_balance' => $validated['opening_balance'],
-                'opening_balance_date' => $validated['opening_balance_date'],
+                'opening_date' => $validated['opening_date'],
            ]);
            $vendor->account_id = $account->id;
             $vendor->save();

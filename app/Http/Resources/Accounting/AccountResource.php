@@ -25,7 +25,7 @@ class AccountResource extends JsonResource
             'debit_limit' => $this->debit_limit,
             'c_opening' => $this->d_opening ?? 0,
             'd_opening' => $this->d_opening ?? 0,
-            'opening_balance_date' => $this->opening_balance_date,//->format('m/d/Y'),
+            'opening_date' => $this->opening_date,//->format('m/d/Y'),
             'active' => $this->system,
             'system' => $this->system,
 

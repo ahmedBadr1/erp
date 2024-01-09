@@ -13,11 +13,16 @@ class Entry extends MainModelSoft
 {
 //    use  LogsActivity ;
 
-    protected $fillable = ['amount','credit','account_id','ledger_id'];
+    protected $fillable = ['amount','credit','account_id','ledger_id','cost_center_id'];
 
     public function account()
     {
         return $this->belongsTo(Account::class);
+    }
+
+    public function costCenter()
+    {
+        return $this->belongsTo(CostCenter::class);
     }
 
     public function ledger()

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->float('debit_limit')->nullable();
             $table->float('c_opening')->nullable();
             $table->float('d_opening')->nullable();
-            $table->dateTime('opening_balance_date')->nullable();
+            $table->dateTime('opening_date')->nullable();
             $table->float('balance')->default(0);
             $table->boolean('system')->default(false)->index();
             $table->boolean('active')->default(true)->index();

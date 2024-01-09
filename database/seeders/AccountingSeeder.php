@@ -77,22 +77,18 @@ class AccountingSeeder extends Seeder
     public function seedTypes(): string
     {
         $types = [
-            'أصل متداول' => 'أصل متداول',
-            'أصل ثابت' => 'أصل ثابت',
-            'رأس المال' => 'رأس المال',
-            'مصروف' => '-',
-            'نقدية' => 'نقدية',
-            'إيراد' => '-',
-            'مخزون' => '-',
-            'إستثمار' => '-',
-            'مورد' => '-',
-            'عميل' => '-',
+            'مصروف' => 'CO',
+            'نقدية' => 'TR',
+            'إيراد' => 'CI',
+            'مخزون' => 'WH',
+            'مورد' => 'CL',
+            'عميل' => 'SP',
         ];
 
         foreach ($types as $key => $val) {
             AccountType::factory()->create([
                 'name' => $key,
-                'description' => $val
+                'code' => $val
             ]);
         }
         return true;

@@ -36,7 +36,7 @@ class ShowVendorResource extends JsonResource
             'payment_method' => $this->payment_method,
             'account_name' => $account?->name,
             'opening_balance' => $account?->opening_balance,
-            'opening_balance_date' => $account?->opening_balance_date,
+            'opening_date' => $account?->opening_date,
             'currency_id' => $account?->currency_id,
             'contacts' => $contacts
 //            'locations' =>  new LocationResource($this->whenLoaded('locations')),

@@ -25,7 +25,7 @@ class AccountsForm extends  BasicForm
     public $opening_balance = 0;
 
     #[Rule('nullable|date')]
-    public $opening_balance_date  ;
+    public $opening_date  ;
 
     #[Rule('required|boolean')]
     public $active = true;
@@ -87,7 +87,7 @@ class AccountsForm extends  BasicForm
                     'currency_id' => $validated['currency_id'],
                     'node_id' => $validated['node_id'],
                     'opening_balance' => $validated['opening_balance'],
-                    'opening_balance_date' => $validated['opening_balance_date'],
+                    'opening_date' => $validated['opening_date'],
                     'credit'  => $node->credit,
 
                 ]);
@@ -96,7 +96,7 @@ class AccountsForm extends  BasicForm
 //                        'amount' => $validated['opening_balance'],
 //                        'description' =>'Opening Balance For Account' . $account->name,
 //                        'type' => 'user',
-//                        'due' => $validated['opening_balance_date'] ?? now(),//$validated['due']
+//                        'due' => $validated['opening_date'] ?? now(),//$validated['due']
 //                        'user_id' => auth()->id()
 //                    ]);
 //                    Entry::create([

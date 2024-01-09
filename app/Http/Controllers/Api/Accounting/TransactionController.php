@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Api\Accounting;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\StoreTransactionRequest;
+use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\ListRequest;
-use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\StoreTransactionTypeRequest;
 use App\Http\Resources\Accounting\TransactionResource;
 use App\Models\Accounting\Account;
+use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
-use App\Services\Accounting\ProductService;
-use App\Services\Accounting\ItemsService;
+use App\Services\Accounting\LedgerService;
+use App\Services\Accounting\TransactionService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +29,7 @@ class TransactionController extends ApiController
         $this->middleware('permission:accounting.transactions.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:accounting.transactions.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accounting.transactions.delete', ['only' => ['destroy']]);
-        $this->service = new ItemsService();
+        $this->service = new TransactionService();
     }
 
     public function index()
@@ -54,7 +55,7 @@ class TransactionController extends ApiController
 
     public function show(Request $request, $code)
     {
-        $transaction = Transaction::with('entries.account','user')->where('code',$code)->firstOrFail();
+        $transaction = Transaction::with('entries.account', 'user')->where('code', $code)->firstOrFail();
         return $this->successResponse(new  TransactionResource($transaction));
     }
 
@@ -88,7 +89,7 @@ class TransactionController extends ApiController
                 'user_id' => auth('api')->id()
             ]);
             foreach ($data['entries'] as $ent) {
-                $account = Account::where('code',$ent['account_id'])->value('id');
+                $account = Account::where('code', $ent['account_id'])->value('id');
                 Entry::create([
                     'amount' => $ent['amount'],
                     'credit' => $ent['credit'],
@@ -111,32 +112,19 @@ class TransactionController extends ApiController
     {
         $data = $request->validated();
 
-        $credit_account = Account::where('code',$data['credit_account'])->value('id');
-        $debit_account = Account::where('code',$data['debit_account'])->value('id');
-        if (!$credit_account || !$debit_account){
-            return $this->errorResponse('Accounts Not Fount',404);
+        $credit_account = Account::where('code', $data['credit_account'])->value('id');
+        $debit_account = Account::where('code', $data['debit_account'])->value('id');
+        $costCenter = CostCenter::where('code', $data['cost_center'])->value('id');
+
+        if (!$credit_account || !$debit_account) {
+            return $this->errorResponse('Accounts Not Fount', 404);
         }
-        DB::transaction(function () use ($data , $credit_account , $debit_account) {
-            $transaction = Transaction::create([
-                'amount' => $data['amount'],
-                'description' => $data['description'] ?? (($data['type'] == 'ci' )? 'cash in' : 'cash out'),
-                'type' => $data['type'] ,
-                'due' => now(),//$validated['due']
-                'user_id' => auth('api')->id()
-            ]);
-            Entry::create([
-                'amount' => $data['amount'],
-                'credit' => 1  ,
-                'account_id' =>$debit_account ,
-                'transaction_id' => $transaction->id
-            ]);
-            Entry::create([
-                'amount' => $data['amount'],
-                'credit' => 0 ,
-                'account_id' => $credit_account ,
-                'transaction_id' => $transaction->id
-            ]);
-        });
+
+        $e = (new LedgerService())->cashin($debit_account, $credit_account, $data["amount"], $costCenter, $data['due'] ?? now(), $data["description"], $data['user_id'] ?? null);
+        if (is_string($e)) {
+            return $this->errorResponse($e);
+        }
+
         return $this->successResponse([], 'Transaction created successfully', 201);
     }
 

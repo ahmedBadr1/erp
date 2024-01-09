@@ -30,15 +30,28 @@ class EntryService extends MainService
                 ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function store(array $data)
+    public function createEntry(int $credit, int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
     {
-        try {
-            $client = Client::create($data);
-            return $client;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+        return Entry::create([
+            'credit' => $credit,
+            'amount' => $amount,
+            'account_id' => $account_id,
+            'ledger_id' => $ledger_id,
+            'cost_center_id' => $cost_center_id ?? null,
+        ]);
     }
+
+    public function createCreditEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
+    {
+        return $this->createEntry(1, $amount, $account_id, $ledger_id, $cost_center_id);
+    }
+
+    public function createDebitEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
+    {
+        return $this->createEntry(0, $amount, $account_id, $ledger_id, $cost_center_id);
+    }
+
+
 
     public function update($client, array $data)
     {
@@ -61,6 +74,6 @@ class EntryService extends MainService
 
     public function export()
     {
-        return Excel::download(new ClientsExport, 'clients_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ClientsExport, 'clients_' . date('d-m-Y') . '.xlsx');
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Accounting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTransactionTypeRequest extends FormRequest
+class UpdateAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,11 @@ class StoreTransactionTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => 'required|in:ci,co',
-            'credit_account' => 'required|exists:accounts,code',
-            'debit_account' => 'required|exists:accounts,code',
-            'amount' => 'required|numeric|gt:0',
-            'description' => 'nullable|string',
+            'name' => 'required|string',
+            'description' => 'required|string',
+            'd_opening' => 'nullable|numeric|gt:0',
+            'c_opening' => 'nullable|numeric|gt:0',
+            'opening_date' => 'nullable|date_format:d/m/Y',
         ];
     }
 }

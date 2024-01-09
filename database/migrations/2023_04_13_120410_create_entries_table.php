@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->boolean('credit');
             $table->bigInteger('amount');
-            $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Ledger::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Account::class);
+            $table->foreignIdFor(\App\Models\Accounting\Ledger::class);
+            $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
             $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);
             $table->timestamps();

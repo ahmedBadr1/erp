@@ -19,7 +19,7 @@ class Transaction extends MainModelSoft
 
     protected $casts = ['due' => 'datetime'];
 
-    public static array $TYPES = ['so','si','po','ex','ci',"co"];
+    public static array $TYPES = ['SO','SR','PO','PR','EX','CI',"CO"];
 
     public function user()
     {
@@ -31,7 +31,7 @@ class Transaction extends MainModelSoft
         return $this->belongsTo(Ledger::class);
     }
 
-    public function account()
+    public function partner()
     {
         return $this->belongsTo(Account::class);
     }
@@ -53,7 +53,8 @@ class Transaction extends MainModelSoft
             if(! $model->code){
                 $transactionCount = Transaction::where('type',$model->type)->count();
                 if (!$transactionCount) {
-                    $transactionCount = 1 ;
+                    $model->code = $model->type .'-'. 1 ;
+                    return ;
                 }
                 $model->code = $model->type .'-'. $transactionCount +1 ;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
             }

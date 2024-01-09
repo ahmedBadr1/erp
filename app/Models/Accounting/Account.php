@@ -16,10 +16,10 @@ class Account extends MainModelSoft
 {
 //    use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'credit', 'description','account_type_id', 'c_opening', 'd_opening', 'credit_limit','debit_limit', 'opening_balance_date', 'system', 'active', 'node_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'credit', 'description','account_type_id', 'c_opening', 'd_opening', 'credit_limit','debit_limit', 'opening_date', 'system', 'active', 'node_id', 'currency_id', 'status_id'];
 
     protected array $TYPES = ['credit', 'debit'];
-    protected $casts = ['opening_balance_date' => 'date'];
+    protected $casts = ['opening_date' => 'date'];
 
     public function type()
     {

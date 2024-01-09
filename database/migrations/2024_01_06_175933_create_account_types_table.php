@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('account_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code')->unique()->index();
             $table->string('description')->nullable();
             $table->boolean('active')->default(true);
             $table->timestamps();

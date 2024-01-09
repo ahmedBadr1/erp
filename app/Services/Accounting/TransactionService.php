@@ -33,14 +33,34 @@ class TransactionService extends MainService
                 ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function store(array $data)
+    public function createTransaction(string $type, int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null, $system = 1)
     {
-        try {
-            $client = Transaction::create($data);
-            return $client;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+
+        return Transaction::create([
+            'type' => $type,
+            'amount' => $amount,
+            'ledger_id' => $ledger_id,
+            'account_id' => $partner_id,
+            'description' => $description,
+            'due' => $due,
+            'user_id' => $user_id ?? auth()->id(),
+            'system' => $system,
+        ]);
+    }
+
+    public function createCI(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null, $system = 1)
+    {
+        return $this->createTransaction('CI', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $system = 1);
+    }
+
+    public function createCO(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null, $system = 1)
+    {
+        return $this->createTransaction('CO', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $system = 1);
+    }
+
+    public function createSO(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null, $system = 1)
+    {
+        return $this->createTransaction('SO', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $system = 1);
     }
 
     public function update($client, array $data)
@@ -64,6 +84,6 @@ class TransactionService extends MainService
 
     public function export()
     {
-        return Excel::download(new ClientsExport, 'clients_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ClientsExport, 'clients_' . date('d-m-Y') . '.xlsx');
     }
 }

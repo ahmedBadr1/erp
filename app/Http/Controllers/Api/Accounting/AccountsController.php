@@ -3,24 +3,19 @@
 namespace App\Http\Controllers\Api\Accounting;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\AccountRequest;
 use App\Http\Requests\Accounting\DuplicateRequest;
+use App\Http\Requests\Accounting\UpdateAccountRequest;
 use App\Http\Requests\Accounting\UpdateNodeRequest;
 use App\Http\Requests\ListRequest;
-use App\Http\Requests\TypeRequest;
-use App\Http\Requests\UpdateAccountRequest;
-use App\Http\Resources\Accounting\NodeResource;
 use App\Http\Resources\Accounting\AccountChartResource;
 use App\Http\Resources\Accounting\AccountResource;
-use App\Http\Resources\UserResource;
-use App\Models\Accounting\Node;
+use App\Http\Resources\Accounting\NodeResource;
 use App\Models\Accounting\Account;
+use App\Models\Accounting\Node;
 use App\Models\System\Currency;
 use App\Services\Accounting\AccountService;
-use App\Services\Inventory\WarehouseService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -146,7 +141,7 @@ class AccountsController extends ApiController
                 'currency_id' => $input['currency_id'],
                 'node_id' => $node->id,
                 'd_opening' => $input['opening_balance'] ?? null,
-                'opening_balance_date' => $input['opening_balance_date'] ?? null,
+                'opening_date' => $input['opening_date'] ?? null,
                 'credit' => $node->credit,
 
             ]);
@@ -155,7 +150,7 @@ class AccountsController extends ApiController
 //                        'amount' => $validated['opening_balance'],
 //                        'description' =>'Opening Balance For Account' . $account->name,
 //                        'type' => 'user',
-//                        'due' => $validated['opening_balance_date'] ?? now(),//$validated['due']
+//                        'due' => $validated['opening_date'] ?? now(),//$validated['due']
 //                        'user_id' => auth()->id()
 //                    ]);
 //                    Entry::create([

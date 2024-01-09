@@ -12,9 +12,9 @@ class MainService
 {
     use AdminTrait ,AdminHelperTrait ,HelperTrait;
 
-    protected $fcmService;
+//    protected $fcmService;
 
     public function __construct() {
-        $this->fcmService = new FCMService();
+//        $this->fcmService = new FCMService();
     }
 }

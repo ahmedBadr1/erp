@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount',15,2);
             $table->text('description')->nullable();
+            $table->string('reference')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
             $table->foreignIdFor(\App\Models\User::class);
             $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);

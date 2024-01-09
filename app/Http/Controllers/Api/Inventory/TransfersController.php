@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Api\Inventory;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
+use App\Http\Requests\Accounting\StoreTransactionRequest;
+use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\ListRequest;
-use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\StoreTransactionTypeRequest;
 use App\Http\Resources\Accounting\TransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Transaction;
-use App\Services\Accounting\ProductService;
 use App\Services\Accounting\ItemsService;
+use App\Services\Accounting\ProductService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

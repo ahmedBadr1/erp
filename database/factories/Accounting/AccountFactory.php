@@ -34,7 +34,7 @@ class AccountFactory extends Factory
 
 //            'status_id' => $statues[array_rand($statues)],
 //            'opening_balance' => $this->faker->numberBetween(100,10000),
-//            'opening_balance_date' => $this->faker->dateTimeThisYear(),
+//            'opening_date' => $this->faker->dateTimeThisYear(),
             'system' =>  1,
         ];
     }
