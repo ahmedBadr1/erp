@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('model_permissions', function (Blueprint $table) {
+        Schema::create('accesses', function (Blueprint $table) {
             $table->id();
             $table->morphs('model');
             $table->foreignIdFor(\App\Models\User::class)->nullable();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('model_permissions');
+        Schema::dropIfExists('accesses');
     }
 };

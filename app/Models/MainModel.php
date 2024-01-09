@@ -9,7 +9,7 @@ use App\Traits\HasAttachments;
 use App\Traits\HasContacts;
 use App\Traits\HasDevice;
 use App\Traits\HasMessages;
-use App\Traits\HasPermission;
+use App\Traits\HasAccess;
 use App\Traits\HasTicket;
 use App\Traits\ReferenceTrait;
 use App\Traits\Taggable;
@@ -26,7 +26,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class MainModel extends Model implements HasMedia
 {
     use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
-    use InteractsWithMedia , BelongsToThrough ,HasPermission;
+    use InteractsWithMedia , BelongsToThrough ,HasAccess;
 
     public static function getTableName()
     {

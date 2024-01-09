@@ -15,15 +15,15 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*'],
 
-    'allowed_methods' => ['GET, POST, PUT,PATCH, DELETE, OPTIONS'],
+    'allowed_methods' => ['GET, POST, PUT, PATCH, DELETE, OPTIONS'],
 
-    'allowed_origins' => ['http://localhost:3000','https://erp.rssgroup.co'],
+    'allowed_origins' =>  ['http://localhost:3000','https://erp.rssgroup.co'],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['*'],
+    'allowed_headers' => ['X-Requested-With, Content-Type, X-Token-Auth, Authorization, X_From, X_Lang'],
 
     'exposed_headers' => [],
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\AuthModel;
+use App\Models\System\Access;
 use App\Models\System\Bookmark;
 use App\Models\System\Profile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -50,10 +51,10 @@ class User extends AuthModel
     ];
 
 
-//    public function role()
-//    {
-//        return $this->hasMany(Role::class)->latest()->limit(1);
-//    }
+    public function hasAccess($user)
+    {
+        return $this->morphMany(Access::class,'model');
+    }
 
     public function profile()
     {
