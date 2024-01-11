@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->index();
+            $table->string('code')->unique()->index();
+            $table->string('type_code')->index();
             $table->string('name');
             $table->boolean('credit');
             $table->text('description');
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->boolean('active')->default(true)->index();
             $table->foreignIdFor(\App\Models\Accounting\Node::class);
             $table->foreignIdFor(\App\Models\Accounting\AccountType::class);
+            $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
 
             $table->foreignIdFor(\App\Models\System\Currency::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class)->nullable();

@@ -28,6 +28,8 @@ class MainModel extends Model implements HasMedia
     use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
     use InteractsWithMedia , BelongsToThrough ,HasAccess;
 
+    public static $withoutAppends = false;
+
     public static function getTableName()
     {
         return with(new static)->getTable();
@@ -603,5 +605,20 @@ class MainModel extends Model implements HasMedia
         $day = Carbon::now()->subDay()->toDateString();
         $date = Carbon::now()->addDay()->toDateString();
         return Self::dateBetweenType($day, $date, $type);
+    }
+
+    public function scopeWithoutAppends($query)
+    {
+        self::$withoutAppends = true;
+
+        return $query;
+    }
+
+    protected function getArrayableAppends()
+    {
+        if(self::$withoutAppends){
+            return [];
+        }
+        return parent::getArrayableAppends();
     }
 }

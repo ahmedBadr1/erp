@@ -3,6 +3,7 @@
 namespace App\Services\Accounting;
 
 use App\Exports\UsersExport;
+use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Crm\Client;
 use App\Models\User;
@@ -30,7 +31,7 @@ class EntryService extends MainService
                 ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createEntry(int $credit, int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
+    public function createEntry(int $credit, int $amount, int $account_id, int $ledger_id, int $cost_center_id = null,string $comment = null)
     {
         return Entry::create([
             'credit' => $credit,
@@ -38,17 +39,19 @@ class EntryService extends MainService
             'account_id' => $account_id,
             'ledger_id' => $ledger_id,
             'cost_center_id' => $cost_center_id ?? null,
+            'comment' => $comment ?? null,
+
         ]);
     }
 
-    public function createCreditEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
+    public function createCreditEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null,string $comment = null)
     {
-        return $this->createEntry(1, $amount, $account_id, $ledger_id, $cost_center_id);
+        return $this->createEntry(1, $amount, $account_id, $ledger_id, $cost_center_id,$comment);
     }
 
-    public function createDebitEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null)
+    public function createDebitEntry(int $amount, int $account_id, int $ledger_id, int $cost_center_id = null,string $comment = null)
     {
-        return $this->createEntry(0, $amount, $account_id, $ledger_id, $cost_center_id);
+        return $this->createEntry(0, $amount, $account_id, $ledger_id, $cost_center_id,$comment);
     }
 
 

@@ -29,7 +29,7 @@ class TransactionController extends ApiController
         $this->middleware('permission:accounting.transactions.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:accounting.transactions.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:accounting.transactions.delete', ['only' => ['destroy']]);
-        $this->service = new TransactionService();
+        $this->service = new LedgerService();
     }
 
     public function index()
@@ -63,49 +63,19 @@ class TransactionController extends ApiController
     {
         $data = $request->validated();
 
-        $credit = 0;
-        $debit = 0;
-
-        foreach ($data['entries'] as $ent) {
-            if (empty($ent['credit'])) {
-                $debit += $ent['amount'];
-            } else {
-                $credit += $ent['amount'];
-            }
+        if ($data['type'] == 'CI') {
+            $e = $this->service->cashin($data);
+        }elseif($data['type'] == 'CO'){
+            $e = $this->service->cashout($data);
+        }else{
+            $e = $this->service->jouranlEntry($data);
+        }
+        if ($e) {
+            return $e;
+            return $this->errorResponse($e);
         }
 
-        if ($credit !== $debit) {
-            return $this->errorResponse(__('Entries Must Be Equals'));
-        }
-
-        try {
-            DB::beginTransaction();
-
-            $transaction = Transaction::create([
-                'amount' => $credit,
-                'description' => $data['description'],
-                'type' => 'user',
-                'due' => $data['due'] ?? now(),
-                'user_id' => auth('api')->id()
-            ]);
-            foreach ($data['entries'] as $ent) {
-                $account = Account::where('code', $ent['account_id'])->value('id');
-                Entry::create([
-                    'amount' => $ent['amount'],
-                    'credit' => $ent['credit'],
-                    'account_id' => $account,
-                    'transaction_id' => $transaction->id
-                ]);
-            }
-
-            DB::commit();
-
-            return $this->successResponse([], 'Transaction created successfully', 201);
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json(['message' => 'Failed to create Transaction', 'error' => $e], 500);
-        }
+        return $this->successResponse([], 'Transaction created successfully', 201);
     }
 
     public function storeType(StoreTransactionTypeRequest $request)

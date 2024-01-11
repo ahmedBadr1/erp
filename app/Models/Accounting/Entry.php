@@ -13,7 +13,7 @@ class Entry extends MainModelSoft
 {
 //    use  LogsActivity ;
 
-    protected $fillable = ['amount','credit','account_id','ledger_id','cost_center_id'];
+    protected $fillable = ['amount','credit','account_id','ledger_id','cost_center_id','comment'];
 
     public function account()
     {

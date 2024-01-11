@@ -45,16 +45,9 @@ class CostCentersController extends ApiController
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $accounts = Account::active()->get(['name', 'code','credit','system','active']);
-        if ($request->has('type')){
-            $cashNode = Node::active()->with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
-            $cashAccounts = collect($cashNode->accounts);
-            foreach ($cashNode->descendants as $child) {
-                $cashAccounts = $cashAccounts->merge($child->accounts);
-            }
-            return $this->successResponse(['accounts' => AccountChartResource::collection($accounts),'cashAccounts' => AccountChartResource::collection($cashAccounts)]);
-        }
-        return $this->successResponse(['accounts' =>AccountChartResource::collection($accounts)]);
+        $costCenters = CostCenter::active()->get();
+
+        return $this->successResponse(['costCenters' => CostCenterResource::collection($costCenters)]);
     }
 
     public function list(Request $request)
@@ -62,8 +55,12 @@ class CostCentersController extends ApiController
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $accounts = Account::active()->pluck('name', 'code')->toArray();
-        return $this->successResponse(['accounts' => $accounts]);
+        if ($request->has("keywords")) {
+            $costCenters = $this->service->search($request->get("keywords"))->limit(5)->get();
+            return $this->successResponse(['costCenters' => CostCenterResource::collection($costCenters)]);
+        }
+        $costCenters = CostCenter::active()->pluck('name', 'code')->toArray();
+        return $this->successResponse(['costCenters' => $costCenters]);
     }
 
     public function tree()

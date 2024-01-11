@@ -17,6 +17,7 @@ class AccountChartResource extends JsonResource
         return [
             'code' => $this->code,
             'name' => $this->name,
+            'type_code' => $this->type_code,
             'credit' => $this->credit,
             'system' => $this->system,
             'active' => $this->active,

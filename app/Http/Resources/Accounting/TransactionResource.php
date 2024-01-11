@@ -21,6 +21,8 @@ class TransactionResource extends JsonResource
             'type' => $this->type,
             'amount' => $this->amount,
             'description' => $this->description,
+            'je_code' => $this->je_code,
+            'document_no' => $this->document_no,
             'posted' => $this->post,
             'locked' => $this->locked,
             'due' => $this->due->format('d/m/Y'),

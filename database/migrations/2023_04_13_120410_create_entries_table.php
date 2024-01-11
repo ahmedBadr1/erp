@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Accounting\Account::class);
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class);
             $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
+            $table->string('comment')->nullable();
             $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);
             $table->timestamps();

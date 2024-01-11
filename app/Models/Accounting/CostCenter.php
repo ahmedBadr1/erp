@@ -15,6 +15,16 @@ class CostCenter extends MainModelSoft
 
     protected $fillable = ['name', 'parent_id', 'active',  'system'];
 
+    public function accounts()
+    {
+        return $this->hasMany(Account::class);
+    }
+
+    public function entries()
+    {
+        return $this->hasMany(Entry::class);
+    }
+
     public static function search($search)
     {
         return empty($search) ? static::query()

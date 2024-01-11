@@ -26,10 +26,12 @@ class AccountService extends MainService
         $search = trim($search);
         return empty($search) ? Account::query()
             : Account::query()->where('name', 'like', '%' . $search . '%')
+                ->orWhere('type_code', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%')
-                ->orWhereHas('currency', fn($q) => $q->where('name', 'like', '%' . $search . '%'))
-                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+//                ->orWhere('description', 'like', '%' . $search . '%')
+//                ->orWhereHas('currency', fn($q) => $q->where('name', 'like', '%' . $search . '%'))
+                ->orWhereHas('costCenter', fn($q) => $q->where('name', 'like', '%' . $search . '%'))
+                ->orWhereHas('node', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
     public function store(array $data)

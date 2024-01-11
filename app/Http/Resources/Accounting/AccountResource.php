@@ -19,6 +19,7 @@ class AccountResource extends JsonResource
         return [
             'code' => $this->code,
             'name' => $this->name,
+            'type_code' => $this->type_code,
             'credit' => $this->credit,
             'description' => $this->description,
             'credit_limit' => $this->credit_limit,
@@ -34,6 +35,7 @@ class AccountResource extends JsonResource
 //            'node_id' => $this->'node_id',
 //            'currency_id' => $this->currency_id,
 //            'status_id' => $this->status_id,
+            'costCenter' => new CostCenterResource($this->whenLoaded('costCenter')),
 
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
 //            'transactions' =>  TransactionResource::collection($this->whenLoaded('transactions')),

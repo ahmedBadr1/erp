@@ -3,6 +3,8 @@
 namespace App\Services\Accounting;
 
 use App\Exports\UsersExport;
+use App\Models\Accounting\Account;
+use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
@@ -41,7 +43,7 @@ class LedgerService extends MainService
             $ledger = Ledger::create([
                 'amount' => $amount,
                 'due' => $due ?? now(),
-                'description' => $description ?? 'cash in',
+                'description' => $description ,
                 'user_id' => $userId ?? auth()->id(),
                 'system' => $system
             ]);
@@ -51,26 +53,83 @@ class LedgerService extends MainService
         }
     }
 
-    public function cashin($debit_account, $credit_account, $amount,$cost_center = null, $due = null, $description = null, $userId = null)
+    public function cashin(array $data)
     {
         $EntryService = new EntryService();
         $TransactionService = new TransactionService();
         $AccountService = new AccountService();
+        $treasury = Account::where('code', $data['treasury'])->first();
+
         DB::beginTransaction();
         try {
-            $ledger = $this->store($amount, $due, $description, $userId);
-            $EntryService->createDebitEntry($amount, $debit_account, $ledger->id);
-            $EntryService->createCreditEntry($amount, $credit_account, $ledger->id,$cost_center);
-            $TransactionService->createCI($amount, $ledger->id, $credit_account, $due, $description, $userId);
-            $AccountService->updateBalance($credit_account);
-            $AccountService->updateBalance($debit_account);
-
+            $ledger = $this->store($data['amount'], $data['due'], $data['description'], $data['responsible']);
+            $EntryService->createDebitEntry($data['amount'], $treasury->id, $ledger->id,$treasury->cost_center_id);
+            $AccountService->updateBalance($treasury->id);
+            foreach ($data['accounts'] as $account){
+                $account_id = Account::where('code', $account['code'])->value('id');
+                $cost_center_id =  isset($account['costCenter'])  ? CostCenter::where('code',$account['costCenter']['code'])->value('id')  : null ;
+                $EntryService->createCreditEntry($account['amount'], $account_id, $ledger->id,$cost_center_id, $account['comment'] ?? null);
+                $TransactionService->createCI($data['amount'], $ledger->id, $account_id,  $data['due'], $data['description'], $data['responsible'],$data['je_code'],$data['document_no']);
+                $AccountService->updateBalance($account_id);
+            }
         } catch (Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return $e;
         }
         DB::commit();
-        return true;
+        return false;
+    }
+
+    public function cashout(array $data)
+    {
+        $EntryService = new EntryService();
+        $TransactionService = new TransactionService();
+        $AccountService = new AccountService();
+        $treasury = Account::where('code', $data['treasury'])->first();
+
+        DB::beginTransaction();
+        try {
+            $ledger = $this->store($data['amount'], $data['due'], $data['description'], $data['responsible']);
+            $EntryService->createCreditEntry($data['amount'], $treasury->id, $ledger->id,$treasury->cost_center_id);
+            $AccountService->updateBalance($treasury->id);
+            foreach ($data['accounts'] as $account){
+                $account_id = Account::where('code', $account['code'])->value('id');
+                $cost_center_id =  isset($account['costCenter'])  ? CostCenter::where('code',$account['costCenter']['code'])->value('id')  : null ;
+                $EntryService->createDebitEntry($account['amount'], $account_id, $ledger->id,$cost_center_id, $account['comment'] ?? null);
+                $TransactionService->createCO($data['amount'], $ledger->id, $account_id,  $data['due'], $data['description'], $data['responsible'],$data['je_code'],$data['document_no']);
+                $AccountService->updateBalance($account_id);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e;
+        }
+        DB::commit();
+        return false;
+    }
+
+    public function jouranlEntry(array $data)
+    {
+        $EntryService = new EntryService();
+        $AccountService = new AccountService();
+        DB::beginTransaction();
+        try {
+            $ledger = $this->store($data['amount'], $data['due'], $data['description'], $data['responsible']);
+            foreach ($data['accounts'] as $account){
+                $account_id = Account::where('code', $account['code'])->value('id');
+                $cost_center_id =  isset($account['costCenter'])  ? CostCenter::where('code',$account['costCenter']['code'])->value('id')  : null ;
+                if($account['c_amount']){
+                    $EntryService->createCreditEntry($account['c_amount'], $account_id, $ledger->id,$cost_center_id, $account['comment'] ?? null);
+                }else{
+                    $EntryService->createDebitEntry($account['d_amount'], $account_id, $ledger->id,$cost_center_id, $account['comment'] ?? null);
+                }
+                $AccountService->updateBalance($account_id);
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            return $e;
+        }
+        DB::commit();
+        return false;
     }
 
 

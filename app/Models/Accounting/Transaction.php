@@ -14,8 +14,7 @@ class Transaction extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['code','amount', 'type', 'description','due','ledger_id','account_id','user_id','posted','locked','system'];
-
+    protected $fillable = ['code','amount', 'type', 'description','due','je_code','document_no','ledger_id','account_id','user_id','posted','locked','system'];
 
     protected $casts = ['due' => 'datetime'];
 

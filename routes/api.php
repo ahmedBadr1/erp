@@ -103,6 +103,34 @@ Route::group(['middleware' => [ 'json.response']], function () {
             });
 
             Route::group([
+                'prefix' => 'centers',
+                'as' => 'centers.',
+            ], function () {
+                Route::post('/tree', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'tree'])->name('tree');
+                Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'duplicate'])->name('duplicate');
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'store'])->name('store');
+                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'storeType'])->name('storeType');
+                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'edit'])->name('edit');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'show'])->name('show');
+            });
+
+            Route::group([
+                'prefix' => 'ledgers',
+                'as' => 'ledgers.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
+                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
+                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
+            });
+
+            Route::group([
                 'prefix' => 'transactions',
                 'as' => 'transactions.',
             ], function () {
@@ -115,10 +143,7 @@ Route::group(['middleware' => [ 'json.response']], function () {
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
             });
 
-            Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('tree');
-            Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'duplicate'])->name('duplicate');
 
-            Route::post('/tree/centers', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'tree'])->name('tree');
 
 
 
