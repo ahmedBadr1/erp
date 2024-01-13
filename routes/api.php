@@ -89,6 +89,9 @@ Route::group(['middleware' => ['json.response']], function () {
                 'prefix' => 'accounts',
                 'as' => 'accounts.',
             ], function () {
+                Route::post('/tree', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'tree'])->name('index');
+                Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'duplicate'])->name('duplicate');
+
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'list'])->name('list');
                 Route::post('/nodes', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'nodes'])->name('nodes');
