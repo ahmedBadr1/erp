@@ -19,7 +19,7 @@ class CurrencyFactory extends Factory
         return [
             'name' => $this->faker->currencyCode,
             'code'  => $this->faker->currencyCode(),
-            'ratio' => $this->faker->randomDigit(2),
+            'ex_rate' => $this->faker->randomDigit(2),
             'active' => true
         ];
     }
