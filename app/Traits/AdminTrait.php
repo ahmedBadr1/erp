@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Accounting\Currency;
 use App\Models\Client;
 use App\Models\Hr\Branch;
 use App\Models\Hr\Department;
@@ -16,7 +17,6 @@ use App\Models\Hr\Shift;
 use App\Models\Hr\Specialist;
 use App\Models\System\City;
 use App\Models\System\Country;
-use App\Models\System\Currency;
 use App\Models\System\State;
 use App\Models\System\Tag;
 use App\Models\User;

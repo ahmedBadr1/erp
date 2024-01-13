@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Accounting;
 
-use App\Http\Resources\System\CurrencyResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

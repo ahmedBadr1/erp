@@ -3,27 +3,21 @@
 namespace App\Http\Controllers\Api\Inventory;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreProductRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Inventory\ProductCollection;
 use App\Http\Resources\Inventory\ProductResource;
-use App\Models\Accounting\Account;
-use App\Models\Accounting\Entry;
-use App\Models\Accounting\Transaction;
-use App\Models\Employee\Employee;
+use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
 use App\Models\Inventory\InvCategory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
-use App\Models\System\Tax;
 use App\Models\User;
 use App\Services\Inventory\ProductService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 

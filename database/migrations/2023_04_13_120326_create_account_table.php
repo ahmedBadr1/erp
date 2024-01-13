@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Accounting\AccountType::class);
             $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
 
-            $table->foreignIdFor(\App\Models\System\Currency::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class)->nullable();
             $table->timestamps();
             $table->softDeletes();

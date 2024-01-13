@@ -8,17 +8,15 @@ use App\Http\Requests\Purchases\BillRequest;
 use App\Http\Resources\Inventory\ProductResource;
 use App\Http\Resources\Purchases\BillsResource;
 use App\Http\Resources\Purchases\SuppliersResource;
+use App\Models\Accounting\Tax;
 use App\Models\Inventory\Item;
 use App\Models\Inventory\Product;
 use App\Models\Purchases\Bill;
 use App\Models\Purchases\Payment;
 use App\Models\Purchases\Vendor;
 use App\Models\System\Status;
-use App\Models\System\Tax;
 use App\Services\CalculationService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use ZipStream\Exception;
 
 class BillsController extends Controller
 {

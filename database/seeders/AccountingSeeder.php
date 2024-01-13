@@ -5,13 +5,12 @@ namespace Database\Seeders;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\CostCenter;
+use App\Models\Accounting\Currency;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Node;
+use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
-use App\Models\System\Currency;
-use App\Models\System\Tax;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -23,11 +22,6 @@ class AccountingSeeder extends Seeder
     public function run(): void
     {
 
-        Tax::factory()->create([
-            'name' => 'VAT',
-            'rate' => '14',
-            'active' => true
-        ]);
 
         $this->seedTypes();
 
@@ -38,6 +32,15 @@ class AccountingSeeder extends Seeder
         CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', "code" => "01", 'system' => 1, 'parent_id' => null]);
         CostCenter::factory(10)->create();
         Account::factory(100)->create();
+        $TaxAccount = Account::whereHas('type', fn($q) => $q->where('code', 'TAX'))->value('id');
+        Tax::factory()->create([
+            'name' => 'ضريبة الضيمة المضافة',
+            'code' => 'VAT',
+            'rate' => '14',
+            'scope' => ['any'],
+            'account_id' => $TaxAccount ,
+            'active' => true
+        ]);
 //         Ledger::factory()->create(['amount' => 100]);
 
 //        $count = 10;
@@ -81,8 +84,9 @@ class AccountingSeeder extends Seeder
             'نقدية' => 'TR',
             'إيراد' => 'CI',
             'مخزون' => 'WH',
-            'مورد' => 'CL',
-            'عميل' => 'SP',
+            'مورد' => 'SP',
+            'عميل' => 'CL',
+            'ضريبة' => 'TAX',
         ];
 
         foreach ($types as $key => $val) {
@@ -204,49 +208,28 @@ class AccountingSeeder extends Seeder
     public function seedCurrencies(): string
     {
         $currencies = [
-            'جم' => 'EGP',
-            '$' => 'USD',
-//            'EUR' => 'Euro',
-//            'SAR' => 'Saudi Riyal',
-//            'QAR' => 'Qatari Riyal',
-//            'IQD' => 'Iraqi Dinar',
-//            'IRR' => 'Iranian Rial',
-//            'JOD' => 'Jordanian Dinar',
-//            'KWD' => 'Kuwaiti Dinar',
-//            'LBP' => 'Lebanese Pound',
-//            'LYD' => 'Libyan Dinar',
-//            'MAD' => 'Moroccan Dirham',
-//            'OMR' => 'Omani Rial',
-//            'SYP' => 'Syrian Pound',
-//            'TND' => 'Tunisian Dinar',
-//            'YER' => 'Yemeni Rial',
-//            'JPY' => 'Japanese Yen',
-//            'GBP' => 'British Pound',
-//            'AUD' => 'Australian Dollar',
-//            'CAD' => 'Canadian Dollar',
-//            'CHF' => 'Swiss Franc',
-//            'CNY' => 'Chinese Yuan',
-//            'HKD' => 'Hong Kong Dollar',
-//            'NZD' => 'New Zealand Dollar',
-//            'SEK' => 'Swedish Krona',
-//            'KRW' => 'South Korean Won',
-//            'SGD' => 'Singapore Dollar',
-//            'NOK' => 'Norwegian Krone',
-//            'MXN' => 'Mexican Peso',
-//            'INR' => 'Indian Rupee',
-//            'RUB' => 'Russian Ruble',
-//            'ZAR' => 'South African Rand',
-//            'TRY' => 'Turkish Lira',
-//            'BRL' => 'Brazilian Real',
-//            'AED' => 'United Arab Emirates Dirham',
-//            'BHD' => 'Bahraini Dinar',
-
+            [
+                'name' => 'جنيه',
+                'code' => 'EGP',
+                'symbol' => 'جم',
+            ],
+            [
+                'name' => 'dollar',
+                'code' => 'USD',
+                'symbol' => '$',
+            ],
+            [
+                'name' => 'euro',
+                'code' => 'EUR',
+                'symbol' => '€',
+            ],
         ];
 
-        foreach ($currencies as $key => $val) {
+        foreach ($currencies as $currency) {
             Currency::factory()->create([
-                'code' => $key,
-                'name' => $val,
+                'name' => $currency['name'],
+                'code' =>  $currency['code'],
+                'symbol' =>  $currency['symbol'],
             ]);
         }
         return true;

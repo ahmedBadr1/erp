@@ -3,29 +3,13 @@
 namespace Database\Seeders;
 
 
-use App\Models\Accounting\Account;
-use App\Models\Accounting\AccountType;
-use App\Models\Accounting\CostCenter;
-use App\Models\Accounting\Node;
-use App\Models\Accounting\Entry;
-use App\Models\Accounting\Transaction;
-use App\Models\Inventory\Item;
-use App\Models\Inventory\Product;
-use App\Models\Inventory\Unit;
-use App\Models\Inventory\Warehouse;
-use App\Models\Crm\Client;
-use App\Models\Purchases\Bill;
-use App\Models\Purchases\Supplier;
 use App\Models\System\City;
 use App\Models\System\Country;
-use App\Models\System\Currency;
 use App\Models\System\Setting;
 use App\Models\System\State;
 use App\Models\System\Status;
-use App\Models\System\Tax;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;

@@ -3,39 +3,34 @@
 namespace App\Http\Controllers\Api;
 
 use App\Filters\ByCode;
+use App\Filters\ByIso2;
 use App\Filters\ByIso3;
-use App\Http\Controllers\Controller;
+use App\Filters\ByName;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\System\BookmarkRequest;
+use App\Http\Resources\Accounting\CurrencyResource;
+use App\Http\Resources\Accounting\TaxResource;
 use App\Http\Resources\System\AddressResource;
 use App\Http\Resources\System\AttachmentResource;
 use App\Http\Resources\System\BookmarkResource;
 use App\Http\Resources\System\CityResource;
 use App\Http\Resources\System\ContactResource;
 use App\Http\Resources\System\CountryResource;
-use App\Http\Resources\System\CurrencyResource;
 use App\Http\Resources\System\StateResource;
 use App\Http\Resources\System\StatusResource;
 use App\Http\Resources\System\TagResource;
-use App\Http\Resources\System\TaxResource;
 use App\Http\Resources\System\TicketResource;
+use App\Models\Accounting\Currency;
+use App\Models\Accounting\Tax;
 use App\Models\System\Address;
 use App\Models\System\Attachment;
 use App\Models\System\Bookmark;
 use App\Models\System\City;
 use App\Models\System\Contact;
 use App\Models\System\Country;
-use App\Models\System\Currency;
-
-use App\Filters\ByEmail;
-use App\Filters\ByFullName;
-use App\Filters\ByIso2;
-use App\Filters\ByName;
-use App\Filters\ByRegion;
 use App\Models\System\State;
 use App\Models\System\Status;
 use App\Models\System\Tag;
-use App\Models\System\Tax;
 use App\Models\System\Ticket;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Pipeline;
@@ -43,19 +38,6 @@ use Illuminate\Support\Facades\Request;
 
 class SystemController extends ApiController
 {
-    public function currencies(ListRequest $request)
-    {
-        return $this->successResponse(Pipeline::send(Currency::search($request->get('keywords'))->active())
-            ->through([ByName::class, ByCode::class])
-            ->thenReturn()
-            ->orderBy($request->get('orderBy') ?? $this->orderBy, ($request->get('orderDesc') ?? $this->orderDesc) ? 'desc' : 'asc')
-            ->limit($request->get('limit') ?? $this->limit)->pluck('name', 'id')->toArray());
-    }
-
-    public function getCurrency(Request $request, $id)
-    {
-        return $this->successResponse(new CurrencyResource(Currency::active()->whereId($id)->firstOrFail()));
-    }
 
     public function countries(ListRequest $request)
     {
@@ -99,19 +81,7 @@ class SystemController extends ApiController
         return $this->successResponse(new CityResource(City::whereId($id)->firstOrFail()));
     }
 
-    public function taxes(ListRequest $request)
-    {
-        return $this->successResponse(Pipeline::send(Tax::search($request->get('keywords'))->active())
-            ->through([ByName::class,ByCode::class])
-            ->thenReturn()
-            ->orderBy($request->get('orderBy') ?? $this->orderBy, ($request->get('orderDesc') ?? $this->orderDesc) ? 'desc' : 'asc')
-            ->limit($request->get('limit') ?? $this->limit)->pluck('name', 'id')->toArray());
-    }
 
-    public function getTax(Request $request, Tax $tax)
-    {
-        return $tax->active ? $this->successResponse(new TaxResource($tax)): $this->errorResponse('Not Active',404);
-    }
 
     public function getStatus(Request $request, $id)
     {

@@ -2,15 +2,12 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\Crm\Client;
 use App\Models\MainModelSoft;
-use App\Models\System\Currency;
+use App\Models\Purchases\Supplier;
 use App\Models\System\Status;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Account extends MainModelSoft
 {
@@ -54,6 +51,26 @@ class Account extends MainModelSoft
     public function entries()
     {
         return $this->hasMany(Entry::class);
+    }
+
+    public function client()
+    {
+        return $this->hasone(Client::class);
+    }
+
+    public function supplier()
+    {
+        return $this->hasone(Supplier::class);
+    }
+
+    public function taxes()
+    {
+        return $this->hasMany(Tax::class);
+    }
+
+    public function currencies()
+    {
+        return $this->hasMany(Currency::class);
     }
 
     public function transactions()

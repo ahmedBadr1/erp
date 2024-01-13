@@ -3,9 +3,8 @@
 namespace Database\Factories\Accounting;
 
 use App\Models\Accounting\AccountType;
+use App\Models\Accounting\Currency;
 use App\Models\Accounting\Node;
-use App\Models\System\Currency;
-use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

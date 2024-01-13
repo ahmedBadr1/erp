@@ -17,7 +17,7 @@ return new class extends Migration
             $table->dateTime('due_at');
             $table->string('number')->nullable();
             $table->text('notes')->nullable();
-            $table->foreignIdFor(\App\Models\System\Tax::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable();
             $table->decimal('paid',15,2)->nullable();
             $table->decimal('sub_total',15,2);
             $table->decimal('tax_total',15,2)->default(0);

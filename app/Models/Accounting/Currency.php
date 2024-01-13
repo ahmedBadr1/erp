@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Models\System;
+namespace App\Models\Accounting;
 
 use App\Models\MainModel;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -11,13 +10,25 @@ class Currency extends MainModel
 {
     use  LogsActivity ;
 
-    protected $fillable = ['name','code', 'ratio', 'active'];
+    protected $fillable = ['name','code','symbol', 'ex_rate','last_rate','sub_unit','gain_account','loss_account', 'active'];
+
+    protected $casts = ['last_rate'=>'date'];
+
+    public function gainAccount()
+    {
+        return $this->belongsTo(Account::class,'gain_account');
+    }
+
+    public function lossAccount()
+    {
+        return $this->belongsTo(Account::class,'loss_account');
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Currency has been {$eventName}")
-            ->logOnly(['name', 'code', 'ratio',  'active'])
+            ->logOnly(['name', 'code', 'ex_rate',  'active'])
             ->logOnlyDirty()
             ->useLogName('system');
     }

@@ -2,16 +2,11 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Accounting\Node;
-use App\Models\Employee\Employee;
+use App\Models\Accounting\Tax;
 use App\Models\MainModelSoft;
-use App\Models\System\Tax;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Znck\Eloquent\Traits\BelongsToThrough;
 
 class Product extends MainModelSoft
 {

@@ -2,8 +2,8 @@
 
 namespace App\Models\Employee;
 
+use App\Models\Accounting\Currency;
 use App\Models\MainModelSoft;
-use App\Models\System\Currency;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EmployeeFinance extends MainModelSoft

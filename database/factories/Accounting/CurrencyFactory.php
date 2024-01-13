@@ -5,7 +5,7 @@ namespace Database\Factories\Accounting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\System\Currency>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Accounting\Currency>
  */
 class CurrencyFactory extends Factory
 {

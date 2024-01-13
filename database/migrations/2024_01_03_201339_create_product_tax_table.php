@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_tax', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Inventory\Product::class);
-            $table->foreignIdFor(\App\Models\System\Tax::class);
+            $table->foreignIdFor(\App\Models\Accounting\Tax::class);
             $table->timestamps();
         });
     }

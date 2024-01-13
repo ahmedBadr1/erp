@@ -14,8 +14,14 @@ return new class extends Migration
 
         Schema::create('currencies', function (Blueprint $table) {
             $table->id('id');
-            $table->string('code',50)->unique();
-            $table->mediumText('name');
+            $table->string('name');
+            $table->string('code',3)->unique();
+            $table->string('symbol',12)->nullable();
+            $table->float('ex_rate')->nullable();
+            $table->date('last_rate')->nullable();
+            $table->string('sub_unit')->nullable();
+            $table->foreignId('gain_account')->nullable()->references('id')->on('accounts');
+            $table->foreignId('loss_account')->nullable()->references('id')->on('accounts');
             $table->integer('order_id')->default(1);
             $table->tinyInteger('active')->default(1);
             $table->timestamps();

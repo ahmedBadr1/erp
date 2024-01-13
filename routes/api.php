@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => [ 'json.response']], function () {
+Route::group(['middleware' => ['json.response']], function () {
 
     Route::group(['middleware' => ['guest:api']], function () {
         Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login'])->name('login');
@@ -144,20 +144,32 @@ Route::group(['middleware' => [ 'json.response']], function () {
             });
 
 
-
-
-
             Route::post('/journal', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'journal'])->name('journal');
             Route::post('/ledger', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'index'])->name('index');
 
 
             Route::group([
-                'prefix' => 'entries',
-                'as' => 'entries.',
+                'prefix' => 'currencies',
+                'as' => 'currencies.',
             ], function () {
-                Route::get('/', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'index'])->name('index');
-                Route::get('/create', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'create'])->name('create');
-                Route::get('/edit/{user_id}', [\App\Http\Controllers\Api\Accounting\EntriesController::class, 'edit'])->name('edit');
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'index'])->name('index');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'store'])->name('store');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'show'])->name('show');
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'update'])->name('update');
+                Route::delete('/{currency}', [\App\Http\Controllers\Api\Accounting\CurrenciesController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::group([
+                'prefix' => 'taxes',
+                'as' => 'taxes.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'index'])->name('index');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'store'])->name('store');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'show'])->name('show');
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'update'])->name('update');
+                Route::delete('/{id}', [\App\Http\Controllers\Api\Accounting\TaxesController::class, 'destroy'])->name('destroy');
             });
 
 
@@ -233,7 +245,6 @@ Route::group(['middleware' => [ 'json.response']], function () {
             });
 
 
-
             Route::get('/transfer', [\App\Http\Controllers\Admin\Inventory\TransfersController::class, 'posting'])->name('posting');
             Route::get('/untransfer', [\App\Http\Controllers\Admin\Inventory\TransfersController::class, 'unposting'])->name('unposting');
 
@@ -247,8 +258,7 @@ Route::group(['middleware' => [ 'json.response']], function () {
         */
 
         Route::group(['prefix' => 'system'], function () {
-            Route::post('currencies', [\App\Http\Controllers\Api\SystemController::class, 'currencies']);
-            Route::post('currencies/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCurrency']);
+
 
             Route::post('countries', [\App\Http\Controllers\Api\SystemController::class, 'countries']);
             Route::post('countries/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCountry']);
@@ -258,9 +268,6 @@ Route::group(['middleware' => [ 'json.response']], function () {
 
             Route::post('cities', [\App\Http\Controllers\Api\SystemController::class, 'cities']);
             Route::post('cities/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCity']);
-
-            Route::post('taxes', [\App\Http\Controllers\Api\SystemController::class, 'taxes']);
-            Route::post('taxes/{tax}', [\App\Http\Controllers\Api\SystemController::class, 'getTax']);
 
 
             Route::post('statuses/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getStatus']);
