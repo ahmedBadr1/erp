@@ -17,8 +17,8 @@ use App\Traits\HasLocation;
 
 class Supplier extends MainModelSoft
 {
-    protected $fillable = ['business_name', 'name', 'code', 'responsible_id', 'credit_limit', 'warranty','tax_number',
-        'registration_number', 'payment_method', 'phone', 'telephone', 'email', 'active'];
+    protected $fillable = ['business_name', 'name', 'code', 'responsible_id', 'warranty','tax_number',
+        'registration_number', 'payment_method', 'phone', 'telephone', 'email', 'active','account_id'];
 
     public function account()
     {

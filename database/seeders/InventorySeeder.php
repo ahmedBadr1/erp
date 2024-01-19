@@ -26,16 +26,13 @@ class InventorySeeder extends Seeder
 
 
         $this->seedUnits();
-        Supplier::factory(3)->create();
+
         Product::factory(100)->create();
 
 
-
-
         Warehouse::factory(2)->create();
-        Bill::factory(10)->create()->each(function ($bill){
-            $bill->items()->saveMany(Item::factory(rand(2,5))->create());
-        });
+
+
     }
 
     /**

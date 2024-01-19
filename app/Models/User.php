@@ -76,7 +76,7 @@ class User extends AuthModel
 
     public function getFullNameAttribute()
     {
-        return $this->name['first'] . ' ' . $this->name['last'] ;
+        return $this->name ?  $this->name['first'] . ' ' . $this->name['last'] : null;
     }
 
 

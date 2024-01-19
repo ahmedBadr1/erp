@@ -13,15 +13,26 @@ class Ledger extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['amount', 'description','reference','due','user_id'];
+    protected $fillable = ['amount', 'description','due','currency_id','ex_rate','created_by','edited_by','responsible_id'];
 
     protected $casts = ['due' => 'datetime'];
 
     protected $appends = ['code'];
 
-    public function user()
+    public function creator()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'created_by');
+    }
+
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class,'edited_by');
+    }
+
+    public function responsible()
+    {
+        return $this->belongsTo(User::class,'responsible_id');
     }
 
     public function transactions()
@@ -39,6 +50,10 @@ class Ledger extends MainModelSoft
         return $this->hasManyThrough(Account::class,Entry::class);
     }
 
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
     public function getCodeAttribute()
     {
         return  'JE-' . $this->id ;
@@ -47,7 +62,7 @@ class Ledger extends MainModelSoft
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->setDescriptionForEvent(fn(string $eventName) => "This Transaction has been {$eventName}")
+            ->setDescriptionForEvent(fn(string $eventName) => "This Ledger has been {$eventName}")
             ->logOnly(['user_id','amount', 'type', 'description','due'])
             ->logOnlyDirty()
             ->useLogName('system');

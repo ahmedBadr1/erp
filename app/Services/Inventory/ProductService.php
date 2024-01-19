@@ -16,9 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 class ProductService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return Product::get();
+        $data = $fields ?? (new Product())->getFillable();
+
+        return Product::active()->get($data);
     }
 
 

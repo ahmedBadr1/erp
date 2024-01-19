@@ -15,11 +15,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+
         $this->call(ConstantSeeder::class);
+        Artisan::call('passport:install');
         $this->call(AccountingSeeder::class);
         $this->call(InventorySeeder::class);
+        $this->call(PurchasesSeeder::class);
+        $this->call(SalesSeeder::class);
 
 
-        Artisan::call('passport:install');
+
     }
 }

@@ -45,7 +45,8 @@ class TransactionService extends MainService
             'due' => $due,
             'je_code' => $je_code,
             'document_no' => $document_no,
-            'user_id' => $user_id ?? auth()->id(),
+            'responsible' => $user_id ?? auth()->id(),
+//            'created_by' =>  auth()->id(),
             'system' => $system,
         ]);
     }
@@ -65,11 +66,13 @@ class TransactionService extends MainService
         return $this->createTransaction('SO', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $je_code,$document_no, $system);
     }
 
-    public function update($client, array $data)
+    public function update($transaction, array $data)
     {
         try {
-            $client->update($data);
-            return $client;
+            $transaction->update([...$data,
+                'edited_by' => auth()->id(),
+                ]);
+            return $transaction;
         } catch (Exception $e) {
             return $e->getMessage();
         }

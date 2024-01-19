@@ -11,9 +11,10 @@ use Maatwebsite\Excel\Facades\Excel;
 class ClientService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return Client::get();
+        $data = $fields ?? (new Client())->getFillable();
+        return Client::get($data);
     }
 
 

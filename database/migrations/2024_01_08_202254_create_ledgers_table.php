@@ -17,7 +17,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('reference')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\User::class);
+            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
+            $table->float('ex_rate')->nullable();
+            $table->foreignId('created_by')->constrained('users')->onUpdate('cascade');
+            $table->foreignId('responsible_id')->nullable()->constrained('users')->onUpdate('cascade');
+            $table->foreignId('edited_by')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
             $table->boolean('posted')->default(false);
             $table->boolean('locked')->default(false);
             $table->boolean('system')->default(true);

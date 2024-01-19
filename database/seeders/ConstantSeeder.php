@@ -64,7 +64,7 @@ class ConstantSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'employee',
+                'name' => 'seller',
                 'guard_name' => 'web',
             ],
         ];
@@ -84,13 +84,6 @@ class ConstantSeeder extends Seeder
         $this->seedEgyptAndSuadi();
 
         $this->seedStatues();
-
-
-
-        \App\Models\Crm\Client::factory(3)->create();
-        \App\Models\Crm\Action::factory(10)->create();
-
-
 
     }
 
@@ -565,12 +558,12 @@ class ConstantSeeder extends Seeder
         $user2->assignRole(Role::where('name', 'manager')->value('id'));
 
         $user3 = \App\Models\User::factory()->create([
-            'name' => ["first"=>'ali' ,"last"=>'zain'],
-            'username' => 'employee',
-            'email' => 'emp@erp.com',
+            'name' => ["first"=>'seller' ,"last"=>'person'],
+            'username' => 'seller',
+            'email' => 'seller@erp.com',
             'password' => $password,
         ]);
-        $user3->assignRole(Role::where('name', 'employee')->value('id'));
+        $user3->assignRole(Role::where('name', 'seller')->value('id'));
     }
 
 

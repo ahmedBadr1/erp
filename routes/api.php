@@ -179,7 +179,16 @@ Route::group(['middleware' => ['json.response']], function () {
             Route::get('/posting', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'posting'])->name('posting');
             Route::get('/unposting', [\App\Http\Controllers\Api\Accounting\TransfersController::class, 'unposting'])->name('unposting');
 
-            Route::get('/reports', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'index'])->name('reports');
+            Route::group([
+                'prefix' => 'reports',
+                'as' => 'reports.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'index'])->name('index');
+
+                Route::post('/account-ledger', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'accountLedger'])->name('index');
+                Route::post('/create', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'store'])->name('store');
+            });
         });
 
 

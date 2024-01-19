@@ -16,9 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 class TaxService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return Tax::active()->get();
+        $data = $fields ?? (new Tax())->getFillable();
+
+        return Tax::active()->get($data);
     }
 
 

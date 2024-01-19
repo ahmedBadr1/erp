@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Purchases;
 
+use App\Models\Accounting\Account;
 use App\Models\Employee\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +31,7 @@ class SupplierFactory extends Factory
             'warranty' => $this->faker->month(),
 //            'business_name', 'name', 'code', 'responsible_id', 'credit_limit', 'tax_number',
 //        'registration_number', 'payment_method', 'phone', 'telephone', 'email', 'active'
-        'account_id' => 2
+        'account_id' => Account::all()->random()->id
         ];
     }
 }

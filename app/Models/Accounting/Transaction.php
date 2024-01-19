@@ -14,11 +14,11 @@ class Transaction extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['code','amount', 'type', 'description','due','je_code','document_no','ledger_id','account_id','user_id','posted','locked','system'];
+    protected $fillable = ['code','amount', 'type', 'description','due','je_code','document_no','ledger_id','account_id','responsible_id','posted','locked','system'];
 
     protected $casts = ['due' => 'datetime'];
 
-    public static array $TYPES = ['SO','SR','PO','PR','EX','CI',"CO"];
+    public static array $TYPES = ['SO','SR','PO','PR','EX','CI','WH',"CO"];
 
     public function user()
     {

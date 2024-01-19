@@ -16,11 +16,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class CostCenterService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return CostCenter::get();
-    }
+        $data = $fields ?? (new CostCenter())->getFillable();
 
+        return CostCenter::active()->get($data);
+    }
 
     public function search($search)
     {

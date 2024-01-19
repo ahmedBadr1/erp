@@ -63,7 +63,7 @@ class AccountingSeeder extends Seeder
 
     public static function seed()
     {
-        $ledger = Ledger::factory()->create(['amount' => rand(100, 1000)]);
+        $ledger = Ledger::factory()->create(['amount' => rand(100, 1000),'currency_id'=>1,'ex_rate'=>1]);
         Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 1]);
         Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 0]);
         Transaction::factory(rand(1, 3))->create([

@@ -16,9 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 class WarehouseService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return Warehouse::get();
+        $data = $fields ?? (new Warehouse())->getFillable();
+
+        return Warehouse::active()->get($data);
     }
 
 

@@ -27,7 +27,7 @@ class StoreTransactionRequest extends FormRequest
             'treasury' => 'required_if:type,CI,CO|exists:accounts,code',
             'je_code' => 'nullable|string',// exists:ledger,code
             'due' => 'nullable|date',
-            'currency' => 'required|exists:currencies,id',
+            'currency_id' => 'required|exists:currencies,id',
             'responsible' => 'required|exists:users,id',
             'document_no' => 'nullable|string',
             'accounts' => 'required|array',

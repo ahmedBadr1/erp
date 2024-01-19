@@ -15,6 +15,7 @@ class Client extends MainModelSoft
 {
 
     protected $fillable = [
+        'code',
         'name',
         'phone',
         'code',
@@ -22,8 +23,8 @@ class Client extends MainModelSoft
         'status_id',
         'address',
         'type',
-        'credit_limit',
         'image',
+        'account_id',
     ];
 
     public function state()

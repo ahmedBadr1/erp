@@ -8,10 +8,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserService extends MainService {
 
-    public function fetchAll() {
-        return User::get();
+    public function all($fields = null,$role = null)
+    {
+        $data = $fields ?? (new User())->getFillable();
+        $query = User::active() ;
+        if ($role){
+            $query->whereHas('roles', fn($q) => $q->where('name', $role)) ;
+        }
+        return $query->get($data);
     }
-
 
     public function search($search)
     {

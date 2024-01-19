@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Crm;
 
+use App\Models\Accounting\Account;
 use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -25,6 +26,7 @@ class ClientFactory extends Factory
             'phone' => $this->faker->e164PhoneNumber(),
             'status_id' => $statues[array_rand($statues)] ,
             'address' => $this->faker->address(),
+            'account_id' => Account::all()->random()->id
         ];
     }
 }

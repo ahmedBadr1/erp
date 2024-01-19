@@ -16,9 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 class CurrencyService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null)
     {
-        return Currency::get();
+        $data = $fields ?? (new Currency())->getFillable();
+
+        return Currency::active()->get($data);
     }
 
 

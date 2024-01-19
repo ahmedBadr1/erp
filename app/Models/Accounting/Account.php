@@ -13,7 +13,7 @@ class Account extends MainModelSoft
 {
 //    use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit', 'opening_date', 'system', 'active', 'node_id', 'currency_id', 'status_id'];
+    protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit', 'opening_date', 'system', 'active', 'node_id', 'currency_id','group_account_id', 'status_id'];
 
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
@@ -31,6 +31,16 @@ class Account extends MainModelSoft
     public function node()
     {
         return $this->belongsTo(Node::class, 'node_id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(GroupAccount::class, 'group_account_id');
+    }
+
+    public function relatedAccounts()
+    {
+        return $this->hasManyThrough(Account::class,'group_accounts', 'group_account_id');
     }
 
     public function currency()

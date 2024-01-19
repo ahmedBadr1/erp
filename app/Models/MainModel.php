@@ -40,6 +40,24 @@ class MainModel extends Model implements HasMedia
         return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 
+    public function moveToTrash()
+    {
+        $this->deleted_at = Carbon::now();
+
+        return $this->save();
+    }
+
+    public function isRoot()
+    {
+        return $this->parent_id === null;
+    }
+
+
+    public function isOwnedBy($userId): bool
+    {
+        return $this->user_id == $userId;
+    }
+
     public function scopeMax($query, $max = 0)
     {
         return $query->where('max_amount', '>', $max);

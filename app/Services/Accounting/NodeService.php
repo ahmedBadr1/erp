@@ -13,15 +13,15 @@ use App\Services\MainService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
-class AccountService extends MainService
+class NodeService extends MainService
 {
 
-    public function all($fields = null, int $type_id = null)
+    public function all($fields = null)
     {
-        $data = $fields ?? (new Account())->getFillable();
-        return Account::active()->when($type_id,fn($q)=>$q->where('account_type_id',$type_id))->get($data);
-    }
+        $data = $fields ?? (new Node)->getFillable();
 
+        return Node::active()->get($data);
+    }
 
 
     public function search($search)
@@ -61,14 +61,14 @@ class AccountService extends MainService
     {
         try {
             $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
-            $totalCredit = (int) $account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
-            $totalDebit =(int)  $account->entries->where('credit', 0)->sum('amount') + $account->d_opening ;
-            $account->balance =$account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+            $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
+            $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
+            $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
             $account->save();
         } catch (Exception $e) {
             return $e->getMessage();
         }
-        return true ;
+        return true;
     }
 
     public function destroy($account)

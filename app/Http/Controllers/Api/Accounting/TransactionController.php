@@ -87,7 +87,7 @@ class TransactionController extends ApiController
         $costCenter = CostCenter::where('code', $data['cost_center'])->value('id');
 
         if (!$credit_account || !$debit_account) {
-            return $this->errorResponse('Accounts Not Fount', 404);
+            return $this->errorResponse('Accounts Not Found', 404);
         }
 
         $e = (new LedgerService())->cashin($debit_account, $credit_account, $data["amount"], $costCenter, $data['due'] ?? now(), $data["description"], $data['user_id'] ?? null);
