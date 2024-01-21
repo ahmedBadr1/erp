@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('branch_warehouse', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Hr\Branch::class);
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class);
-            $table->timestamps();            $table->softDeletes();
+            $table->string('name');
+            $table->boolean('active')->default(1);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('branch_warehouse');
+        Schema::dropIfExists('groups');
     }
 };

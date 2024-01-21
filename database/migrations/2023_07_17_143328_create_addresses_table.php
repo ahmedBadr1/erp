@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
-            $table->string('address');
-            $table->foreignIdFor(City::class);
+            $table->foreignIdFor(City::class)->nullable();
+            $table->string('district');
             $table->string('street')->nullable();
             $table->string('building')->nullable();
             $table->string('floor')->nullable();
@@ -25,8 +25,8 @@ return new class extends Migration
             $table->double('latitude')->nullable();
             $table->string('postal_code')->nullable();
             $table->morphs('addressable');
-            $table->softDeletes();
-            $table->timestamps();
+            $table->foreignIdFor(\App\Models\User::class);
+            $table->timestamps();            $table->softDeletes();
         });
     }
 

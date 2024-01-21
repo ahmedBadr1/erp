@@ -11,13 +11,32 @@ class AccountType extends MainModelSoft
     protected $fillable = ['name',"description",'active'];
 
     public static array $types = [
-        'TR', // Treasury Account
-        'CO', // Cash In Account
-        'CI', // Cash Out Account
-        'WH', // WareHouse Account
-        'SP', // Supplier Account
-        'CL', // Client Account
-        'TAX', // Tax Account
+        'TR' => 'Cash', // Treasury Account
+        'B' => 'Bank', // Treasury Account
+        'AR' => 'Accounts Receivable',
+        'AP' => 'Accounts Payable',
+        'S' => 'Sales',
+        'SS' => 'Service Sales',
+        'SR' => 'Sales Returns',
+        'P' => 'Purchase',
+        'PR' => 'Purchase Returns',
+        'NR' => 'Notes Receivable',
+        'NP' => 'Notes Payable',
+        'I' => 'Inventory',
+        'COG'=> 'Cost Of Goods',
+        'SD'=> 'Sales Discount',
+        'T' => 'Tax',
+        'OR' => 'Other Revenue',
+        'W' => 'Waste',
+        'RE' => 'Retained Earning',
+        'A' => 'Adjustment',
+        'AT ' => 'Added Tax',
+        'WT ' => 'Withholding Tax',
+        'EI ' => 'Ending Inventory',
+        'RGE ' => 'Realized Gain Exchange',
+        'RLE ' => 'Realized Loss Exchange',
+        'URGE ' => 'Un Realized Gain Exchange',
+        'URLE ' => 'Un Realized Loss Exchange',
     ];
 
     public function nodes()

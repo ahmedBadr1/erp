@@ -29,7 +29,6 @@ return new class extends Migration
             $table->foreignIdFor(User::class);
             $table->foreignIdFor(Shift::class)->nullable();
             $table->tinyInteger('draft')->default(1);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

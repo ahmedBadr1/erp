@@ -5,6 +5,7 @@ namespace Database\Seeders;
 
 use App\Models\System\City;
 use App\Models\System\Country;
+use App\Models\System\Group;
 use App\Models\System\Setting;
 use App\Models\System\State;
 use App\Models\System\Status;
@@ -79,6 +80,8 @@ class ConstantSeeder extends Seeder
                 $role->permissions()->sync($pers);
             }
         }
+
+        $this->seedGroups();
 
         $this->seedUsers();
 
@@ -568,6 +571,11 @@ class ConstantSeeder extends Seeder
         ]);
         $user3->assignRole(Role::where('name', 'seller')->value('id'));
     }
+
+public  function seedGroups() :void
+{
+    Group::factory(3)->create();
+}
 
 
 

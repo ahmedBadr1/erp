@@ -2,7 +2,12 @@
 
 namespace App\Http\Resources\Accounting;
 
+use App\Http\Resources\System\AccessResource;
+use App\Http\Resources\System\AddressResource;
+use App\Http\Resources\System\ContactResource;
 use App\Http\Resources\System\StatusResource;
+use App\Http\Resources\System\TagResource;
+use App\Models\System\Address;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,6 +31,8 @@ class AccountResource extends JsonResource
             'c_opening' => $this->d_opening ?? 0,
             'd_opening' => $this->d_opening ?? 0,
             'opening_date' => $this->opening_date,//->format('m/d/Y'),
+            'currency_id' => $this->currency_id,
+
             'active' => $this->system,
             'system' => $this->system,
 
@@ -41,6 +48,13 @@ class AccountResource extends JsonResource
             'currency' => new CurrencyResource($this->whenLoaded('currency')),
             'node' => new NodeResource($this->whenLoaded('node')),
             'status' => new StatusResource($this->whenLoaded('status')),
+
+            'contact' =>new ContactResource($this->whenLoaded('lastContact')),
+            'address' => new AddressResource($this->whenLoaded('lastAddress')),
+            'accesses' => AccessResource::collection($this->whenLoaded('accesses')),
+
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
+
         ];
     }
 }

@@ -11,22 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nodes', function (Blueprint $table) {
+        Schema::create('cost_center_nodes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('slug');//->nullable()->index();
+            $table->string('slug')->index();//->nullable()
             $table->string('code')->unique()->index();//->nullable()->index();
-            $table->boolean('credit');
-            $table->boolean('accept_cost_center')->default(0);
             $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')
-                ->on('nodes')
+                ->on('cost_center_nodes')
                 ->onUpdate('cascade');
             $table->boolean('active')->default(1);
-            $table->boolean('usable')->default(0);
-            $table->boolean('system')->default(0);
-            $table->foreignIdFor(\App\Models\Accounting\AccountType::class);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -37,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nodes');
+        Schema::dropIfExists('cost_center_nodes');
     }
 };

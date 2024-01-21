@@ -161,7 +161,7 @@ class RolesController extends ApiController
     {
         $role = Role::findBySlug($slug,'web');
         if ($role->users()->exists()){
-            return $this->errorResponse('Role Still Has Users',200);
+            return $this->errorResponse(__('message.still-has',['model'=>__('Role'),'relation'=>__('Users')]),200);
         }
 
         $role->delete();

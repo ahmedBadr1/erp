@@ -22,5 +22,4 @@ namespace App\Traits;
           return $this->morphMany(Access::class,'model')->latest()->limit(1);
       }
 
-
   }

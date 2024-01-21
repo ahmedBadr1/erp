@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
             $table->boolean('exclusive')->default(true);
             $table->boolean('active')->default(true);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

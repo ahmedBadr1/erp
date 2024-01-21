@@ -19,6 +19,7 @@ class NodeResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'credit' => $this->credit,
+            'account_type_id' => $this->account_type_id,
             'parent_id' => $this->parent_id,
             'active' => $this->active,
             'usable' => $this->usable,

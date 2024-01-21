@@ -13,10 +13,17 @@ use App\Http\Resources\Accounting\AccountResource;
 use App\Http\Resources\Accounting\CurrencyResource;
 use App\Http\Resources\Accounting\NodeResource;
 use App\Models\Accounting\Account;
+use App\Models\Accounting\AccountType;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Node;
+use App\Models\System\Tag;
 use App\Models\User;
 use App\Services\Accounting\AccountService;
+use App\Services\Accounting\CurrencyService;
+use App\Services\Accounting\NodeService;
+use App\Services\System\GroupService;
+use App\Services\System\TagService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -133,60 +140,41 @@ class AccountsController extends ApiController
         }
 
         if ($request->has('code')) {
-            $account = Account::with('node', 'currency')->where('code', $request->get('code'))->firstorFail();
+            $account = Account::with('node', 'currency','lastContact','lastAddress','tags','accesses')->where('code', $request->get('code'))->firstorFail();
         }
 
-        $nodes = Node::isLeaf()->active()->pluck('name', 'id')->toArray();
-        $currencies = Currency::active()->pluck('name', 'id')->toArray();
-        return $this->successResponse(['nodes' => $nodes, 'currencies' => $currencies, 'account' => isset($account) ? new AccountResource($account) : null]);
+        if ($request->has('nodeId')) {
+            $node = Node::where('code', $request->get('nodeId'))->first();
+        }
+
+        $nodes = Node::isLeaf()->active()->select('name', 'id','code')->get();
+        $currencies =  (new CurrencyService())->all(['code','id']);
+        $tags =  (new TagService())->all(['name','id'],'account');
+        $groups =  (new GroupService())->all(['name','id']);
+        $users = (new UserService())->all(['id','username']);
+        $accountTypes = AccountType::active()->select('name', 'id')->get();
+        return $this->successResponse([
+            'nodes' => $nodes,
+            'currencies' => $currencies,
+            'account' => isset($account) ? new AccountResource($account) : null,
+            'tags'=>$tags,
+            'accountTypes' => $accountTypes,
+            'groups'=>$groups,
+            'users'=>$users,
+            'node'=>$node ?? null,
+        ]);
     }
 
     public function store(AccountRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
-        $node = Node::isLeaf()->withCount('accounts')->whereId($input['node_id'])->first();
-        if (!$node) {
-            return $this->errorResponse(__('Node Not Found'), 200);
+        try {
+            $res = (new AccountService())->store($input);
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), 409) ;
         }
 
-//        return $node->id ;
-        DB::transaction(function () use ($input, $node) {
-            $account = Account::create([
-                'name' => $input['name'],
-//                'code' => $node->id . ((int)$node->accounts_count + 1),
-                'description' => $input['description'],
-                'currency_id' => $input['currency_id'],
-                'node_id' => $node->id,
-                'd_opening' => $input['opening_balance'] ?? null,
-                'opening_date' => $input['opening_date'] ?? null,
-                'credit' => $node->credit,
-
-            ]);
-//                if ($validated['opening_balance']){
-//                    $transaction =  Transaction::create([
-//                        'amount' => $validated['opening_balance'],
-//                        'description' =>'Opening Balance For Account' . $account->name,
-//                        'type' => 'user',
-//                        'due' => $validated['opening_date'] ?? now(),//$validated['due']
-//                        'user_id' => auth()->id()
-//                    ]);
-//                    Entry::create([
-//                        'amount' => $validated['opening_balance'],
-//                        'credit' =>$account->credit,
-//                        'account_id' => $account->id,
-//                        'transaction_id' => $transaction->id
-//                    ]);
-//                }
-
-//            activity()
-//                ->performedOn($account)
-//                ->causedBy($user)
-//                ->event('updated')
-//                ->useLog($user->name)
-//                ->log('Account Has been Created');
-
-        });
 
         return $this->successResponse(null, __('message.created', ['model' => __('names.account')]));
     }

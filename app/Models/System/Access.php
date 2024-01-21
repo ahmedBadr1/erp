@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Access extends MainModel
 {
-  protected $fillable = ['user_id','model_id','model_type'];
+  protected $fillable = ['auth_id','auth_type','model_id','model_type'];
 
   public function user()
   {

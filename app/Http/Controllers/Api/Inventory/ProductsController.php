@@ -15,7 +15,7 @@ use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
 use App\Models\User;
-use App\Services\Inventory\ProductService;
+use App\Services\Inventory\ContactService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +33,7 @@ class ProductsController extends ApiController
         $this->middleware('permission:inventory.products.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:inventory.products.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:inventory.products.delete', ['only' => ['destroy']]);
-        $this->service = new ProductService();
+        $this->service = new ContactService();
     }
 
     public function download(Request $request)

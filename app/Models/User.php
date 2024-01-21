@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\AuthModel;
 use App\Models\System\Access;
 use App\Models\System\Bookmark;
+use App\Models\System\Group;
 use App\Models\System\Profile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use App\Models\System\Role;
@@ -50,6 +51,10 @@ class User extends AuthModel
         'name' => 'json',
     ];
 
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class,'group_user');
+    }
 
     public function hasAccess($user)
     {

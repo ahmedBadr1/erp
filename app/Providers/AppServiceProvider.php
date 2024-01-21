@@ -3,6 +3,20 @@
 namespace App\Providers;
 
 use App\Http\Resources\Dashboard\NotificationCollection;
+use App\Models\Accounting\Account;
+use App\Models\Accounting\CostCenter;
+use App\Models\Accounting\CostCenterNode;
+use App\Models\Accounting\Currency;
+use App\Models\Accounting\Ledger;
+use App\Models\Accounting\Node;
+use App\Models\Accounting\Tax;
+use App\Models\Accounting\Transaction;
+use App\Models\Inventory\Product;
+use App\Models\Inventory\Warehouse;
+use App\Models\System\Address;
+use App\Models\System\Contact;
+use App\Models\System\Group;
+use App\Models\System\Tag;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\Paginator;
@@ -30,7 +44,25 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         Relation::morphMap([
-            'users' => User::class,
+            'user' => User::class,
+            'group' => Group::class,
+            'contact' => Contact::class,
+            'address' => Address::class,
+            'tag' => Tag::class,
+
+
+            'node' => Node::class,
+            'account' => Account::class,
+            'costCenterNode' => CostCenterNode::class,
+            'costCenter' => CostCenter::class,
+            'ledger' => Ledger::class,
+            'transaction' => Transaction::class,
+            'tax' => Tax::class,
+            'currency' => Currency::class,
+
+            'product' => Product::class,
+            'warehouse' => Warehouse::class,
+
         ]);
 
         $localeDirs = config('languages.localeDirs');

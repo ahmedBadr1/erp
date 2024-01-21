@@ -51,7 +51,7 @@ class CostCentersController extends ApiController
 
     public function list(Request $request)
     {
-        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+        if (auth('api')->user()->cannot('accounting.costCenters.index')) {
             return $this->deniedResponse(null, null, 403);
         }
         if ($request->has("keywords")) {

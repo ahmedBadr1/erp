@@ -4,8 +4,9 @@ namespace App\Services\Accounting;
 
 use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\CostCenter;
+use App\Models\Accounting\CostCenterNode;
 use App\Models\Accounting\Entry;
+use App\Models\Accounting\Node;
 use App\Models\Crm\Client;
 use App\Models\User;
 use App\Services\ClientsExport;
@@ -13,56 +14,57 @@ use App\Services\MainService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CostCenterService extends MainService
+class CostCenterNodeService extends MainService
 {
 
     public function all($fields = null)
     {
-        $data = $fields ?? (new CostCenter())->getFillable();
+        $data = $fields ?? (new Node)->getFillable();
 
-        return CostCenter::active()->get($data);
+        return CostCenterNode::active()->get($data);
     }
+
 
     public function search($search)
     {
         $search = trim($search);
-        return empty($search) ? CostCenter::query()
-            : CostCenter::query()->where('name', 'like', '%' . $search . '%')
+        return empty($search) ? CostCenterNode::query()
+            : CostCenterNode::query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%');
-//                ->orWhereHas('node', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
     public function store(array $data)
     {
         try {
-            $costCenter = CostCenter::create($data);
-            return $costCenter;
+            $CostCenterNode = CostCenterNode::create($data);
+            return $CostCenterNode;
         } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function update($costCenter, array $data)
+    public function update($CostCenterNode, array $data)
     {
         try {
-            $costCenter->update($data);
-            return $costCenter;
+            $CostCenterNode->update($data);
+            return $CostCenterNode;
         } catch (Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function destroy($costCenter)
+
+    public function destroy($CostCenterNode)
     {
-        if ($costCenter->transaction_count > 0) {
+        if ($CostCenterNode->cost_centers_count > 0) {
             return 0;
         } else {
-            $costCenter->delete();
+            $CostCenterNode->delete();
         }
     }
 
     public function export()
     {
-        return Excel::download(new CostCenterExport, 'cost_centers_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new CostCenterNodesExport, 'accounts_' . date('d-m-Y') . '.xlsx');
     }
 }

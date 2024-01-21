@@ -15,11 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->unique()->index();//->nullable()->index();
-            $table->foreignId('parent_id')
-                ->nullable()
-                ->references('id')
-                ->on('cost_centers')
-                ->onUpdate('cascade');
+            $table->foreignIdFor(\App\Models\Accounting\CostCenterNode::class);
+            $table->foreignIdFor(\App\Models\System\Status::class)->nullable();
             $table->boolean('active')->default(1);
             $table->boolean('system')->default(0);
             $table->timestamps();

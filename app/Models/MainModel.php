@@ -68,6 +68,11 @@ class MainModel extends Model implements HasMedia
         return $query->where('active', $active);
     }
 
+    public function scopeType($query, $type )
+    {
+        return $query->where('type', $type);
+    }
+
     public function scopeApp($query, $active = 1)
     {
         return $query->where('app', $active);

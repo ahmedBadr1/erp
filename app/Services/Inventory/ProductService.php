@@ -18,7 +18,7 @@ class ProductService extends MainService
 
     public function all($fields = null)
     {
-        $data = $fields ?? (new Product())->getFillable();
+        $data = $fields ?? (new z())->getFillable();
 
         return Product::active()->get($data);
     }

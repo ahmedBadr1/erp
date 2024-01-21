@@ -13,7 +13,12 @@ class CostCenter extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-    protected $fillable = ['name', 'parent_id', 'active',  'system'];
+    protected $fillable = ['name', 'cost_center_node_id', 'active',  'system'];
+
+    public function node()
+    {
+        return $this->hasMany(CostCenterNode::class);
+    }
 
     public function accounts()
     {
@@ -39,12 +44,8 @@ class CostCenter extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
-            if (!empty($model->parent_id)) {
-                $parent = CostCenter::withCount('children', 'ancestors')->find($model->parent_id);
-                $model->code = $parent->code . str_pad(((int)($parent->children_count ?? 0)  + 1), 2, '0', STR_PAD_LEFT);
-            }else{
-                $model->code =str_pad( CostCenter::whereNull('parent_id')->count() +1 ,2, '0', STR_PAD_LEFT) ;
-            }
+            $node = CostCenterNode::withCount('children', 'costCenters', 'ancestors')->find($model->cost_center_node_id);
+            $model->code = $node->code . str_pad(((int)$node->children_count + $node->cost_centers_count + 1), 4, '0', STR_PAD_LEFT);
         });
     }
 

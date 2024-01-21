@@ -15,7 +15,7 @@ use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
 use App\Models\User;
-use App\Services\Inventory\WarehouseService;
+use App\Services\Inventory\GroupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -33,7 +33,7 @@ class WarehousesController extends ApiController
         $this->middleware('permission:inventory.warehouses.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:inventory.warehouses.delete', ['only' => ['destroy']]);
 
-        $this->service = new WarehouseService();
+        $this->service = new GroupService();
     }
 
 

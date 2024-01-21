@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\CostCenter;
+use App\Models\Accounting\CostCenterNode;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Ledger;
@@ -29,8 +30,10 @@ class AccountingSeeder extends Seeder
 
         $this->seedCurrencies();
 
-        CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', "code" => "01", 'system' => 1, 'parent_id' => null]);
-        CostCenter::factory(10)->create();
+        CostCenterNode::factory()->create(['name' => 'مركز تكلفة رئيسي','slug'=>'main_cost_center_node','code'=>01]);
+
+        CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', "code" => "01", 'system' => 1]);
+        CostCenter::factory(3)->create();
         Account::factory(100)->create();
         $TaxAccount = Account::whereHas('type', fn($q) => $q->where('code', 'TAX'))->value('id');
         Tax::factory()->create([
@@ -79,20 +82,12 @@ class AccountingSeeder extends Seeder
      */
     public function seedTypes(): string
     {
-        $types = [
-            'مصروف' => 'CO',
-            'نقدية' => 'TR',
-            'إيراد' => 'CI',
-            'مخزون' => 'WH',
-            'مورد' => 'SP',
-            'عميل' => 'CL',
-            'ضريبة' => 'TAX',
-        ];
+        $types = AccountType::$types;
 
         foreach ($types as $key => $val) {
             AccountType::factory()->create([
-                'name' => $key,
-                'code' => $val
+                'code' => $key,
+                'name' => $val
             ]);
         }
         return true;

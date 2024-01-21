@@ -15,10 +15,7 @@ class Node extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-
-    public static $types = ['account', 'product'];
-
-    protected $fillable = ['name', 'parent_id',"account_type_id", 'active', 'usable', 'system'];
+    protected $fillable = ['name','slug','accept_cost_center', 'parent_id',"account_type_id", 'active', 'usable', 'system'];
 
     public function type()
     {

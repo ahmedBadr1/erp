@@ -77,11 +77,6 @@ class Branch extends MainModelSoft
         return $this->belongsTo(Branch::class, 'parent_id');
     }
 
-    public function scopeType() {
-        $this->type == 1 ? __('names.main') : __('names.Sub');
-    }
-
-
     public function scopeNumberOfEmps() {
 
        $managements = Management::where('branch_id',$this->id)->pluck('id')->toArray();

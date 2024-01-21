@@ -18,6 +18,6 @@ namespace App\Traits;
 
       public function lastContact()
       {
-          return $this->morphMany(Contact::class,'contactable')->latest()->limit(1);
+          return $this->morphOne(Contact::class,'contactable')->latestOfMany();
       }
   }
