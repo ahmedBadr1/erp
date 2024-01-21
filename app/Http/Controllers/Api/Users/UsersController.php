@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Activitylog\Models\Activity;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 use Illuminate\Support\Facades\Validator;
 
 

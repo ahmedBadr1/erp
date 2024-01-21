@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 class AuthController extends ApiController
 {

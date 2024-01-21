@@ -36,7 +36,7 @@ use App\Models\Users\User;
 use App\Models\Users\UserAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 use App\Models\Common\Building;
 
 class LookupController extends Controller

@@ -10,6 +10,16 @@ class AccountType extends MainModelSoft
 {
     protected $fillable = ['name',"description",'active'];
 
+    public static array $types = [
+        'TR', // Treasury Account
+        'CO', // Cash In Account
+        'CI', // Cash Out Account
+        'WH', // WareHouse Account
+        'SP', // Supplier Account
+        'CL', // Client Account
+        'TAX', // Tax Account
+    ];
+
     public function nodes()
     {
         return $this->hasMany(Node::class);

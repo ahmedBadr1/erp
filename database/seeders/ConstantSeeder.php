@@ -11,7 +11,7 @@ use App\Models\System\Status;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class ConstantSeeder extends Seeder
@@ -57,14 +57,17 @@ class ConstantSeeder extends Seeder
         $roles = [
             [
                 'name' => 'admin',
+                'slug' => 'admin',
                 'guard_name' => 'web',
             ],
             [
                 'name' => 'manager',
+                'slug' => 'manager',
                 'guard_name' => 'web',
             ],
             [
                 'name' => 'seller',
+                'slug' => 'seller',
                 'guard_name' => 'web',
             ],
         ];
@@ -116,9 +119,9 @@ class ConstantSeeder extends Seeder
             "accounting.transactions.cash_in",
             "accounting.transactions.cash_out",
             "accounting.reports.cash",
+            "accounting.reports.ledger",
             "accounting.posting",
             "accounting.unposting",
-            "accounting.reports",
             "purchases.reports",
             "sales.reports",
             "logs",

@@ -5,7 +5,7 @@ namespace App\Observers;
 use App\Models\Employee\Employee;
 use App\Models\User;
 use App\Notifications\WelcomeMessage;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 class UserObserver
 {

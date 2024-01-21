@@ -3,7 +3,7 @@
 namespace App\Livewire\Roles;
 
 use Livewire\Component;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 use App\Livewire\Basic\BasicTable;
 

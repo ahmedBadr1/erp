@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('token', 64)->nullable();
             $table->timestamp('expire_at')->nullable();
-            $table->foreignIdFor(\Spatie\Permission\Models\Role::class)->nullable();
+            $table->foreignIdFor(\App\Models\System\Role::class)->nullable();
             $table->foreignId('sent_by')->references('id')->on('users');
             $table->timestamp('registered_at')->nullable();
             $table->timestamps();

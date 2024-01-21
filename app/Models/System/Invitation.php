@@ -4,7 +4,7 @@ namespace App\Models\System;
 
 use App\Models\MainModelSoft;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 class Invitation extends MainModelSoft
 {

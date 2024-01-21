@@ -21,12 +21,14 @@ return new class extends Migration
             $table->string('document_no')->nullable();
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class);
-            $table->foreignIdFor(\App\Models\Accounting\Account::class); // 'responsible_id','created_by','edited_by',
-            $table->foreignId('responsible_id')->nullable()->constrained('users')->onUpdate('cascade');
-//            $table->foreignId('edited_by')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');
-//            $table->boolean('posted')->default(false);
-//            $table->boolean('locked')->default(false);
-//            $table->boolean('system')->default(true);
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'first_party_id');
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'second_party_id');
+            $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable();
+            $table->foreignIdFor(\App\Models\User::class,'created_by');
+            $table->foreignIdFor(\App\Models\User::class,'edited_by')->nullable();
+            $table->boolean('posted')->default(false);
+            $table->boolean('locked')->default(false);
+            $table->boolean('system')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

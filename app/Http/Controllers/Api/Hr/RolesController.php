@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Hr;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Hr\StoreRoleRequest;
 use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 class RolesController extends ApiController
 {
@@ -63,16 +65,17 @@ class RolesController extends ApiController
                 $currentGroup = &$currentGroup[$part];
             }
 
-            $currentGroup[] = [
+            $currentGroup[$part] = [
                 'id' => $permission->id,
                 'name' => $part,
             ];
         }
 
         if ($request->has("name")){
-            $role = Role::with('permissions')->where('name',$request->get('name'))->first();
+            $role = Role::with('permissions')->where('slug',$request->get('name'))->select('id','name')->first();
+            $rolePermissions = $role->permissions->pluck('id')->toArray();
         }
-        return $this->successResponse(['permissions'=>$groupedPermissions,'role'=>isset($role) ? new RoleResource($role) :null ]);
+        return $this->successResponse(['permissions'=>$groupedPermissions,'role'=>isset($role) ? $role :null ,'rolePermissions'=>$rolePermissions ?? null ]);
     }
 
     /**
@@ -81,23 +84,20 @@ class RolesController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
         //dd($request);
         if (auth('api')->user()->cannot('roles.create')) {
             return $this->errorResponse('Unauthorized, you don\'t have access.');
         }
 
-        $this->validate($request,[
-            'name'=>'required|unique:roles,name',
-            'permissions'=>'required|array',
-            'permissions.*'=>'required|exists:permissions,id',
-        ]);
-        $input = $request->all();
 
-        $role =Role::findOrCreate($request->input('name'));
-        $role->syncPermissions($request->input('permissions'));
-        return $this->successResponse($role);
+        $permissions = collect($request->validated('permissions'))->where('checked',true)->pluck('id')->toArray() ;
+
+        $role =Role::findOrCreate($request->get('name'),'web');
+        $role->syncPermissions($permissions);
+
+        return $this->successResponse($role,__('message.created',['model'=>__('Role')]));
     }
 
     /**
@@ -137,17 +137,16 @@ class RolesController extends ApiController
      * @param  int  $id
      *
      */
-    public function update(Request $request, $id)
+    public function update(StoreRoleRequest $request, $slug)
     {
-        //
-        $this->validate($request,[
-            'name'=>['required', Rule::unique('roles')->ignore($id),]
-        ]);
-        $role = Role::find($id);
 
-        $role->name =$request->input('name');
+        $role = Role::findBySlug($slug);
+        $role->name = $request->input('name');
+        $role->slug = Str::slug($request->input('name'));
         $role->save();
-        $role->syncPermissions($request->input('permissions'));
+
+        $permissions = collect($request->validated('permissions'))->where('checked',true)->pluck('id')->toArray() ;
+        $role->syncPermissions($permissions);
 
         return $this->successResponse($role);
     }
@@ -158,18 +157,15 @@ class RolesController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request,$name)
+    public function destroy(Request $request,$slug)
     {
-        $role = Role::findByName($name,'web');
-        if ($role->permissions()->exists()){
-            return $this->errorResponse('Role Still Has Permissions',200);
-        }
+        $role = Role::findBySlug($slug,'web');
         if ($role->users()->exists()){
             return $this->errorResponse('Role Still Has Users',200);
         }
 
         $role->delete();
-        return $this->successResponse(null,'deleted Successfully');
+        return $this->successResponse(null,__('message.deleted',['model'=>__('Role')]));
     }
 
     public function permissions(){

@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 
 class UsersController extends ApiController

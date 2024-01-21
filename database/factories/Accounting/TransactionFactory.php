@@ -29,11 +29,11 @@ class TransactionFactory extends Factory
             'description'=> $this->faker->text(),
             'due'=> $this->faker->dateTimeThisYear(),
             'responsible_id' => 1,//User::all()->random()->id,
-//            'created_by' => 1,
+            'created_by' => 1,
 //            'edited_by' => 1,
 //            'ledger_id'=> Ledger::all()->random()->id,
-            'account_id'=> rand(1,100),// Account::all()->random()->id,
-
+            'first_party_id'=> rand(1,100),// Account::all()->random()->id,
+            'second_party_id'=> rand(1,100),
         ];
     }
 }

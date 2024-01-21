@@ -20,7 +20,7 @@ use App\Models\System\Country;
 use App\Models\System\State;
 use App\Models\System\Tag;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 
 trait AdminTrait
 {

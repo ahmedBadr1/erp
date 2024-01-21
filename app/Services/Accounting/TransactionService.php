@@ -33,37 +33,38 @@ class TransactionService extends MainService
                 ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createTransaction(string $type, int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
+    public function createTransaction(string $type, int $amount, int $ledger_id,int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
     {
 
         return Transaction::create([
             'type' => $type,
             'amount' => $amount,
             'ledger_id' => $ledger_id,
-            'account_id' => $partner_id,
+            'first_party_id' => $first_party_id,
+            'second_party_id' => $second_party_id,
             'description' => $description,
             'due' => $due,
             'je_code' => $je_code,
             'document_no' => $document_no,
             'responsible' => $user_id ?? auth()->id(),
-//            'created_by' =>  auth()->id(),
+            'created_by' =>  auth()->id(),
             'system' => $system,
         ]);
     }
 
-    public function createCI(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
+    public function createCI(int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
     {
-        return $this->createTransaction('CI', $amount, $ledger_id, $partner_id, $due, $description, $user_id,$je_code,$document_no, $system);
+        return $this->createTransaction('CI', $amount, $ledger_id, $first_party_id,  $second_party_id, $due, $description, $user_id,$je_code,$document_no, $system);
     }
 
-    public function createCO(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
+    public function createCO(int $amount, int $ledger_id,int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
     {
-        return $this->createTransaction('CO', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $je_code,$document_no, $system);
+        return $this->createTransaction('CO', $amount, $ledger_id, $first_party_id,  $second_party_id, $due, $description, $user_id, $je_code,$document_no, $system);
     }
 
-    public function createSO(int $amount, int $ledger_id, int $partner_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
+    public function createSO(int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null,$je_code= null,$document_no = null, $system = 1)
     {
-        return $this->createTransaction('SO', $amount, $ledger_id, $partner_id, $due, $description, $user_id, $je_code,$document_no, $system);
+        return $this->createTransaction('SO', $amount, $ledger_id,  $first_party_id,  $second_party_id, $due, $description, $user_id, $je_code,$document_no, $system);
     }
 
     public function update($transaction, array $data)

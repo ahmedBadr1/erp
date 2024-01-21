@@ -69,8 +69,8 @@ Route::group(['middleware' => ['json.response']], function () {
             Route::post('permissions', [\App\Http\Controllers\Api\Hr\RolesController::class, 'permissions']);
             Route::post('/toggle/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'toggle']);
             Route::post('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'show']);
-            Route::patch('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'update']);
-            Route::delete('/{id}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'destroy']);
+            Route::patch('/{slug}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'update']);
+            Route::delete('/{slug}', [\App\Http\Controllers\Api\Hr\RolesController::class, 'destroy']);
         });
 
         ///*

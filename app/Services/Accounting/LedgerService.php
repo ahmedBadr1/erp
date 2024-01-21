@@ -161,7 +161,7 @@ class LedgerService extends MainService
                 $account_id = Account::where('code', $account['code'])->value('id');
                 $cost_center_id = isset($account['costCenter']) ? CostCenter::where('code', $account['costCenter']['code'])->value('id') : null;
                 $EntryService->createCreditEntry($account['amount'], $account_id, $ledger->id, $cost_center_id, $account['comment'] ?? null);
-                $TransactionService->createCI($data['amount'], $ledger->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
+                $TransactionService->createCI($data['amount'], $ledger->id, $treasury->id ,$account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
                 $AccountService->updateBalance($account_id);
             }
         } catch (Exception $e) {
@@ -188,7 +188,7 @@ class LedgerService extends MainService
                 $account_id = Account::where('code', $account['code'])->value('id');
                 $cost_center_id = isset($account['costCenter']) ? CostCenter::where('code', $account['costCenter']['code'])->value('id') : null;
                 $EntryService->createDebitEntry($account['amount'], $account_id, $ledger->id, $cost_center_id, $account['comment'] ?? null);
-                $TransactionService->createCO($data['amount'], $ledger->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
+                $TransactionService->createCO($data['amount'], $ledger->id,$treasury->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
                 $AccountService->updateBalance($account_id);
             }
         } catch (Exception $e) {

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 
 use Spatie\Activitylog\Models\Activity;
-use Spatie\Permission\Models\Role;
+use App\Models\System\Role;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
 
