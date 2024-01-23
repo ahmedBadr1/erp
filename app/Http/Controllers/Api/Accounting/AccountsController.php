@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Accounting;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Accounting\AccountRequest;
 use App\Http\Requests\Accounting\DuplicateRequest;
+use App\Http\Requests\Accounting\IndexAccountsRequest;
 use App\Http\Requests\Accounting\UpdateAccountRequest;
 use App\Http\Requests\Accounting\UpdateNodeRequest;
 use App\Http\Requests\ListRequest;
@@ -16,6 +17,7 @@ use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Node;
+use App\Models\System\Group;
 use App\Models\System\Tag;
 use App\Models\User;
 use App\Services\Accounting\AccountService;
@@ -45,12 +47,18 @@ class AccountsController extends ApiController
     }
 
 
-    public function index(Request $request)
+    public function index(IndexAccountsRequest $request)
     {
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $accounts = Account::active()->get(['name', 'code', 'credit', 'system', 'active']);
+        $input = $request->validated();
+        $query = Account::active();
+        if ($input['node_id']) {
+            $nodeAccounts =$this->service->all(['code','name','description','credit_limit','debit_limit','account_type_id','active'] , $input['account_type_id'] ?? null,$input['node_id']?? null);
+            return $this->successResponse(['accounts' => $nodeAccounts]);
+        }
+        $accounts = $query->get(['name', 'code', 'credit', 'system', 'active']);
         if ($request->has('type')) {
 //            $cashNode = Node::active()->with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('slug', 'alnkdy')->first();
 //            $cashAccounts = collect($cashNode->accounts);
@@ -89,12 +97,12 @@ class AccountsController extends ApiController
         return $this->successResponse(['accounts' => $accounts]);
     }
 
-    public function tree()
+    public function tree(Request $request)
     {
         if (auth('api')->user()->cannot('accounting.accounts.index')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $tree = Node::tree()->withCount('children')->with('accounts')->get()->toTree();
+        $tree = (new NodeService())->tree(null, ['accounts'], ['children']);
         return $this->successResponse(NodeResource::collection($tree));
     }
 
@@ -140,53 +148,57 @@ class AccountsController extends ApiController
         }
 
         if ($request->has('code')) {
-            $account = Account::with('node', 'currency','lastContact','lastAddress','tags','accesses')->where('code', $request->get('code'))->firstorFail();
+            $account = Account::with('node', 'currency', 'lastContact', 'lastAddress', 'tags', 'accesses.user', 'userAccesses')->where('code', $request->get('code'))->firstorFail();
         }
 
         if ($request->has('nodeId')) {
             $node = Node::where('code', $request->get('nodeId'))->first();
         }
 
-        $nodes = Node::isLeaf()->active()->select('name', 'id','code')->get();
-        $currencies =  (new CurrencyService())->all(['code','id']);
-        $tags =  (new TagService())->all(['name','id'],'account');
-        $groups =  (new GroupService())->all(['name','id']);
-        $users = (new UserService())->all(['id','username']);
+        $nodes = Node::isLeaf()->active()->select('name', 'id', 'code')->get();
+        $currencies = (new CurrencyService())->all(['code', 'id']);
+        $tags = (new TagService())->all(['name', 'id'], 'account');
+        $groups = (new GroupService())->all(['name', 'id']);
+        $users = (new UserService())->all(['id', 'username']);
         $accountTypes = AccountType::active()->select('name', 'id')->get();
         return $this->successResponse([
             'nodes' => $nodes,
             'currencies' => $currencies,
             'account' => isset($account) ? new AccountResource($account) : null,
-            'tags'=>$tags,
+            'tags' => $tags,
             'accountTypes' => $accountTypes,
-            'groups'=>$groups,
-            'users'=>$users,
-            'node'=>$node ?? null,
+            'groups' => $groups,
+            'users' => $users,
+            'node' => $node ?? null,
         ]);
     }
 
     public function store(AccountRequest $request)
     {
-        $input = $request->validated();
 
         try {
-            $res = (new AccountService())->store($input);
+            $res = (new AccountService())->store($request->validated());
+            if ($res !== true){
+                return $this->errorResponse($res, 409);
+            }
         } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 409) ;
+            return $this->errorResponse($e->getMessage(), 409);
         }
-
 
         return $this->successResponse(null, __('message.created', ['model' => __('names.account')]));
     }
 
     public function update(UpdateAccountRequest $request, $code)
     {
-        $account = Account::where('code', $code)->firstOrFail();
         try {
-            $account->update($request->validated());
-        } catch (\Exception  $e) {
-            return $this->errorResponse('something went wrong please try again',);
+            $res = (new AccountService())->store($request->validated(), $code);
+            if ($res !== true){
+                return $this->errorResponse($res, 409);
+            }
+        } catch (Exception $e) {
+            return $this->errorResponse($e->getMessage(), 409);
         }
+//        return $res ;
 
         return $this->successResponse(null, __('message.updated', ['model' => __('names.account')]));
     }

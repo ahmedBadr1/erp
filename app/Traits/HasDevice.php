@@ -18,6 +18,6 @@ namespace App\Traits;
 
       public function lastDevice()
       {
-          return $this->morphMany(Device::class,'owner')->latest()->limit(1);
+          return $this->morphOne(Device::class,'owner')->latestOfMany();
       }
   }

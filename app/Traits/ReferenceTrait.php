@@ -18,6 +18,6 @@ namespace App\Traits;
 
       public function lastTransaction()
       {
-          return $this->morphMany(Transaction::class,'reference')->latest()->limit(1);
+          return $this->morphOne(Transaction::class,'reference')->latestOfMany();
       }
   }

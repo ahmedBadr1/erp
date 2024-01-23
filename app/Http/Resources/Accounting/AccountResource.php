@@ -53,6 +53,8 @@ class AccountResource extends JsonResource
             'address' => new AddressResource($this->whenLoaded('lastAddress')),
             'accesses' => AccessResource::collection($this->whenLoaded('accesses')),
 
+            'userAccesses' =>$this->whenLoaded('userAccesses'),
+
             'tags' => TagResource::collection($this->whenLoaded('tags')),
 
         ];

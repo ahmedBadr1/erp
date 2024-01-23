@@ -16,11 +16,35 @@ use Maatwebsite\Excel\Facades\Excel;
 class NodeService extends MainService
 {
 
-    public function all($fields = null)
+    public function all($fields = null,$relations = [], $countRelations = [])
     {
         $data = $fields ?? (new Node)->getFillable();
+        $query =Node::active();
+        if (!empty($relations )) {
+            $query->with(...$relations);
+        }
+        if (!empty($countRelations )) {
+            $query->withCount(...$countRelations);
+        }
+        return $query->get($data);
+    }
 
-        return Node::active()->get($data);
+    public function tree($fields = null, $relations = [], $countRelations = [])
+    {
+        $data = $fields ?? (new Node)->getFillable();
+        $query = Node::tree();
+        if (!empty($relations )) {
+            $query->with(...$relations);
+        }
+        if (!empty($countRelations )) {
+            $query->withCount(...$countRelations);
+        }
+        return $query->get()->toTree();
+    }
+
+    public function root($level = null)
+    {
+       return Node::whereNull('parent_id')->get(['id','name']);
     }
 
 

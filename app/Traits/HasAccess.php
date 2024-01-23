@@ -12,6 +12,11 @@ namespace App\Traits;
           return $this->morphMany(Access::class,'model');
       }
 
+      public function userAccesses()
+      {
+          return $this->morphMany(Access::class,'model')->where('auth_type','user');
+      }
+
       public function lastAccesses()
       {
           return $this->morphMany(Access::class,'model')->latest();
@@ -19,7 +24,25 @@ namespace App\Traits;
 
       public function lastAccess()
       {
-          return $this->morphMany(Access::class,'model')->latest()->limit(1);
+          return $this->morphOne(Access::class,'model')->latestOfMany();
+      }
+      public function accessesTo()
+      {
+          return $this->morphMany(Access::class,'auth');
+      }
+      public function userAccessesTo()
+      {
+          return $this->morphMany(Access::class,'auth')->where('auth_type','user');
+      }
+
+      public function lastAccessesTo()
+      {
+          return $this->morphMany(Access::class,'auth')->latest();
+      }
+
+      public function lastAccessTo()
+      {
+          return $this->morphOne(Access::class,'auth')->latestOfMany();
       }
 
   }

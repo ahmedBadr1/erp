@@ -18,7 +18,7 @@ trait HasAddress
 
     public function lastAddress()
     {
-        return $this->morphOne(Address::class,'addressable')->latestOfMany();;
+        return $this->morphOne(Address::class,'addressable')->latestOfMany();
     }
 
     public function motherAddress()

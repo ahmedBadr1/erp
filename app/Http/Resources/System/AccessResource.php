@@ -18,6 +18,9 @@ class AccessResource extends JsonResource
             'id' => $this->id,
             'auth_id' => $this->auth_id,
             'auth_type' => $this->auth_type,
+            'user' => $this->whenLoaded('user'),
+            'group' => $this->whenLoaded('group'),
+
         ];
     }
 }

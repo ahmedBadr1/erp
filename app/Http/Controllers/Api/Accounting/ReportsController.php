@@ -44,33 +44,51 @@ class ReportsController extends ApiController
     {
         $data = [];
 
-        if ($request->get('accounts') ) { // && auth('api')->user()->can('accounting.accounts.index')
-            $data['accounts'] = (new AccountService)->all(['code','name']);
+
+
+        if ($request->get('tree')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $data['tree'] = (new NodeService())->tree(null);
         }
 
-        if ($request->get('treasuries') ) { // && auth('api')->user()->can('accounting.accounts.index')
-            $type_id = AccountType::where('code','TR')->value('id');
-            $data['treasuries'] = (new AccountService)->all(['type_code','name'],$type_id);
+        if ($request->get('treeNodes')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['treeNodes'] = (new NodeService())->all(['id','code', 'name','parent_id'],[],['children']);
         }
 
-        if ($request->get('nodes') ) { // && auth('api')->user()->can('accounting.nodes.index')
-            $data['nodes'] = (new NodeService())->all(['code','name']);
-        }
-           if ($request->get('costCenters') ) { // && auth('api')->user()->can('accounting.nodes.index')
-               $data['costCenters'] = (new CostCenterService())->all(['code','name']);
-           }
-        if ($request->get('currencies') ) { // && auth('api')->user()->can('accounting.nodes.index')
-            $data['currencies'] = (new CurrencyService())->all(['code','id']);
-        }
-            if ($request->get('taxes') ) { // && auth('api')->user()->can('accounting.nodes.index')
-                $data['taxes'] = (new TaxService())->all(['code','id']);
-            }
-        if ($request->get('clients') ) { // && auth('api')->user()->can('accounting.nodes.index')
-            $data['clients'] = (new ClientService())->all(['id','name']);
+        if ($request->get('nodeRoots')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $data['nodeRoots'] = (new NodeService())->root();
         }
 
-        if ($request->get('sellers') ) { // && auth('api')->user()->can('accounting.nodes.index')
-            $data['sellers'] = (new UserService())->all(['id','username'],'seller');
+        if ($request->get('accountTypes')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $data['accountTypes'] = (new AccountService)->types(['id', 'name']);
+        }
+
+        if ($request->get('accounts')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $data['accounts'] = (new AccountService)->all(['code', 'name']);
+        }
+
+        if ($request->get('treasuries')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $type_id = AccountType::where('code', 'TR')->value('id');
+            $data['treasuries'] = (new AccountService)->all(['type_code', 'name'], $type_id);
+        }
+
+        if ($request->get('nodes')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['nodes'] = (new NodeService())->all(['code', 'name']);
+        }
+        if ($request->get('costCenters')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['costCenters'] = (new CostCenterService())->all(['code', 'name']);
+        }
+        if ($request->get('currencies')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['currencies'] = (new CurrencyService())->all(['code', 'id']);
+        }
+        if ($request->get('taxes')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['taxes'] = (new TaxService())->all(['code', 'id']);
+        }
+        if ($request->get('clients')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['clients'] = (new ClientService())->all(['id', 'name']);
+        }
+
+        if ($request->get('sellers')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['sellers'] = (new UserService())->all(['id', 'username'], 'seller');
         }
 
         return $this->successResponse($data);

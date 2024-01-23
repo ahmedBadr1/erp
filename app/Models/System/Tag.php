@@ -13,7 +13,10 @@ class Tag extends MainModelSoft
     protected $table = 'tags';
     public $fillable = ['type','name'];
 
-
+//    public function taggables()
+//    {
+//        return $this->morphToMany(Taggable::class, 'taggable');
+//    }
 
     public function jobGrades()
     {

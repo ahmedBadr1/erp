@@ -56,9 +56,13 @@ class User extends AuthModel
         return $this->belongsToMany(Group::class,'group_user');
     }
 
-    public function hasAccess($user)
-    {
-        return $this->morphMany(Access::class,'model');
+//    public function hasAccess($user)
+//    {
+//        return $this->morphMany(Access::class,'model');
+//    }
+
+    public function accesses() {
+        return $this->morphedByMany(Access::class, 'user');
     }
 
     public function profile()

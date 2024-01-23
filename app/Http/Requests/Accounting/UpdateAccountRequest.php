@@ -23,10 +23,32 @@ class UpdateAccountRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'description' => 'required|string',
-            'd_opening' => 'nullable|numeric|gt:0',
-            'c_opening' => 'nullable|numeric|gt:0',
-            'opening_date' => 'nullable|date_format:d/m/Y',
+            'description' => 'nullable|string',
+            'credit_limit' => 'nullable|numeric|min:0',
+            'debit_limit' => 'nullable|numeric|min:0',
+//            'node_id' => 'required|exists:nodes,id',
+//            'currency_id' => 'required|exists:currencies,id',
+            'active' => 'nullable|boolean',
+
+            'groups.*' => 'nullable|exists:groups,id',
+            'users.*' => 'nullable|exists:users,id',
+            'tags.*' => 'nullable|string',
+
+            'contact' => 'nullable|array',
+            'contact.name' => 'nullable|string',
+            'contact.phone1' => 'nullable|string',
+            'contact.phone2' => 'nullable|string',
+            'contact.whatsapp' => 'nullable|string',
+            'contact.fax' => 'nullable|string',
+            'contact.email' => 'nullable|string',
+
+            'address' => 'nullable|array',
+            'address.district' => 'nullable|string',
+            'address.street' => 'nullable|string',
+            'address.postal_code' => 'nullable|string',
+            'address.building' => 'nullable|string',
+            'address.apartment' => 'nullable|string',
+            'address.city_id' => 'nullable|string',
         ];
     }
 }

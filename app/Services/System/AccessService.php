@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class AccessService extends MainService
@@ -34,14 +35,13 @@ class AccessService extends MainService
 //                ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function sync( $model_id , $model_type,array $authModels ,$authType)
+    public function sync(array $authModels, $authType, $model, $model_type)
     {
         try {
-            foreach ($authModels as $auth){
-                Access::create([
-                   'model_id'  => $model_id,
-                    'model_type' => $model_type,
-                    'auth_id' =>$auth ,
+            $model->accesses()->where('auth_type', $authType)->whereNotIn('auth_id', $authModels)->delete();
+            foreach ($authModels as $auth) {
+                $model->accesses()->firstOrCreate([
+                    'auth_id' => $auth,
                     'auth_type' => $authType
                 ]);
             }
@@ -70,8 +70,8 @@ class AccessService extends MainService
         }
     }
 
-    public function export($collection =null)
+    public function export($collection = null)
     {
-        return Excel::download(new ProductsExport($collection), 'products_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ProductsExport($collection), 'products_' . date('d-m-Y') . '.xlsx');
     }
 }

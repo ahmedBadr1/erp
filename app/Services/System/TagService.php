@@ -20,12 +20,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class TagService extends MainService
 {
 
-    public function all($fields = null,$type = null)
+    public function all($fields = null, $type = null)
     {
         $data = $fields ?? (new Tag())->getFillable();
-        $query = Tag::active() ;
-        if ($type){
-            $query->where('type',$type) ;
+        $query = Tag::active();
+        if ($type) {
+            $query->where('type', $type);
         }
         return $query->get($data);
     }
@@ -39,27 +39,26 @@ class TagService extends MainService
                 ->orWhere('type', 'like', '%' . $search . '%');
     }
 
-    public function sync(array $data,$id,$type)
+    public function sync(array $data, $model, $type)
     {
         try {
-
-
-            foreach ($data as $tag ){
+//            if (empty($data)) {
+//                $model->tags()->detach();
+//                return true;
+//            }
+            $tagsIds = [];
+            foreach ($data as $tag) {
                 $tag = Tag::firstOrCreate(
-                    ['name'=>$tag ,
-                        'type'=>$type]
+                    ['name' => $tag,
+                        'type' => $type]
                 );
-                DB::table('taggables')->insert([
-                    'tag_id' => $tag->id,
-                    'taggable_id' => $id ,
-                    'taggable_type' => $type,
-                    ]);
+                $tagsIds[] = $tag->id;
             }
-
-            return true;
+            $model->tags()->sync($tagsIds);
         } catch (Exception $e) {
             return $e->getMessage();
         }
+        return true;
     }
 
     public function update($Tag, array $data)
@@ -81,8 +80,8 @@ class TagService extends MainService
         }
     }
 
-    public function export($collection =null)
+    public function export($collection = null)
     {
-        return Excel::download(new ProductsExport($collection), 'products_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ProductsExport($collection), 'products_' . date('d-m-Y') . '.xlsx');
     }
 }

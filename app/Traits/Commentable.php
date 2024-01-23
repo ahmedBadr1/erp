@@ -18,7 +18,7 @@ namespace App\Traits;
 
       public function lastComment()
       {
-          return $this->morphOne(Comment::class,'commentable')->latest();
+          return $this->morphOne(Comment::class,'commentable')->latestOfMany();
       }
 
   }

@@ -16,6 +16,7 @@ class Address extends MainModelSoft
         'floor',
         'apartment',
         'landmarks',
+        'postal_code',
         'longitude',
         'latitude',
         'addressable_type',

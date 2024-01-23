@@ -10,4 +10,8 @@ trait Emojiable
     {
         return $this->morphMany(Emoji::class,'emojiable');
     }
+    public function lastEmoji()
+    {
+        return $this->morphOne(Emoji::class,'emojiable')->latestOfMany();
+    }
 }

@@ -8,6 +8,7 @@ use App\Models\Accounting\Entry;
 use App\Models\Crm\Client;
 use App\Models\Inventory\Product;
 use App\Models\System\Address;
+use App\Models\System\Contact;
 use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
@@ -42,22 +43,32 @@ class AddressService extends MainService
     public function store(array $data, $id, $type)
     {
         try {
-            $Contact = Address::create([
+            $inputs = [
                 'city_id' => $data['city_id'] ?? null,
-                'district' => $data['district']?? null,
-                'street' => $data['street']?? null,
-                'building' => $data['building']?? null,
-                'floor' => $data['floor']?? null,
-                'apartment' => $data['apartment']?? null,
-                'landmarks' => $data['landmarks']?? null,
-                'longitude' => $data['longitude']?? null,
-                'latitude' => $data['latitude']?? null,
-                'postal_code' => $data['postal_code']?? null,
-                'addressable_id' => $id,
-                'addressable_type' => $type,
-                'status_id'=> null,
-                'user_id' => auth()->id()
-            ]);
+                'district' => $data['district'] ?? null,
+                'street' => $data['street'] ?? null,
+                'building' => $data['building'] ?? null,
+                'floor' => $data['floor'] ?? null,
+                'apartment' => $data['apartment'] ?? null,
+                'landmarks' => $data['landmarks'] ?? null,
+                'longitude' => $data['longitude'] ?? null,
+                'latitude' => $data['latitude'] ?? null,
+                'postal_code' => $data['postal_code'] ?? null,
+
+            ];
+            $address = Address::where('addressable_id', $id)->where('addressable_type', $type)->first();
+
+            if ($address) {
+                $address->update($inputs);
+            } else {
+                Address::create([
+                    ...$inputs,
+                    'addressable_id' => $id,
+                    'addressable_type' => $type,
+                    'status_id' => null,
+                    'user_id' => auth()->id()
+                ]);
+            }
             return true;
         } catch (Exception $e) {
             return $e->getMessage();
@@ -83,8 +94,8 @@ class AddressService extends MainService
         }
     }
 
-    public function export($collection =null)
+    public function export($collection = null)
     {
-        return Excel::download(new ProductsExport($collection), 'products_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new ProductsExport($collection), 'products_' . date('d-m-Y') . '.xlsx');
     }
 }

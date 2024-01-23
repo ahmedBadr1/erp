@@ -18,6 +18,6 @@ trait HasMessages
 
     public function lastMessage()
     {
-        return $this->morphMany(Message::class,'messageable',)->latest()->limit(1);
+        return $this->morphOne(Message::class,'messageable',)->latestOfMany();
     }
 }

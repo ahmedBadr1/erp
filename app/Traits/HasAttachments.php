@@ -18,7 +18,7 @@ namespace App\Traits;
 
       public function attachment()
       {
-          return $this->morphone(Attachment::class,'attachable')->latest();
+          return $this->morphone(Attachment::class,'attachable')->latestOfMany();
       }
 
   }

@@ -9,7 +9,7 @@ use App\Models\WorkAt;
 
   {
       public function work_at() {
-          return $this->morphOne(WorkAt::class, 'workable')->latest();
+          return $this->morphOne(WorkAt::class, 'workable')->latestOfMany();
       }
 
       public function workers() {

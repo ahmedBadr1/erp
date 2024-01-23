@@ -18,7 +18,7 @@ namespace App\Traits;
 
       public function lastTicket()
       {
-          return $this->morphMany(Ticket::class,'has_ticket')->latest()->limit(1);
+          return $this->morphOne(Ticket::class,'has_ticket')->latestOfMany();
       }
 
   }

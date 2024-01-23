@@ -30,6 +30,10 @@ class ReportRequest extends FormRequest
             'sellers' => "nullable|boolean",
             'taxes' => "nullable|boolean",
             'treasuries' => "nullable|boolean",
+            'tree'=> "nullable|boolean",
+            'accountTypes'=> "nullable|boolean",
+            'nodeRoots' => "nullable|boolean",
+
 
         ];
     }

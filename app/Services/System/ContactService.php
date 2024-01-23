@@ -41,7 +41,7 @@ class ContactService extends MainService
     public function store(array $data, $id, $type)
     {
         try {
-            $Contact = Contact::create([
+            $inputs = [
                 'name' => $data['name'] ?? null,
                 'phone1' => $data['phone1'] ?? null,
                 'phone2' => $data['phone2'] ?? null,
@@ -49,11 +49,21 @@ class ContactService extends MainService
                 'mobile' => $data['mobile'] ?? null,
                 'fax' => $data['fax'] ?? null,
                 'email' => $data['email'] ?? null,
-                'contactable_id' => $id,
-                'contactable_type' => $type,
-                'status_id'=> null,
-                'user_id' => auth()->id()
-            ]);
+                'status_id' => null,
+            ];
+            $contact = Contact::where('contactable_id', $id)->where('contactable_type', $type)->first();
+
+            if ($contact) {
+                $contact->update($inputs);
+            } else {
+                Contact::create([
+                    ...$inputs,
+                    'contactable_id' => $id,
+                    'contactable_type' => $type,
+                    'user_id' => auth()->id()
+                ]);
+            }
+
             return true;
         } catch (Exception $e) {
             return $e->getMessage();
