@@ -22,9 +22,11 @@ class DuplicateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required','in:account,node'],
+            'type' => ['required','in:account,node,costCenterNode'],
             'account'  => 'required_if:type,account|exists:accounts,code',
             'node'  => 'required_if:type,node|exists:nodes,code',
+            'costCenterNode'  => 'required_if:type,costCenterNode|exists:cost_center_nodes,code',
+
 
         ];
     }

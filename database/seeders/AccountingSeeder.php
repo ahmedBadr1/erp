@@ -30,7 +30,7 @@ class AccountingSeeder extends Seeder
 
         $this->seedCurrencies();
 
-        CostCenterNode::factory()->create(['name' => 'مركز تكلفة رئيسي','slug'=>'main_cost_center_node','code'=>01]);
+        CostCenterNode::factory()->create(['name' => 'مركز تكلفة رئيسي','slug'=>'main_cost_center_node']);
 
         CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', "code" => "01", 'system' => 1]);
         CostCenter::factory(3)->create();

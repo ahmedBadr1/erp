@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cost_centers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->string('code')->unique()->index();//->nullable()->index();
             $table->foreignIdFor(\App\Models\Accounting\CostCenterNode::class);
             $table->foreignIdFor(\App\Models\System\Status::class)->nullable();

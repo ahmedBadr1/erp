@@ -111,13 +111,19 @@ Route::group(['middleware' => ['json.response']], function () {
             ], function () {
                 Route::post('/tree', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'tree'])->name('tree');
                 Route::post('/tree/duplicate', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'duplicate'])->name('duplicate');
+
+                Route::post('/nodes', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'nodes'])->name('nodes');
+                Route::post('/nodes/{code}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'node'])->name('nodes.show');
+                Route::patch('/nodes/{code}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'updateNode'])->name('nodes.update');
+
+
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'list'])->name('list');
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'store'])->name('store');
-                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'storeType'])->name('storeType');
-                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'edit'])->name('edit');
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'show'])->name('show');
+                Route::patch('/{code}', [\App\Http\Controllers\Api\Accounting\CostCentersController::class, 'update'])->name('update');
+
             });
 
             Route::group([

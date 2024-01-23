@@ -16,14 +16,31 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CostCenterNodeService extends MainService
 {
-
-    public function all($fields = null)
+    public function all($fields = null,$relations = [], $countRelations = [])
     {
-        $data = $fields ?? (new Node)->getFillable();
-
-        return CostCenterNode::active()->get($data);
+        $data = $fields ?? (new CostCenterNode)->getFillable();
+        $query = CostCenterNode::active();
+        if (!empty($relations )) {
+            $query->with(...$relations);
+        }
+        if (!empty($countRelations )) {
+            $query->withCount(...$countRelations);
+        }
+        return $query->get($data);
     }
 
+    public function tree($fields = null, $relations = [], $countRelations = [])
+    {
+        $data = $fields ?? (new CostCenterNode)->getFillable();
+        $query = CostCenterNode::tree();
+        if (!empty($relations )) {
+            $query->with(...$relations);
+        }
+        if (!empty($countRelations )) {
+            $query->withCount(...$countRelations);
+        }
+        return $query->get()->toTree();
+    }
 
     public function search($search)
     {

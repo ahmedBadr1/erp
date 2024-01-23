@@ -63,7 +63,6 @@ class AccountService extends MainService
 
     public function store(array $data, $code = null)
     {
-
         try {
             DB::transaction(function () use ($data, $code) {
                 $inputs = [

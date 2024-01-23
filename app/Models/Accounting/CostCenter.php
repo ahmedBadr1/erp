@@ -13,11 +13,11 @@ class CostCenter extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-    protected $fillable = ['name', 'cost_center_node_id', 'active',  'system'];
+    protected $fillable = ['name','description', 'cost_center_node_id', 'active',  'system'];
 
     public function node()
     {
-        return $this->hasMany(CostCenterNode::class);
+        return $this->belongsTo(CostCenterNode::class,'cost_center_node_id');
     }
 
     public function accounts()
