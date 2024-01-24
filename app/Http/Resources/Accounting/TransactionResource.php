@@ -21,14 +21,21 @@ class TransactionResource extends JsonResource
             'type' => $this->type,
             'amount' => $this->amount,
             'description' => $this->description,
-            'je_code' => $this->je_code,
+            'paper_ref' => $this->paper_ref,
             'document_no' => $this->document_no,
-            'posted' => $this->post,
+            'posted' => $this->posted,
             'locked' => $this->locked,
             'due' => $this->due->format('d/m/Y'),
-            'user' => new UserResource ($this->whenLoaded('user')),
+            'creator' => new UserResource ($this->whenLoaded('creator')),
+            'editor' => new UserResource ($this->whenLoaded('editor')),
+            'responsible' => new UserResource ($this->whenLoaded('responsible')),
+
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
+            'ledger' => new LedgerResource($this->whenLoaded('ledger')),
+            'firstParty' => new AccountChartResource($this->whenLoaded('firstParty')),
+            'secondParty' => new AccountChartResource($this->whenLoaded('secondParty')),
+
         ];
     }
 }

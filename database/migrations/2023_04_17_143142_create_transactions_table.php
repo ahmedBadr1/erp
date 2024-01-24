@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('amount',15,2);
             $table->string('type')->index();
             $table->text('description')->nullable();
-            $table->string('je_code')->nullable();
+            $table->string('paper_ref')->nullable();
             $table->string('document_no')->nullable();
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class);

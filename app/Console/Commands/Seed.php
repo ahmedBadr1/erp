@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
@@ -35,6 +36,8 @@ class Seed extends Command
      */
     public function handle()
     {
+        $treasuries = Account::whereHas('type',fn($q)=>$q->where('code','TR'))->pluck('id');
+
         $processes = (int)$this->option('processes');
         if ($processes) {
             return $this->spawn($processes);
@@ -44,7 +47,7 @@ class Seed extends Command
                 echo ".";
             }
 //            try {
-            $this->insert();
+            $this->insert($treasuries->random());
 //            } catch (\Throwable $e){
 //                // nothing
 //            }
@@ -53,9 +56,13 @@ class Seed extends Command
         echo 'Done Seeding ;)';
     }
 
-    protected function insert()
+    protected function insert($treasuryId)
     {
-        AccountingSeeder::seed();
+//        AccountingSeeder::seed();
+        AccountingSeeder::seedType('CI',$treasuryId);
+        AccountingSeeder::seedType('CO',$treasuryId);
+
+
     }
 
     public function spawn($processes)

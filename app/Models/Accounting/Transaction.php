@@ -14,14 +14,16 @@ class Transaction extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['code','amount', 'type', 'description','due','je_code','document_no','ledger_id','account_id','responsible_id','posted','locked','system'];
+    protected $fillable = ['code', 'amount', 'type', 'description', 'due', 'paper_ref', 'document_no',
+        'first_party_id','second_party_id',
+        'ledger_id', 'responsible_id','created_by','edited_by', 'posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
 
     public static array $TYPES = [
         'CI', // Cash IN transaction where treasury (TR) account is debit
         'CO', // Cash Out transaction where treasury (TR) account is Credit
-       // 'SO', // sales order only View For Invoice
+        // 'SO', // sales order only View For Invoice
         'SI', // sales invoice Code For invoice
         'SR', // sales return Code to change later
         //'PO', // purchase order only view for Bill
@@ -32,26 +34,40 @@ class Transaction extends MainModelSoft
         'RS', // Receive Supply to increase items To warehouse
         'NR', // Note Receivable
         'NP', // Note Payable
+        'COGS', // Note Payable
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function ledger()
     {
         return $this->belongsTo(Ledger::class);
     }
 
+
     public function firstParty()
     {
-        return $this->belongsTo(Account::class,'first_party_id');
+        return $this->belongsTo(Account::class, 'first_party_id');
     }
 
     public function secondParty()
     {
-        return $this->belongsTo(Account::class , 'second_party_id');
+        return $this->belongsTo(Account::class, 'second_party_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+
+    public function editor()
+    {
+        return $this->belongsTo(User::class, 'edited_by');
+    }
+
+    public function responsible()
+    {
+        return $this->belongsTo(User::class, 'responsible_id');
     }
 
 
@@ -59,7 +75,7 @@ class Transaction extends MainModelSoft
     {
         return LogOptions::defaults()
             ->setDescriptionForEvent(fn(string $eventName) => "This Transaction has been {$eventName}")
-            ->logOnly(['user_id','amount', 'type', 'description','due'])
+            ->logOnly(['user_id', 'amount', 'type', 'description', 'due'])
             ->logOnlyDirty()
             ->useLogName('system');
     }
@@ -68,14 +84,14 @@ class Transaction extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
-            if(! $model->code){
-                $transactionCount = Transaction::where('type',$model->type)->count();
+            if (!$model->code) {
+                $transactionCount = Transaction::where('type', $model->type)->count();
                 $first_party_type_code = Account::whereId($model->first_party_id)->value('type_code');
                 if (!$transactionCount) {
-                    $model->code = $model->type .'-'. 1 ;
-                    return ;
+                    $model->code = $model->type . '-' . 1;
+                    return;
                 }
-                $model->code = $model->type .'-'. $first_party_type_code .'-'.  $transactionCount +1 ;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+                $model->code = $model->type . '-' . $first_party_type_code . '-' . $transactionCount + 1;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
             }
 
         });

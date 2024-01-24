@@ -35,9 +35,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->id === 1 ? true : null;
         });
 
-//        Passport::tokensExpireIn(now()->addDays(15));
-//        Passport::refreshTokensExpireIn(now()->addDays(30));
-//        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+        Passport::tokensExpireIn(now()->addHours(6));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
     }
 }

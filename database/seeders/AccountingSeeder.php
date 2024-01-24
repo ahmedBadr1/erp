@@ -32,7 +32,7 @@ class AccountingSeeder extends Seeder
 
         CostCenterNode::factory()->create(['name' => 'مركز تكلفة رئيسي','slug'=>'main_cost_center_node']);
 
-        CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', "code" => "01", 'system' => 1]);
+        CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', 'system' => 1]);
         CostCenter::factory(3)->create();
         Account::factory(100)->create();
         $TaxAccount = Account::whereHas('type', fn($q) => $q->where('code', 'TAX'))->value('id');
@@ -74,6 +74,26 @@ class AccountingSeeder extends Seeder
             'ledger_id' => $ledger->id,
         ]);
         unset($ledger);
+    }
+
+    public static function seedType($type ,$treasuryId)
+    {
+        $ledger = Ledger::factory()->create(['amount' => rand(100, 1000),'currency_id'=>1,'ex_rate'=>1]);
+        if ($type == 'CI'){
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 1]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id,'account_id'=>$treasuryId, 'credit' => 0]);
+
+        }elseif ($type == 'CO'){
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id,'account_id'=>$treasuryId, 'credit' => 1]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 0]);
+        }
+        Transaction::factory(rand(1, 3))->create([
+            'type' => $type,
+            'first_party_id'=>  $treasuryId,
+            'amount' => $ledger->amount,
+            'ledger_id' => $ledger->id,
+        ]);
+
     }
 
 

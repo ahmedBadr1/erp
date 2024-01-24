@@ -54,7 +54,7 @@ class AccountsController extends ApiController
         }
         $input = $request->validated();
         $query = Account::active();
-        if ($input['node_id']) {
+        if (isset($input['node_id'])) {
             $nodeAccounts =$this->service->all(['code','name','description','credit_limit','debit_limit','account_type_id','active'] , $input['account_type_id'] ?? null,$input['node_id']?? null);
             return $this->successResponse(['accounts' => $nodeAccounts]);
         }

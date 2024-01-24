@@ -40,6 +40,15 @@ class Ledger extends MainModelSoft
         return $this->hasMany(Transaction::class);
     }
 
+    public function ciTransactions()
+    {
+        return $this->hasMany(Transaction::class)->where('type','CI');
+    }
+
+    public function coTransactions()
+    {
+        return $this->hasMany(Transaction::class)->where('type','CO');
+    }
     public function entries()
     {
         return $this->hasMany(Entry::class);

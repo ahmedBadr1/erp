@@ -28,6 +28,8 @@ class TransactionFactory extends Factory
             'type' => Arr::random($types),
             'description'=> $this->faker->text(),
             'due'=> $this->faker->dateTimeThisYear(),
+            'paper_ref' => random_int(1,100000),
+            'document_no' =>  $this->faker->randomLetter . '-' .$this->faker->randomNumber(7),
             'responsible_id' => 1,//User::all()->random()->id,
             'created_by' => 1,
 //            'edited_by' => 1,

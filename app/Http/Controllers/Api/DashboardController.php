@@ -93,7 +93,7 @@ class DashboardController extends ApiController
         $data = [];
         $data['message'] = 'message '  ;// .$i  ;
         $data['url'] = '/';
-//        $user->notify(new MainNotification($data));
+        $user->notify(new MainNotification($data));
 //        sleep(1);
 //        }
 

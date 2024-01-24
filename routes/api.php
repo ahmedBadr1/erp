@@ -191,8 +191,8 @@ Route::group(['middleware' => ['json.response']], function () {
             ], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'index'])->name('index');
 
-                Route::post('/account-ledger', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'accountLedger'])->name('index');
-                Route::post('/create', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'create'])->name('create');
+                Route::post('/account-ledger', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'accountLedger'])->name('accountLedger');
+                Route::post('/cash', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'cash'])->name('cash');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'store'])->name('store');
             });
         });

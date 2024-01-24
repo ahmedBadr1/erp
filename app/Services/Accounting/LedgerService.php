@@ -34,7 +34,6 @@ class LedgerService extends MainService
 
         $accounts = $data['accounts'] ?? [];
 
-
         if (isset($data['node'])) {
             $node = Node::active()->with(['descendants' => fn($q) => $q->with('accounts'), 'accounts'])->where('id', $data['node'])->first();
             $nodeAccounts = $node->account?->pluck('id');
