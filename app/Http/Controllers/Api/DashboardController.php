@@ -52,7 +52,7 @@ class DashboardController extends ApiController
     public function notifications(ListRequest $request)
     {
         $notifications = Notification::query()
-            ->where("notifiable_type", 'users')
+            ->where("notifiable_type", 'user')
             ->where("notifiable_id", Auth::guard('api')->id())
             ->when($request->get('start_date'), function ($query) use ($request) {
                 $query->where('created_at', '>=', $request->get('start_date'));
@@ -64,8 +64,9 @@ class DashboardController extends ApiController
                 $query->where('data', 'like', '%' . $request->get('keywords') . '%');
             })
             ->latest()
-            ->paginate($request->get('limit') ?? $this->limit);
-        auth('api')->user()->unreadNotifications->markAsRead();
+            ->paginate($request->get('per_page') ?? $this->limit,['*'],'page',$request->get('current_page'));
+//        auth('api')->user()->unreadNotifications->markAsRead();
+
         return  new NotificationCollection($notifications);
     }
 
@@ -91,7 +92,7 @@ class DashboardController extends ApiController
         $user = \auth('api')->user();
 //        for ($i = 0; $i < 100; $i++) {
         $data = [];
-        $data['message'] = 'message '  ;// .$i  ;
+        $data['message'] = 'Welcome to Our app , Hope you enjoy it ;)'  ;// .$i  ;
         $data['url'] = '/';
         $user->notify(new MainNotification($data));
 //        sleep(1);

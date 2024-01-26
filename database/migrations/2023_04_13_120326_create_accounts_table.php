@@ -28,7 +28,7 @@ return new class extends Migration
             $table->boolean('system')->default(false)->index();
             $table->boolean('active')->default(true)->index();
             $table->foreignIdFor(\App\Models\Accounting\Node::class);
-            $table->foreignIdFor(\App\Models\Accounting\AccountType::class);
+            $table->foreignIdFor(\App\Models\Accounting\AccountType::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\GroupAccount::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();

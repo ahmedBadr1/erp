@@ -25,7 +25,8 @@ class ShowPostingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'codes' => 'nullable|exists:transactions,code',
+            'codes' => 'nullable|array',
+//            'codes.*' => 'nullable|exists:transactions,code',
             'transactionTypes' => 'nullable|array',
             'transactionTypes.*' => 'nullable|string',
             'start_date' => 'nullable|date',

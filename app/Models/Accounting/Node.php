@@ -2,25 +2,22 @@
 
 namespace App\Models\Accounting;
 
-use App\Models\Inventory\Product;
 use App\Models\MainModelSoft;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
-use Staudenmeir\LaravelAdjacencyList\Eloquent\Traits\HasAdjacencyList;
 
 
 class Node extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-    protected $fillable = ['name','slug','accept_cost_center', 'parent_id',"account_type_id", 'active', 'usable', 'system'];
+    protected $fillable = ['name', 'slug', 'accept_cost_center', 'parent_id', "account_type_id", 'active', 'usable', 'system'];
 
     public function type()
     {
-        return $this->belongsTo(AccountType::class,'account_type_id');
+        return $this->belongsTo(AccountType::class, 'account_type_id');
     }
+
     public function accounts()
     {
         return $this->hasMany(Account::class)->withTrashed();
@@ -63,11 +60,16 @@ class Node extends MainModelSoft
 //                }
                 if (!$model->slug) {
                     $model->slug = Str::slug($model->name);
-
                 }
                 $model->code = $parent->code . str_pad(((int)($parent->children_count ?? 0) + $parent->accounts_count + 1), 2, '0', STR_PAD_LEFT);
                 $model->credit = $parent->credit;
                 $model->usable = 1;
+            }
+            if (!$model->account_type_id) {
+                if (!isset($parent)) {
+                    $parent = Node::find($model->parent_id);
+                }
+                $model->account_type_id = $parent->account_type_id ?? null;
             }
         });
     }

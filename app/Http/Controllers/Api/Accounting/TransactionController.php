@@ -62,7 +62,7 @@ class TransactionController extends ApiController
 
     public function show(Request $request, $code)
     {
-        $transaction = Transaction::with('entries.account', 'user')->where('code', $code)->firstOrFail();
+        $transaction = Transaction::with('ledger','ledger.transactions','ledger.entries','ledger.entries.account','ledger.entries.costCenter','firstParty','secondParty', 'responsible')->where('code', $code)->firstOrFail();
         return $this->successResponse(new  TransactionResource($transaction));
     }
 

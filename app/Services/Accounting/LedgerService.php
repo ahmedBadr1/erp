@@ -12,6 +12,7 @@ use App\Models\Accounting\Transaction;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -119,15 +120,42 @@ class LedgerService extends MainService
         $query->posted($data['posted']);
         $dataset[] = $data['posted'] ?  'Posted' : 'Un Posted';
 
+
+        $query->with('firstTransaction','firstWhTransaction');
+
+//        if (isset($columns['responsible']) && $columns['responsible']) {
+        $query->with('responsible');
+//        }
+
+        if (isset($columns['edited_by']) && $columns['edited_by']) {
+            $query->with('editor');
+        }
+        if (isset($columns['first_party']) && $columns['first_party']) {
+            $query->with('transactions.firstParty');
+        }
+
+        if (isset($columns['second_party']) && $columns['second_party']) {
+            $query->with('transactions.secondParty');
+        }
+
         if (!empty($data['codes'])) {
-            $query->where(fn($q) => $q->whereIn('code', $data['codes'])
-                ->orWhereHas(["transactions" => fn($qu) => $qu->whereIn('code', $data['codes'])]
-                ));
+////            $query->whereIn('code',$data['codes']);
+//            $query->whereHas("transactions" , fn($qu) => $qu->whereIn('transactions.code', $data['codes']));
+            $query->where(fn($q) => $q->whereIn('id', $data['codes'])
+                ->orWhere(fn($q) => $q->orWhereHas("transactions",fn($qu) => $qu->whereIn('transactions.code', $data['codes'])
+                )));
+            foreach ($data['codes'] as $code){
+                $dataset[] = 'Code ' . $code ;
+            }
         }
 
         if (!empty($data['transactionTypes'])) {
             $query->whereHas('transactions', fn($q) => $q->whereIn('type', $data['transactionTypes']));
-//            $dataset[] = "${...$data['transactionTypes']}";
+            foreach ($data['transactionTypes'] as $type){
+                $dataset[] = 'Type ' . $type ;
+            }
+        }else{
+            $dataset[] = 'All Types';
         }
 
         if (!empty($data['sellers'])) {
@@ -162,22 +190,6 @@ class LedgerService extends MainService
             $query->whereIn('responsible_id', $data['sellers']);
         }
 
-        $query->with('firstTransaction','firstWhTransaction');
-
-//        if (isset($columns['responsible']) && $columns['responsible']) {
-            $query->with('responsible');
-//        }
-
-        if (isset($columns['edited_by']) && $columns['edited_by']) {
-            $query->with('editor');
-        }
-        if (isset($columns['first_party']) && $columns['first_party']) {
-            $query->with('transactions.firstParty');
-        }
-
-        if (isset($columns['second_party']) && $columns['second_party']) {
-            $query->with('transactions.secondParty');
-        }
         $dataset[] = 'start date ' . Carbon::parse($data['start_date'])->format('Y/m/d');
         $dataset[] = 'end date ' . Carbon::parse($data['end_date'])->format('Y/m/d');
         $query->when($data['start_date'], function ($query) use ($data) {
@@ -271,8 +283,6 @@ class LedgerService extends MainService
         DB::beginTransaction();
         try {
             $ledger = $this->store($data['amount'], $data['currency_id'], $data['due'], $data['description'], $data['responsible']);
-            $EntryService->createCreditEntry($data['amount'], $treasury->id, $ledger->id, $treasury->cost_center_id);
-            $AccountService->updateBalance($treasury->id);
             foreach ($data['accounts'] as $account) {
                 $account_id = Account::where('code', $account['code'])->value('id');
                 $cost_center_id = isset($account['costCenter']) ? CostCenter::where('code', $account['costCenter']['code'])->value('id') : null;
@@ -280,6 +290,8 @@ class LedgerService extends MainService
                 $TransactionService->createCO($data['amount'], $ledger->id, $treasury->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
                 $AccountService->updateBalance($account_id);
             }
+            $EntryService->createCreditEntry($data['amount'], $treasury->id, $ledger->id, $treasury->cost_center_id);
+            $AccountService->updateBalance($treasury->id);
         } catch (Exception $e) {
             DB::rollBack();
             return $e;

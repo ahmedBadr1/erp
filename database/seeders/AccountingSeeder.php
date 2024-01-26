@@ -80,12 +80,12 @@ class AccountingSeeder extends Seeder
     {
         $ledger = Ledger::factory()->create(['amount' => rand(100, 1000),'currency_id'=>1,'ex_rate'=>1]);
         if ($type == 'CI'){
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 1]);
             Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id,'account_id'=>$treasuryId, 'credit' => 0]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 1]);
 
         }elseif ($type == 'CO'){
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id,'account_id'=>$treasuryId, 'credit' => 1]);
             Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'credit' => 0]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id,'account_id'=>$treasuryId, 'credit' => 1]);
         }
         Transaction::factory(rand(1, 3))->create([
             'type' => $type,
@@ -118,8 +118,18 @@ class AccountingSeeder extends Seeder
      */
     public function seedNodes()
     {
+        $tr = AccountType::where('code','TR')->value('id');
+        $b = AccountType::where('code','B')->value('id');
+        $sales = AccountType::where('code','S')->value('id');
+        $ss = AccountType::where('code','SS')->value('id');
+        $inventory = AccountType::where('code','I')->value('id');
+        $ap = AccountType::where('code','AP')->value('id');
+        $ar = AccountType::where('code','AR')->value('id');
+        $cog = AccountType::where('code','COG')->value('id');
+        $sd = AccountType::where('code','SD')->value('id');
+
         $nodes = [
-            ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0],
+            ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0 ,],
             ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1],
             ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1],
             ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 0],
@@ -127,7 +137,7 @@ class AccountingSeeder extends Seeder
 
             ['name' => 'اﻷصول المتداولة', 'parent_id' => 1], // 6
             ['name' => 'اﻷصول الثابتة', 'parent_id' => 1], // 7
-            ['name' => 'الخصوم المتداولة', 'parent_id' => 2,], // 8
+            ['name' => 'الخصوم المتداولة', 'parent_id' => 2,'account_type_id'=>$ap], // 8
             ['name' => 'رأس المال', 'parent_id' => 3,], // 9
             ['name' => 'جاري الشركاء', 'parent_id' => 3,], // 10
             ['name' => 'أرباح مرحلة', 'parent_id' => 3,], // 11
@@ -137,11 +147,11 @@ class AccountingSeeder extends Seeder
             ['name' => 'مصروفات إدارية وعمومية', 'parent_id' => 5,], // 15
 
             ['name' => 'النقدية', 'parent_id' => 6,], // 16
-            ['name' => 'النقدية بالصندوق', 'parent_id' => 16,], // 17
-            ['name' => 'النقدية بالبنك', 'parent_id' => 16,], // 18
-            ['name' => 'المخزون', 'parent_id' => 6,], // 19
-            ['name' => 'العملاء', 'parent_id' => 6,], // 20
-            ['name' => 'أرصدة مدينة اخري', 'parent_id' => 6,], // 21
+            ['name' => 'النقدية بالصندوق', 'parent_id' => 16,'account_type_id'=>$tr], // 17
+            ['name' => 'النقدية بالبنك', 'parent_id' => 16,'account_type_id'=>$b], // 18
+            ['name' => 'المخزون', 'parent_id' => 6,'account_type_id'=>$inventory], // 19
+            ['name' => 'العملاء', 'parent_id' => 6,'account_type_id'=>$ar], // 20
+            ['name' => 'أرصدة مدينة اخري', 'parent_id' => 6,'account_type_id'=>$ar], // 21
             ['name' => 'أصول غير ملموسة', 'parent_id' => 7,], // 22
             ['name' => 'أصول ملموسة', 'parent_id' => 7,], // 23
             ['name' => 'اﻹستثمارات', 'parent_id' => 7,], // 24
@@ -151,11 +161,11 @@ class AccountingSeeder extends Seeder
             ['name' => 'تشطبيات ومستلزمات', 'parent_id' => 23,], // 28
             ['name' => 'الموردين', 'parent_id' => 8,], // 29
             ['name' => 'أرصدة دائنة أخري', 'parent_id' => 8,], // 30
-            ['name' => 'إيراد المبيعات', 'parent_id' => 12,], //
-            ['name' => 'مردودات المبيعات', 'parent_id' => 12,], //
+            ['name' => 'إيراد المبيعات', 'parent_id' => 12,'account_type_id'=>$sales], //
+            ['name' => 'مردودات المبيعات', 'parent_id' => 12,'account_type_id'=>$ss], //
             ['name' => 'إيرادات أخري', 'parent_id' => 12,], //
-            ['name' => 'تكلفة البضاعة المباعة', 'parent_id' => 14,], //
-            ['name' => 'خصم مسموح به', 'parent_id' => 14,], //
+            ['name' => 'تكلفة البضاعة المباعة', 'parent_id' => 14,'account_type_id'=>$cog], //
+            ['name' => 'خصم مسموح به', 'parent_id' => 14,'account_type_id'=>$sd], //
 
             ['name' => 'مرتبات', 'parent_id' => 15], //
             ['name' => 'مصروف كهرباء - مياه - غاز', 'parent_id' => 15], //
@@ -212,6 +222,7 @@ class AccountingSeeder extends Seeder
                 'slug' => Str::slug($node['name']),
                 'credit' => $node['credit'] ?? null,
                 'parent_id' => $node['parent_id'],
+                'account_type_id' => $node['account_type_id'] ?? null
             ]);
         }
         return true;

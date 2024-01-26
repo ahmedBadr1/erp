@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('active')->default(1);
             $table->boolean('usable')->default(0);
             $table->boolean('system')->default(0);
-            $table->foreignIdFor(\App\Models\Accounting\AccountType::class);
+            $table->foreignIdFor(\App\Models\Accounting\AccountType::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

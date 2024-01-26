@@ -53,7 +53,7 @@ class Seed extends Command
 //            }
 
         }
-        echo 'Done Seeding ;)';
+        echo "\nDone Seeding ;) \n";
     }
 
     protected function insert($treasuryId)
@@ -61,8 +61,6 @@ class Seed extends Command
 //        AccountingSeeder::seed();
         AccountingSeeder::seedType('CI',$treasuryId);
         AccountingSeeder::seedType('CO',$treasuryId);
-
-
     }
 
     public function spawn($processes)

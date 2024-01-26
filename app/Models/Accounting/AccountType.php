@@ -30,13 +30,13 @@ class AccountType extends MainModelSoft
         'W' => 'Waste',
         'RE' => 'Retained Earning',
         'A' => 'Adjustment',
-        'AT ' => 'Added Tax',
-        'WT ' => 'Withholding Tax',
-        'EI ' => 'Ending Inventory',
-        'RGE ' => 'Realized Gain Exchange',
-        'RLE ' => 'Realized Loss Exchange',
-        'URGE ' => 'Un Realized Gain Exchange',
-        'URLE ' => 'Un Realized Loss Exchange',
+        'AT' => 'Added Tax',
+        'WT' => 'Withholding Tax',
+        'EI' => 'Ending Inventory',
+        'RGE' => 'Realized Gain Exchange',
+        'RLE' => 'Realized Loss Exchange',
+        'URGE' => 'Un Realized Gain Exchange',
+        'URLE' => 'Un Realized Loss Exchange',
     ];
 
     public function nodes()
