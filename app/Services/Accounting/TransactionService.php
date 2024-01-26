@@ -23,6 +23,20 @@ class TransactionService extends MainService
         return Transaction::get();
     }
 
+    public function types()
+    {
+        $types = [
+            'CI' => 'Cash In',
+            'CO' => 'Cash Out',
+            'JE' => 'Journal Entry',
+            'PI' => 'Purchase Invoice',
+            'SI' => 'Sales Invoice',
+            'NP' => 'Credit Note',
+            'NR' => 'Debit Note',
+        ];
+        return $types ?? Transaction::$TYPES;
+    }
+
     public function cash(array $data = null)
     {
         $columns = $data['columns'];
@@ -69,7 +83,6 @@ class TransactionService extends MainService
 //        if (isset($data['treasuries']) && $data['treasuries']) {
         $query->with('firstParty');
 //        }
-
 
 
         if (isset($data['sellers']) && $data['sellers']) {

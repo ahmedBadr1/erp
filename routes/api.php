@@ -145,6 +145,8 @@ Route::group(['middleware' => ['json.response']], function () {
             ], function () {
                 Route::post('/', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'index'])->name('index');
                 Route::post('/list', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'list'])->name('list');
+                Route::post('/posting', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'posting'])->name('index');
+
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
                 Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
@@ -193,7 +195,7 @@ Route::group(['middleware' => ['json.response']], function () {
 
                 Route::post('/account-ledger', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'accountLedger'])->name('accountLedger');
                 Route::post('/cash', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'cash'])->name('cash');
-                Route::post('/store', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'store'])->name('store');
+                Route::post('/posting', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'posting'])->name('posting');
             });
         });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Accounting;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Requests\Accounting\PostingRequest;
 use App\Http\Requests\Accounting\StoreTransactionRequest;
 use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\ListRequest;
@@ -45,6 +46,12 @@ class TransactionController extends ApiController
         return TransactionsResourses::collection(Transaction::search($input['keywords'])
 //            ->orderBy($input['orderBy'], $input['orderDesc'] ? 'desc' : 'asc')
             ->paginate($input['limit']));
+    }
+
+    public function posting(PostingRequest $request)
+    {
+        $this->service->post($request->get('ids'),$request->get('posting')) ;
+        return $this->successResponse(null,__(($request->get('posting') ? '' : 'Un ' ) .'Posted Successfully'));
     }
 
     public function create()

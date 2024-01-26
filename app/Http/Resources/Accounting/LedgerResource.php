@@ -21,9 +21,10 @@ class LedgerResource extends JsonResource
             'amount' => $this->amount,
             'description' => $this->description,
             'ex_rate' => $this->ex_rate,
-            'posted' => $this->post,
-            'locked' => $this->whenNotNull('locked'),
-            'due' => $this->due->format('H:m d/m/Y'),
+            'paper_ref' => $this->paper_ref,
+            'posted' => $this->posted,
+            'locked' => $this->whenNotNull($this->locked),
+            'due' => $this->due->format('d/m/Y'),
             'responsible' => new UserResource ($this->whenLoaded('responsible')),
             'creator' => new UserResource ($this->whenLoaded('responsible')),
             'editor' => new UserResource ($this->whenLoaded('responsible')),
@@ -32,6 +33,11 @@ class LedgerResource extends JsonResource
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
+
+            'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
+            'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),
+            'firstCiTransaction' => new TransactionResource($this->whenLoaded('firstCiTransaction')),
+
         ];
     }
 }

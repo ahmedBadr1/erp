@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\Reports\AccountLedgerRequest;
 use App\Http\Requests\Accounting\Reports\CashReportRequest;
 use App\Http\Requests\Accounting\Reports\ReportRequest;
+use App\Http\Requests\Accounting\Reports\ShowPostingRequest;
 use App\Http\Resources\Accounting\AccountChartResource;
 use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\NodeResource;
@@ -63,6 +64,10 @@ class ReportsController extends ApiController
             $data['accountTypes'] = (new AccountService)->types(['id', 'name']);
         }
 
+        if ($request->get('transactionTypes')) { // && auth('api')->user()->can('accounting.accounts.index')
+            $data['transactionTypes'] = (new TransactionService())->types();
+        }
+
         if ($request->get('accounts')) { // && auth('api')->user()->can('accounting.accounts.index')
             $data['accounts'] = (new AccountService)->all(['code', 'name']);
         }
@@ -97,15 +102,17 @@ class ReportsController extends ApiController
 
     public function accountLedger(AccountLedgerRequest $request)//
     {
-//        sleep(5);
-//        return   (new LedgerService())->accounts($request->validated()) ;
         return $this->successResponse(LedgerResource::collection((new LedgerService())->accounts($request->validated())), 'yaaaaaah');
     }
 
     public function cash(CashReportRequest $request)//
     {
-//        sleep(5);
-//        return  $request->validated();
         return $this->successResponse(TransactionResource::collection((new TransactionService())->cash($request->validated())), 'yaaaaaah');
+    }
+
+    public function posting(ShowPostingRequest $request)
+    {
+        $result = (new LedgerService())->posting($request->validated());
+        return $this->successResponse(['rows'=> LedgerResource::collection($result['rows']),'dataset'=>$result['dataset']]);
     }
 }

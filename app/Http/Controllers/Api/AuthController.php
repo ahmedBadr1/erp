@@ -39,7 +39,7 @@ class AuthController extends ApiController
         if (!$user->active) {
             return $this->errorResponse('Your Account Is Suspended, Contact Admins For More', 409);
         }
-
+//        $user->tokens()->delete(); // delete all user tokens before genrate new onw (single session only)
         return $this->successResponse(['user' => new UserRolesResource($user), 'token' => $user->createToken('website')->accessToken]);
     }
 

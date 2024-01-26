@@ -5,8 +5,10 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 use App\Models\System\Address;
 use App\Models\System\Attachment;
+use App\Models\System\Contact;
 use App\Policies\System\AddressPolicy;
 use App\Policies\System\AttachmentPolicy;
+use App\Policies\System\ContactPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Gate;
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Address::class => AddressPolicy::class,
+        Contact::class => ContactPolicy::class,
         Attachment::class => AttachmentPolicy::class,
     ];
 
@@ -35,9 +38,9 @@ class AuthServiceProvider extends ServiceProvider
             return $user->id === 1 ? true : null;
         });
 
-        Passport::tokensExpireIn(now()->addHours(6));
-        Passport::refreshTokensExpireIn(now()->addDays(30));
-        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
+//        Passport::tokensExpireIn(now()->addMinutes(30));
+//        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::personalAccessTokensExpireIn(now()->addMinutes(30));
 
     }
 }

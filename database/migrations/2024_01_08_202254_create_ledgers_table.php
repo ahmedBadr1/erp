@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->decimal('amount',15,2);
             $table->text('description')->nullable();
-            $table->string('reference')->nullable();
+            $table->string('paper_ref')->nullable();
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
             $table->float('ex_rate')->nullable();

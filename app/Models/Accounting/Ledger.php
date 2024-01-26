@@ -40,6 +40,22 @@ class Ledger extends MainModelSoft
         return $this->hasMany(Transaction::class);
     }
 
+    public function firstTransaction()
+    {
+        return $this->hasOne(Transaction::class)->oldestOfMany();
+    }
+
+    public function lastTransaction()
+    {
+        return $this->hasOne(Transaction::class)->latestOfMany();
+    }
+
+
+    public function firstWhTransaction()
+    {
+        return $this->hasOne(Transaction::class)->where('type','WH')->oldestOfMany();
+    }
+
     public function ciTransactions()
     {
         return $this->hasMany(Transaction::class)->where('type','CI');
