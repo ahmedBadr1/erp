@@ -33,7 +33,7 @@ class AuthController extends ApiController
         $user = \App\Models\User::where('email', $valid['email'])->first();
 
         if (!$user || !Hash::check($valid['password'], $user->password)) {
-            return $this->errorResponse('wrong email or password', 409);
+            return $this->errorResponse('wrong email or password', 422);
         }
 
         if (!$user->active) {
@@ -76,7 +76,6 @@ class AuthController extends ApiController
 
         return $this->successResponse([], 'Account Created Successfully');
         $token = $user->createToken('app');
-
         return $this->successResponse(['user' => new UserRolesResource($user), 'token' => $token->accessToken]);
     }
 

@@ -16,10 +16,7 @@ class ForceJsonResponse
     public function handle(Request $request, Closure $next): Response
     {
         $request->headers->set('Accept', 'application/json');
-//        $request->headers->set('Access-Control-Allow-Origin', '*');
-//        $request->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT, DELETE');
-//        $request->headers->set('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, X-Requested-With, Application');
-
+//        $request->headers->set('Content-Type', 'application/json');
         return $next($request);
     }
 }

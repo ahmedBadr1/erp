@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['json.response']], function () {
 
     Route::group(['middleware' => ['guest:api']], function () {
-        Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login'])->name('login');
+        Route::post('login', [\App\Http\Controllers\Api\AuthController::class, 'login'])->name('login');
         Route::post('register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
         Route::post('check', [\App\Http\Controllers\Api\AuthController::class, 'check']);
         Route::get('docs', [\App\Http\Controllers\Api\AuthController::class, 'docs'])->name('docs');

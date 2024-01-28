@@ -542,7 +542,7 @@ class ConstantSeeder extends Seeder
     /**
      * @return void
      */
-    public function seedUsers(): void
+    public static function seedUsers(): void
     {
         $password = Hash::make('password');
 
