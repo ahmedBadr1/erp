@@ -15,12 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('type')->default('material');
-            $table->string('address')->nullable();
-            $table->foreignId('manager_id')
-                ->nullable()
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade');
+            $table->foreignIdFor(\App\Models\User::class,'manager_id')->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Account::class);
             $table->boolean('active')->default(true);
             $table->timestamps();
             $table->softDeletes();

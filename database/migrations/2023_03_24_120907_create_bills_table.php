@@ -13,28 +13,36 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Accounting\Account::class); // 1
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
+            $table->string('code');
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'warehouse_id'); // 1
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'supplier_id'); // 1
+            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
+
+//            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
+//            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
             $table->foreignIdFor(\App\Models\Inventory\Branch::class)->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
             $table->foreignIdFor(\App\Models\System\Status::class);
+            $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable(); // 3
+            $table->foreignIdFor(\App\Models\User::class,'created_by')->nullable(); // 3
+            $table->foreignIdFor(\App\Models\User::class,'updated_by')->nullable(); // 3
+
+
+            $table->string('paper_ref')->nullable();
+            $table->dateTime('billed_at');
+            $table->dateTime('due_at')->nullable();
+
             $table->boolean('tax_exclusive');
             $table->boolean('tax_inclusive');
-            $table->string('code');
-            $table->string('number')->nullable();
-            $table->dateTime('billed_at');
-            $table->dateTime('due_at');
-            $table->foreignId('responsible_id')
-                ->nullable()
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade');
+            $table->boolean('cost_allocation')->default(false);
+
+
             $table->decimal('paid',15,2)->nullable();
-            $table->decimal('sub_total',15,2);
-            $table->decimal('tax_total',15,2)->default(0);
-            $table->decimal('discount',15,2)->default(0);
-            $table->decimal('total',15,2);
-            $table->text('notes')->nullable();
+            $table->decimal('gross_total',15,2)->comment("total Bill Items value and qty");
+            $table->decimal('discount',15,2)->comment("Discount cal to value not percentage")->default(0);
+            $table->decimal('sub_total',15,2)->comment("Gross Total after discount");
+            $table->decimal('tax_total',15,2)->comment("Tax value")->default(0);
+            $table->decimal('total',15,2)->comment("Sub Total after tax");
+            $table->text('note')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

@@ -13,17 +13,19 @@ class Product extends MainModelSoft
     use LogsActivity;
 
     protected $fillable = [
-        'name', 'short_name', 'code', 'warehouse_id', 'origin_number', 'type', 'price', 'd_price', 'sd_price', 'min_price', 'ref_price',
-      'avg_cost', 'profit_margin', 'warranty', 'expire_date', 'barcode', 'hs_code', 'batch_number',
-        'tax1_id', 'tax2_id', 'unit_id', 'brand_id', 'vendor_id', 'user_id', 'weight', 'width', 'length', 'height', 'max_limit', 'min_limit',
-        'require_barcode', 'repeat_barcode', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'active', 'inv_category_id'];
+        'name', 'short_name', 'warehouse_id', 'origin_number', 'type','barcode', 'hs_code', 'batch_number',
+      'warehouse_shelf_id',  'part_number', 'sku', 'location', 'oe_number','e_code' ,'e_code_type',
+        's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost','last_cost', 'fifo', 'lifo',
+        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit','reorder_limit',
+       'has_serial', 'require_barcode', 'repeat_barcode', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'active',
+         'brand_id', 'vendor_id', 'user_id', 'inv_category_id'];
 
     protected $casts = ['expire_date' => 'date', 'require_barcode' => 'boolean', 'repeat_barcode' => 'boolean', 'negative_stock' => 'boolean',
         'can_be_sold' => 'boolean', 'can_be_purchased' => 'boolean', 'returnable' => 'boolean', 'active' => 'boolean'];
 
     public function category()
     {
-        return $this->belongsTo(InvCategory::class);
+        return $this->belongsTo(ProductCategory::class);
     }
 
     public function warehouse()

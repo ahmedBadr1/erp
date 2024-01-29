@@ -14,30 +14,43 @@ class Transaction extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['code', 'amount', 'type', 'description', 'due', 'paper_ref', 'document_no',
+    protected $fillable = ['code', 'amount','type_group', 'type', 'description', 'due', 'paper_ref', 'document_no',
         'first_party_id','second_party_id',
         'ledger_id', 'responsible_id','created_by','edited_by', 'posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
 
     public static array $TYPES = [
+        //'JE', Journal entry represented as Ledger class
+
         'CI', // Cash IN transaction where treasury (TR) account is debit
         'CO', // Cash Out transaction where treasury (TR) account is Credit
-        // 'SO', // sales order only View For Invoice
-        'SI', // sales invoice Code For invoice
-        'SR', // sales return Code to change later
+        'NR', // Note Receivable
+        'NP', // Note Payable
+        'COGS', // Cost OF Goods Transaction
+
         //'PO', // purchase order only view for Bill
         'PI', // purchase invoice Code for Bill
         'PR', // purchase return Code to change Later
-        'EX', // Exchange between warehouses
+
         'IO', // Issue Offering to decrease items Form warehouse
         'RS', // Receive Supply to increase items To warehouse
-        'NR', // Note Receivable
-        'NP', // Note Payable
-        'COGS', // Note Payable
+        'IR',  // Issue Returns from warehouse to another
+        'IT',  // Issue Transfer from warehouse to another
+        'RT',  // Receive Transfer from another warehouse
+        'RR',  // Receive Returns
+
+        // 'SO', // sales order only View For Invoice
+        'SI', // sales invoice Code For invoice
+        'SR', // sales return Code to change later
+
+
     ];
 
-
+    public function group()
+    {
+        return $this->belongsTo(TransactionGroup::class, 'group_id');
+    }
     public function ledger()
     {
         return $this->belongsTo(Ledger::class);
@@ -69,6 +82,8 @@ class Transaction extends MainModelSoft
     {
         return $this->belongsTo(User::class, 'responsible_id');
     }
+
+
 
 
     public function getActivitylogOptions(): LogOptions

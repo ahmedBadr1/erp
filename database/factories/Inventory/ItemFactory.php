@@ -25,7 +25,7 @@ class ItemFactory extends Factory
 
         return [
             'name' => $this->faker->name(),
-            'sku' => $this->faker->unique()->randomNumber(),
+            'sku' => $this->faker->randomNumber(),
             'quantity' => $this->faker->numberBetween(1,200),
             'description' => $this->faker->text(),
             'price' => $this->faker->numberBetween(5,300),
@@ -36,7 +36,7 @@ class ItemFactory extends Factory
             'cost' => $this->faker->numberBetween(5,200),
             'bill_id' => Bill::all()->random()->id,
             'product_id' => Product::all()->random()->id,
-            'warehouse_id' => Warehouse::all()->random()->id,
+//            'warehouse_id' => Warehouse::all()->random()->id,
             'user_id' => User::all()->random()->id,
             'expire_at' => $this->faker->dateTimeThisYear(now()->addYear()),
         ];

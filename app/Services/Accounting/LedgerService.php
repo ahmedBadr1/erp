@@ -253,14 +253,14 @@ class LedgerService extends MainService
 
         DB::beginTransaction();
         try {
-            $ledger = $this->store($data['amount'], $data['currency_id`'], $data['due'], $data['description'], $data['responsible']);
+            $ledger = $this->store($data['amount'], $data['currency_id'], $data['due'], $data['description'], $data['responsible']);
             $EntryService->createDebitEntry($data['amount'], $treasury->id, $ledger->id, $treasury->cost_center_id);
             $AccountService->updateBalance($treasury->id);
             foreach ($data['accounts'] as $account) {
                 $account_id = Account::where('code', $account['code'])->value('id');
                 $cost_center_id = isset($account['costCenter']) ? CostCenter::where('code', $account['costCenter']['code'])->value('id') : null;
                 $EntryService->createCreditEntry($account['amount'], $account_id, $ledger->id, $cost_center_id, $account['comment'] ?? null);
-                $TransactionService->createCI($data['amount'], $ledger->id, $treasury->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['je_code'], $data['document_no']);
+                $TransactionService->createCI($data['amount'], $ledger->id, $treasury->id, $account_id, $data['due'], $data['description'], $data['responsible'], $data['paper_ref']);
                 $AccountService->updateBalance($account_id);
             }
         } catch (Exception $e) {

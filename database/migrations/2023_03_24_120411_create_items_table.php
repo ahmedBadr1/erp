@@ -27,10 +27,11 @@ return new class extends Migration
             $table->decimal('cost',10,2)->nullable();
 
             $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Transaction::class)->nullable();
 
             $table->foreignIdFor(\App\Models\Inventory\Product::class)->nullable();
 
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class)->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'warehouse_id')->nullable();
             $table->foreignIdFor(\App\Models\User::class);
 
             $table->dateTime('expire_at')->nullable();

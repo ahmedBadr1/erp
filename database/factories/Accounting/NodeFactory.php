@@ -22,7 +22,7 @@ class NodeFactory extends Factory
             'slug' => Str::slug($name),
             'credit' => $this->faker->boolean,
             'parent_id' => rand(1,Node::count()),
-            'account_type_id' => AccountType::all()->random()->id ,
+//            'account_type_id' => AccountType::all()->random()->id ,
             'usable' => 0,
             'system' => 1,
         ];

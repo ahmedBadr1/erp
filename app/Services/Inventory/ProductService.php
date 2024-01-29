@@ -10,17 +10,18 @@ use App\Models\Inventory\Product;
 use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
+use App\Services\System\TagService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductService extends MainService
 {
 
-    public function all($fields = null)
+    public function all($fields = null,$active=1)
     {
-        $data = $fields ?? (new z())->getFillable();
+        $data = $fields ?? (new Product())->getFillable();
 
-        return Product::active()->get($data);
+        return Product::active($active)->get($data);
     }
 
 
@@ -35,14 +36,18 @@ class ProductService extends MainService
                 ->orWhere('barcode', 'like', '%' . $search . '%')
                 ->orWhere('hs_code', 'like', '%' . $search . '%')
                 ->orWhere('batch_number', 'like', '%' . $search . '%');
-//                ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+//                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
     public function store(array $data)
     {
         try {
             $product = Product::create($data);
-            return $product;
+
+            if (isset($data['tags'])) {
+                (new TagService())->sync($data['tags'] , $product,'product');
+            }
+            return true;
         } catch (Exception $e) {
             return $e->getMessage();
         }

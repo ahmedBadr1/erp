@@ -15,23 +15,35 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('short_name')->nullable();
-            $table->string('code')->unique();
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class)->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\WarehouseShelf::class)->nullable();
+            $table->string('part_number')->nullable();
+            $table->string('sku')->nullable();
+            $table->string('location')->nullable();
+            $table->string('oe_number')->nullable();
+            $table->string('e_code')->nullable();
+            $table->string('e_code_type')->nullable();
+
             $table->string('origin_number')->nullable();
             $table->string('type')->nullable();
 
-            $table->decimal('price', 8, 2)->nullable();
-            $table->decimal('d_price', 8, 2)->nullable();
-            $table->decimal('sd_price', 8, 2)->nullable();
-            $table->decimal('min_price', 8, 2)->nullable();
-            $table->decimal('ref_price', 8, 2)->nullable();
-//            $table->decimal('first_cost', 8, 2)->nullable(); // fifo filo
-//            $table->decimal('last_cost', 8, 2)->nullable(); // avg cost
-            $table->decimal('avg_cost', 8, 2)->nullable();
+            $table->decimal('s_price', 12, 2)->nullable();
+            $table->decimal('d_price', 12, 2)->nullable();
+            $table->decimal('sd_price', 12, 2)->nullable();
+            $table->decimal('min_price', 12, 2)->nullable();
+            $table->decimal('ref_price', 12, 2)->nullable();
+            $table->decimal('pur_price', 12, 2)->nullable();
+
+            $table->decimal('last_cost', 12, 2)->nullable();
+            $table->decimal('avg_cost', 12, 2)->nullable();
+            $table->decimal('fifo', 12, 2)->nullable();
+            $table->decimal('lifo', 12, 2)->nullable();
+            $table->decimal('opening_balance', 12, 2)->nullable();
+
             $table->decimal('profit_margin', 8, 4)->nullable(); // %10
 
-            $table->string('warranty')->nullable();
-            $table->date('expire_date')->nullable(); // 1 = 12 month
+            $table->tinyInteger('warranty')->nullable()->comment('in month');
+            $table->tinyInteger('valid_to')->nullable()->comment('in month'); // 1 = 12 month
             $table->string('barcode')->nullable();
             $table->string('hs_code')->nullable();
             $table->string('batch_number')->nullable();
@@ -40,14 +52,12 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
             $table->foreignIdFor(App\Models\User::class)->nullable();
 
-            $table->decimal('weight', 10, 2)->nullable();
-            $table->decimal('width', 10, 2)->nullable();
-            $table->decimal('length', 10, 2)->nullable();
-            $table->decimal('height', 10, 2)->nullable();
-
             $table->decimal('max_limit', 12, 2)->nullable();
             $table->decimal('min_limit', 12, 2)->nullable();
+            $table->decimal('reorder_limit', 12, 2)->nullable();
 
+
+//            $table->boolean('has_serial')->default(false);
             $table->boolean('require_barcode')->default(false);
             $table->boolean('repeat_barcode')->default(false);
             $table->boolean('negative_stock')->default(false);
@@ -56,7 +66,7 @@ return new class extends Migration
             $table->boolean('returnable')->default(true);
             $table->boolean('active')->default(true);
 
-            $table->foreignIdFor(\App\Models\Inventory\InvCategory::class)->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\ProductCategory::class)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -6,7 +6,7 @@ use App\Models\MainModelSoft;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InvCategory extends MainModelSoft
+class ProductCategory extends MainModelSoft
 {
     protected $fillable = ['name','type','color','parent_id','active'];
 }

@@ -29,7 +29,7 @@ class AccountFactory extends Factory
             'active' => rand(0, 1),
             'node_id' => Node::isLeaf()->get()->random()->id,//
             'currency_id' => Currency::all()->random()->id,
-            'account_type_id' => AccountType::all()->random()->id,
+//            'account_type_id' => AccountType::all()->random()->id,
 
 //            'status_id' => $statues[array_rand($statues)],
 //            'opening_balance' => $this->faker->numberBetween(100,10000),

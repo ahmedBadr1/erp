@@ -8,6 +8,9 @@ use App\Traits\HasAddress;
 use App\Traits\HasAttachments;
 use App\Traits\HasContacts;
 use App\Traits\HasDevice;
+use App\Traits\HasDimension;
+use App\Traits\HasDiscount;
+use App\Traits\HasInstallment;
 use App\Traits\HasMessages;
 use App\Traits\HasAccess;
 use App\Traits\HasTicket;
@@ -26,7 +29,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class MainModel extends Model implements HasMedia
 {
     use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
-    use InteractsWithMedia , BelongsToThrough ,HasAccess;
+    use InteractsWithMedia , BelongsToThrough ,HasAccess ,HasDiscount,HasDimension ,HasInstallment;
 
     public static $withoutAppends = false;
 
@@ -65,17 +68,31 @@ class MainModel extends Model implements HasMedia
 
     public function scopeActive($query, $active = 1)
     {
+        if ($active == 'all'){
+            return $query ;
+        }
         return $query->where('active', $active);
     }
 
     public function scopeType($query, $type )
     {
+        if ($type == 'all'){
+            return $query ;
+        }
         return $query->where('type', $type);
     }
 
-    public function scopeApp($query, $active = 1)
+    public function scopeApp($query, $app = 1)
     {
-        return $query->where('app', $active);
+        return $query->where('app', $app);
+    }
+
+    public function scopePrimary($query, $primary = 1)
+    {
+        if ($primary == 'all'){
+            return $query ;
+        }
+        return $query->where('primary', $primary);
     }
 
     public function scopeWebsite($query, $active = 1)
@@ -83,9 +100,12 @@ class MainModel extends Model implements HasMedia
         return $query->where('website', $active);
     }
 
-    public function scopeIsFeatured($query, $active = 1)
+    public function scopeIsFeatured($query, $featured = 1)
     {
-        return $query->where('is_featured', $active);
+        if ($featured == 'all'){
+            return $query ;
+        }
+        return $query->where('is_featured', $featured);
     }
 
     public function scopeNotEnded($query, $date = null)

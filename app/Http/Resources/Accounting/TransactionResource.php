@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Accounting;
 
 use App\Http\Resources\UserResource;
+use App\Models\Accounting\TransactionGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,6 +34,8 @@ class TransactionResource extends JsonResource
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
             'ledger' => new LedgerResource($this->whenLoaded('ledger')),
+            'group' => new TransactionGroupResource($this->whenLoaded('group')),
+
             'firstParty' => new AccountChartResource($this->whenLoaded('firstParty')),
             'secondParty' => new AccountChartResource($this->whenLoaded('secondParty')),
 

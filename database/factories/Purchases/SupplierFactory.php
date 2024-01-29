@@ -31,7 +31,7 @@ class SupplierFactory extends Factory
             'warranty' => $this->faker->month(),
 //            'business_name', 'name', 'code', 'responsible_id', 'credit_limit', 'tax_number',
 //        'registration_number', 'payment_method', 'phone', 'telephone', 'email', 'active'
-        'account_id' => Account::all()->random()->id
+//        'account_id' => Account::whereHas('type',fn($q)=>$q->where('code','AP'))->get()->random()->id
         ];
     }
 }

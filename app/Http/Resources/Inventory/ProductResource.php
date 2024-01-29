@@ -14,14 +14,15 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $total =  formatMoney( ((int)$this->items_quantity ?? 0) *  ((int)$this->items_price ?? 0)) ;
         return [
             'id' => $this->id,
             'name' => $this->name,
             'short_name' => $this->short_name,
-            'code' => $this->code,
+            'part_number' => $this->part_number,
+            'sku' => $this->sku,
             'origin_number' => $this->origin_number,
-            'type' => $this->type,
-            'price' => $this->price,
+            's_price' => $this->s_price,
             'd_price' => $this->d_price,
             'sd_price' => $this->sd_price,
             'min_price' => $this->min_price,
@@ -53,10 +54,11 @@ class ProductResource extends JsonResource
             'responsible' => $this->whenLoaded('responsible'),
 
             'category' => $this->whenLoaded('category'),
-            'items_count' => $this->whenCounted('items'),
-
-            'items_sum' =>(int)  $this->items_sum ?? 0 ,
-            'expired_items_sum' => (int) $this->expired_items_sum ?? 0,
+            'items_value' => $total,
+//            'items_quantity' =>( (int)$this->items_quantity ?? 0),
+//            'items_price' => ((int)$this->items_price ?? 0),
+//            'expired_items_quantity' => (int)$this->expired_items_quantity ?? 0,
+//            'expired_items_price' => (int)$this->expired_items_price ?? 0,
 
         ];
     }

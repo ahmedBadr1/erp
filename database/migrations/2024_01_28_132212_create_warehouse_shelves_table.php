@@ -11,17 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('inv_categories', function (Blueprint $table) {
+        Schema::create('warehouse_shelves', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type')->nullable();
-            $table->string('color')->nullable();
-            $table->foreignId('parent_id')
-                ->nullable()
-                ->references('id')
-                ->on('inv_categories')
-                ->onUpdate('cascade');
-            $table->boolean('active')->default(1);
+            $table->string('code')->nullable();
+            $table->string('location')->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inv_categories');
+        Schema::dropIfExists('warehouse_shelves');
     }
 };

@@ -12,10 +12,14 @@ use App\Models\Accounting\Node;
 use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
 use App\Models\Inventory\Product;
+use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
+use App\Models\Purchases\Bill;
+use App\Models\Purchases\Supplier;
 use App\Models\System\Address;
 use App\Models\System\Contact;
 use App\Models\System\Group;
+use App\Models\System\Profile;
 use App\Models\System\Tag;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -49,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
             'contact' => Contact::class,
             'address' => Address::class,
             'tag' => Tag::class,
-
+            'profile' => Profile::class,
 
             'node' => Node::class,
             'account' => Account::class,
@@ -62,6 +66,10 @@ class AppServiceProvider extends ServiceProvider
 
             'product' => Product::class,
             'warehouse' => Warehouse::class,
+            'unit' => Unit::class,
+
+            'supplier' => Supplier::class,
+            'bill' => Bill::class,
 
         ]);
 

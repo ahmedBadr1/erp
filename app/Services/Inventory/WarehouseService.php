@@ -16,11 +16,11 @@ use Maatwebsite\Excel\Facades\Excel;
 class WarehouseService extends MainService
 {
 
-    public function all($fields = null)
+    public function all($fields = null,$active = 1)
     {
         $data = $fields ?? (new Warehouse())->getFillable();
 
-        return Warehouse::active()->get($data);
+        return Warehouse::active($active)->get($data);
     }
 
 

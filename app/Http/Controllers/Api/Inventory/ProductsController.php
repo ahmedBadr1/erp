@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Inventory;
 
+use App\Enums\OrderStatus;
+use App\Enums\ProductECodeEnum;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Inventory\StoreProductRequest;
 use App\Http\Requests\ListRequest;
@@ -9,13 +11,25 @@ use App\Http\Resources\Inventory\ProductCollection;
 use App\Http\Resources\Inventory\ProductResource;
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
-use App\Models\Inventory\InvCategory;
+use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
+use App\Models\System\Tag;
 use App\Models\User;
-use App\Services\Inventory\ContactService;
+use App\Services\Accounting\AccountService;
+use App\Services\Inventory\BrandService;
+use App\Services\Inventory\UnitGroupService;
+use App\Services\Inventory\ProductCategoryService;
+use App\Services\Inventory\ProductService;
+use App\Services\Inventory\UnitService;
+use App\Services\Inventory\WarehouseService;
+use App\Services\Purchase\SupplierService;
+use App\Services\System\GroupService;
+use App\Services\System\TagService;
+use App\Services\System\TaxService;
+use App\Services\UserService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -33,7 +47,7 @@ class ProductsController extends ApiController
         $this->middleware('permission:inventory.products.create', ['only' => ['create', 'store']]);
         $this->middleware('permission:inventory.products.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:inventory.products.delete', ['only' => ['destroy']]);
-        $this->service = new ContactService();
+        $this->service = new ProductService();
     }
 
     public function download(Request $request)
@@ -49,6 +63,12 @@ class ProductsController extends ApiController
         $query = $this->service->search($request->get('keywords'))
             ->with('unit')
             ->withCount('items')
+            ->withSum('items as items_quantity','quantity')
+            ->withSum('items as items_price','price')
+//            ->withSum(['items as expired_items_quantity' => function ($query) {
+//                $query->where('expire_at','>=', now());}],'quantity')
+//            ->withSum(['items as expired_items_price' => function ($query) {
+//                $query->where('expire_at','>=', now());}],'price')
             ->when($request->get('start_date'), function ($query) use ($request) {
                 $query->where('created_at', '>=', Carbon::parse($request->get('start_date')));
             })
@@ -76,35 +96,43 @@ class ProductsController extends ApiController
     }
 
     public function create(){
-        $categories = InvCategory::pluck('name','id')->toArray();
-        $warehouses = Warehouse::pluck('name','id')->toArray();
-        $units = Unit::pluck('name','id')->toArray();
-        $brands = Brand::pluck('name','id')->toArray();
-        $taxes = Tax::select('id','name','rate')->get();
-        $suppliers = Supplier::pluck('name','id')->toArray();
-        $users = User::whereHas('roles',fn($q)=>$q->where('name','employee'))->pluck('name','id')->toArray();
+        $categories = (new ProductCategoryService())->all(['name', 'id']);
+        $warehouses = (new WarehouseService())->all(['name', 'id']);
+        $singleUnits = (new UnitService())->all(['name', 'id'],true);
+        $unitGroups = (new UnitGroupService())->all(['name', 'id']);
+        $taxes = (new TaxService())->all(['id','name','rate']);
+        $brands = (new BrandService())->all(['id','name']);
+//        $suppliers = (new SupplierService())->all(['id','name']);
+        $suppliers = (new AccountService())->all(['id','name'],'AP');
 
-        return $this->successResponse(['categories'=>$categories,'warehouses'=>$warehouses,'units'=>$units,'brands'=>$brands,'taxes'=>$taxes,'suppliers'=>$suppliers,'users'=>$users]);
+        $tags = (new TagService())->all(['name', 'id'], 'account');
+        $users = (new UserService())->all(['id', 'username'],'employee');
+
+        return $this->successResponse([
+            'tags'=>$tags,
+            'categories'=>$categories,
+            'warehouses'=>$warehouses,
+            'singleUnits'=>$singleUnits,
+            'unitGroups'=>$unitGroups,
+            'brands'=>$brands,
+            'taxes'=>$taxes,
+            'suppliers'=>$suppliers,
+            'users'=>$users,
+            'ECodes'=> ProductECodeEnum::toArray(),
+        ]);
     }
      public function store(StoreProductRequest $request)
         {
-
-            $data = $request->all();
-
             try {
-                DB::beginTransaction();
-
-                $product = Product::create($data);
-
-
-                DB::commit();
-
-                return $this->successResponse(null ,  __("message.created",['model' => __('Product')]) ,201);
-            } catch (\Exception $e) {
-                DB::rollback();
-
-                return response()->json(['message' => 'Failed to create Product','error'=>$e], 500);
+                $res = (new ProductService())->store($request->validated());
+                if ($res !== true){
+                    return $this->errorResponse($res, 409);
+                }
+            } catch (Exception $e) {
+                return $this->errorResponse($e->getMessage(), 409);
             }
+
+            return $this->successResponse(null, __('message.created', ['model' => __('Product')]));
         }
 
     public function show(Request $request, $id)

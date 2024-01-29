@@ -24,7 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 class AccountService extends MainService
 {
 
-    public function all($fields = null, int $type_id = null,$node_id = null)
+    public function all($fields = null, $type_id = null,$node_id = null)
     {
         $data = $fields ?? (new Account())->getFillable();
 
@@ -34,8 +34,11 @@ class AccountService extends MainService
             $nodeIds = collect([$node->id,...$node->descendants->pluck('id')]);
             $query->whereIn('node_id',$nodeIds);
         }
-        if ($type_id){
+        if (is_int($type_id)){
             $query->where('account_type_id', $type_id);
+        }else{
+            $query->whereHas('type',fn($q)=>$q->where('code', $type_id));
+
         }
         return $query->get($data);
     }

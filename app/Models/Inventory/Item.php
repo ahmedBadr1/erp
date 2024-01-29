@@ -2,6 +2,7 @@
 
 namespace App\Models\Inventory;
 
+use App\Models\Accounting\Transaction;
 use App\Models\Element;
 use App\Models\MainModelSoft;
 use App\Models\ProductionOrder;
@@ -32,6 +33,11 @@ class Item extends MainModelSoft
     public function category()
     {
         return $this->belongsToThrough('App\Models\Category', 'App\Models\Element');
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
     }
     public function warehouse()
     {

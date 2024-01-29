@@ -6,7 +6,7 @@ use App\Models\MainModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GroupAccount extends MainModel
+class AccountGroup extends MainModel
 {
     public function accounts()
     {

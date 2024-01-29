@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('group_accounts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onUpdate('cascade');
+        Schema::create('product_supplier', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Inventory\Product::class)->index();
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->index();
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('group_accounts');
+        Schema::dropIfExists('product_supplier');
     }
 };

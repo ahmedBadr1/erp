@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Item;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
@@ -21,17 +22,16 @@ class InventorySeeder extends Seeder
         Warehouse::factory()->create([
             'name' => 'main',
             'type' => 'materials',
-            'address' => 'factory',
         ]);
+//        Warehouse::factory()->create();
 
+        ProductCategory::factory()->create([
+            'name' => 'main'
+        ]);
 
         $this->seedUnits();
 
         Product::factory(100)->create();
-
-
-        Warehouse::factory(2)->create();
-
 
     }
 
@@ -53,7 +53,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'weight'
+                'type' => 'weight'
             ]);
         }
         $distanceUnits = [
@@ -69,7 +69,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'length'
+                'type' => 'length'
             ]);
         }
         $liquidUnits = [
@@ -85,7 +85,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'liquid'
+                'type' => 'liquid'
             ]);
         }
         $packingUnits = [
@@ -98,7 +98,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'packing'
+                'type' => 'packing'
             ]);
         }
 
@@ -115,7 +115,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'time'
+                'type' => 'time'
             ]);
         }
 
@@ -136,7 +136,7 @@ class InventorySeeder extends Seeder
             Unit::factory()->create([
                 'name' => $key,
                 'conversion_factor' => $unit,
-                'group' => 'volume'
+                'type' => 'volume'
             ]);
         }
     }

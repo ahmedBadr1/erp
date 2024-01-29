@@ -19,6 +19,11 @@ class Ledger extends MainModelSoft
 
     protected $appends = ['code'];
 
+    public function group()
+    {
+        return $this->belongsTo(TransactionGroup::class, 'group_id');
+    }
+
     public function creator()
     {
         return $this->belongsTo(User::class,'created_by');

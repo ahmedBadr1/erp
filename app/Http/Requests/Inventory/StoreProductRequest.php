@@ -25,20 +25,28 @@ class StoreProductRequest extends FormRequest
         return [
             'name' => 'required|string',
             'short_name'  => 'nullable|string',
-            'code'  => 'required|string|unique:products,code,' .$id ,
+//            'part_number'  => 'required|string|unique:products,part_number,' .$id ,
+//            'sku'  => 'required|string|unique:products,sku,' .$id ,
+            'part_number'  => 'nullable|string',
+            'sku'  => 'nullable|string',
+
+
             'origin_number'  => 'nullable|string',
-            'type'  => 'nullable|string',
-            'price'  =>'required|numeric|gt:0',
+            'location'  => 'nullable|string',
+            'oe_number'  => 'nullable|string',
+
+            's_price'  =>'required|numeric|gt:0',
             'd_price'  => 'nullable|numeric|gt:0',
             'sd_price'  => 'nullable|numeric|gt:0',
             'min_price'  => 'nullable|numeric|gt:0',
             'ref_price'  => 'nullable|numeric|gt:0',
-//            'last_cost'  => 'nullable|numeric|gt:0',
-//            'avg_cost'  => 'required|string',
-            'first_cost'  =>  'nullable|numeric|min:0',
+            'last_cost'  => 'nullable|numeric|gt:0',
+            'avg_cost'  => 'required|string',
+            'fifo'  =>  'nullable|numeric|min:0',
+            'lifo'  =>  'nullable|numeric|min:0',
             'profit_margin'  =>  'nullable|numeric|min:0',
             'warranty'  => 'nullable|string',
-            'expire_date'  => 'nullable|string',
+            'valid_to'  => 'nullable|string',
             'barcode'  => 'nullable|string',
             'hs_code'  => 'nullable|string',
             'batch_number'  => 'nullable|string',
@@ -55,14 +63,19 @@ class StoreProductRequest extends FormRequest
             'can_be_purchased' => 'required|boolean',
             'returnable' => 'required|boolean',
             'active' => 'required|boolean',
-            'inv_category_id'  => 'nullable|exists:inv_categories,id',
+            'product_category_id'  => 'nullable|exists:product_categories,id',
             'warehouse_id'  => 'nullable|exists:warehouses,id',
             'taxes'  => 'nullable|array',
             'taxes.*'  => 'nullable|exists:taxes,id',
-            'unit_id' => 'required|numeric|exists:units,id',
+            'unit_id' => 'nullable|numeric|exists:units,id',
+            'unit_group_id' => 'nullable|numeric|exists:unit_groups,id',
             'brand_id'  => 'nullable|numeric|exists:brands,id',
-            'supplier_id'  => 'nullable|numeric|exists:suppliers,id',
+            'suppliers.*'  =>'nullable|exists:accounts,id',
             'user_id'  => 'nullable|numeric|exists:users,id',
+            'tags'  => 'nullable|array',
+            'tags.*' => 'nullable|string',
+
+
         ];
     }
 

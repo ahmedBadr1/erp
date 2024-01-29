@@ -36,7 +36,7 @@ class Account extends MainModelSoft
 
     public function group()
     {
-        return $this->belongsTo(GroupAccount::class, 'group_account_id');
+        return $this->belongsTo(AccountGroup::class, 'group_account_id');
     }
 
     public function relatedAccounts()
@@ -113,7 +113,11 @@ class Account extends MainModelSoft
                 $model->account_type_id = $node->account_type_id;
             }
             $type = AccountType::withCount('accounts')->whereId($model->account_type_id)->first();
-            $model->type_code = $type->code . ((int)$type->accounts_count + 1);
+            if (isset($type->code) && in_array($type->code,['I'])){
+                $model->type_code = ((int)$type->accounts_count + 1);
+            }else{
+                $model->type_code = $type->code . ((int)$type->accounts_count + 1);
+            }
         });
     }
 }

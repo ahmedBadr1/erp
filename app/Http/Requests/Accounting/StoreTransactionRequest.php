@@ -25,11 +25,10 @@ class StoreTransactionRequest extends FormRequest
         return [
             'type' => 'required|in:CI,CO,JE',
             'treasury' => 'required_if:type,CI,CO|exists:accounts,code',
-            'je_code' => 'nullable|string',// exists:ledger,code
             'due' => 'nullable|date',
             'currency_id' => 'required|exists:currencies,id',
             'responsible' => 'required|exists:users,id',
-            'document_no' => 'nullable|string',
+            'paper_ref' => 'nullable|string',
             'accounts' => 'required|array',
             'accounts.*.code' => ['required', 'exists:accounts,code',],
             'accounts.*.costCenter.code' => ['nullable', 'exists:cost_centers,code',],

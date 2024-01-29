@@ -5,9 +5,9 @@ namespace Database\Factories\Accounting;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Accounting\GroupAccount>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Accounting\Installment>
  */
-class GroupAccountFactory extends Factory
+class InstallmentFactory extends Factory
 {
     /**
      * Define the model's default state.

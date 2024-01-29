@@ -14,9 +14,13 @@ return new class extends Migration
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code')->nullable();
             $table->string('type')->nullable();
-            $table->string('group');
+            $table->string('comment')->nullable();
+            $table->tinyInteger('order')->nullable();
             $table->double('conversion_factor');
+            $table->foreignIdFor(\App\Models\Inventory\UnitGroup::class)->nullable();
+            $table->boolean('primary')->default(false);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

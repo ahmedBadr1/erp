@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
+            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
             $table->float('ex_rate')->nullable();
             $table->foreignId('created_by')->constrained('users')->onUpdate('cascade');

@@ -2,7 +2,9 @@
 
 namespace App\Traits;
 
-  trait {{class}}
-  {
-   // Trait Methods
-  }
+trait {{class}}
+{
+   // public function (){
+   //
+   //}
+}

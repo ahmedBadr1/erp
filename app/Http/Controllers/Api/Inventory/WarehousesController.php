@@ -9,7 +9,7 @@ use App\Http\Resources\Inventory\WarehouseCollection;
 use App\Http\Resources\Inventory\WarehouseResource;
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
-use App\Models\Inventory\InvCategory;
+use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
@@ -66,7 +66,7 @@ class WarehousesController extends ApiController
 
     public function create()
     {
-        $categories = InvCategory::pluck('name', 'id')->toArray();
+        $categories = ProductCategory::pluck('name', 'id')->toArray();
         $warehouses = Warehouse::pluck('name', 'id')->toArray();
         $units = Unit::pluck('name', 'id')->toArray();
         $brands = Brand::pluck('name', 'id')->toArray();
