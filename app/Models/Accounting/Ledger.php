@@ -13,7 +13,7 @@ class Ledger extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['amount', 'description','due','currency_id','ex_rate','created_by','edited_by','responsible_id'];
+    protected $fillable = ['amount', 'note','due','currency_id','ex_rate','created_by','edited_by','responsible_id', 'posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
 

@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class SalesSeeder extends Seeder
@@ -12,7 +11,7 @@ class SalesSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Crm\Client::factory(3)->create();
+//        \App\Models\Sales\Client::factory(3)->create(); // ACCOUNT WILL CREATE IT
         \App\Models\Crm\Action::factory(10)->create();
     }
 }

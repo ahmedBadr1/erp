@@ -11,6 +11,8 @@ class TransactionGroup extends MainModel
 {
     public $timestamps = false ;
 
+    protected $fillable = ['created_by'];
+
     public function ledgers()
     {
         return $this->hasMany(Ledger::class,'group_id');

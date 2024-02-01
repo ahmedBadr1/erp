@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('discount',15,2)->default(0);
             $table->decimal('total',15,2);
 
-            $table->foreignIdFor(\App\Models\Crm\Client::class);
+            $table->foreignIdFor(\App\Models\Sales\Client::class);
             $table->foreignIdFor(\App\Models\System\Status::class);
 
             $table->integer('parent_id')->default(0);

@@ -7,8 +7,10 @@ use App\Enums\ProductECodeEnum;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Inventory\StoreProductRequest;
 use App\Http\Requests\ListRequest;
+use App\Http\Resources\Inventory\ProductCategoryResource;
 use App\Http\Resources\Inventory\ProductCollection;
 use App\Http\Resources\Inventory\ProductResource;
+use App\Http\Resources\NameResource;
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
 use App\Models\Inventory\ProductCategory;
@@ -25,7 +27,7 @@ use App\Services\Inventory\ProductCategoryService;
 use App\Services\Inventory\ProductService;
 use App\Services\Inventory\UnitService;
 use App\Services\Inventory\WarehouseService;
-use App\Services\Purchase\SupplierService;
+use App\Services\Purchases\SupplierService;
 use App\Services\System\GroupService;
 use App\Services\System\TagService;
 use App\Services\System\TaxService;
@@ -86,15 +88,27 @@ class ProductsController extends ApiController
        return $this->resourceResponse(new ProductCollection($products));
     }
 
-    public function list(Request $request)
+    public function list(ListRequest $request)
     {
-        if (auth('api')->user()->cannot('inventory.products.index')) {
-            return $this->deniedResponse();
+        if (auth('api')->user()->cannot('purchases.suppliers.index')) {
+            return $this->deniedResponse(null, null, 403);
         }
-        $products = Product::active()->pluck('name', 'id')->toArray();
-        return $this->successResponse(['products' => $products]);
+        if ($request->has("keywords")) {
+            $products = $this->service->search($request->get("keywords"))->limit(5)->get();
+        }else{
+            $products = $this->service->all(['id','name']);
+        }
+        return $this->successResponse(['products' => NameResource::collection($products)]);
     }
 
+    public function tree(Request $request)
+    {
+        if (auth('api')->user()->cannot('accounting.accounts.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        $tree = (new ProductCategoryService())->tree(null, ['products'], ['children']);
+        return $this->successResponse(ProductCategoryResource::collection($tree));
+    }
     public function create(){
         $categories = (new ProductCategoryService())->all(['name', 'id']);
         $warehouses = (new WarehouseService())->all(['name', 'id']);
@@ -123,13 +137,9 @@ class ProductsController extends ApiController
     }
      public function store(StoreProductRequest $request)
         {
-            try {
-                $res = (new ProductService())->store($request->validated());
-                if ($res !== true){
-                    return $this->errorResponse($res, 409);
-                }
-            } catch (Exception $e) {
-                return $this->errorResponse($e->getMessage(), 409);
+            $res = $this->service->store($request->validated());
+            if ($res !== true) {
+                return $this->errorResponse($res, 409);
             }
 
             return $this->successResponse(null, __('message.created', ['model' => __('Product')]));

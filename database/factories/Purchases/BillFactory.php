@@ -28,10 +28,10 @@ class BillFactory extends Factory
 
         $grossTotal = $this->faker->numberBetween(10,1000) ;
         $discounts = [1,5,10,15,20,25,30];
-        $discount =  $this->faker->boolean(50) ? ($grossTotal / Arr::random($discounts)) : 0 ;
+        $discount =  $this->faker->boolean(80) ? ($grossTotal / Arr::random($discounts)) : 0 ;
         $subtotal = $grossTotal - $discount ;
         $taxes = [0.01,0.1,0.14];
-        $tax =  $this->faker->boolean(30) ? ($subtotal *  Arr::random($taxes))  : 0;
+        $tax =  $this->faker->boolean(100) ? ($subtotal *  Arr::random($taxes))  : 0;
         $date = $this->faker->dateTimeThisYear();
         return [
 //            'account_id' => Account::all()->random()->id,
@@ -43,8 +43,8 @@ class BillFactory extends Factory
             'tax_inclusive' => $this->faker->numberBetween(1.1,3.7),
 //            'code' =>$this->faker->numerify,
             'paper_ref' =>$this->faker->numerify,
-            'billed_at' => $date,
-            'due_at' => Carbon::parse($date)->addDays(rand(0,14)),
+            'date' => $date,
+            'deliver_at' => Carbon::parse($date)->addDays(rand(0,14)),
             'responsible_id' => User::all()->random()->id,
             'paid' => rand(0, 1),
             'gross_total' => $grossTotal,

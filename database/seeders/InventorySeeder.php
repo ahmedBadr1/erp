@@ -19,11 +19,8 @@ class InventorySeeder extends Seeder
      */
     public function run(): void
     {
-        Warehouse::factory()->create([
-            'name' => 'main',
-            'type' => 'materials',
-        ]);
-//        Warehouse::factory()->create();
+
+//        Warehouse::factory()->create(); // ACCOUNT WILL CREATE IT
 
         ProductCategory::factory()->create([
             'name' => 'main'

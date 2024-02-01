@@ -18,7 +18,7 @@ class PurchasesSeeder extends Seeder
      */
     public function run(): void
     {
-//        Supplier::factory(2)->create();
+//        Supplier::factory(2)->create(); // ACCOUNT WILL CREATE IT
 //        Bill::factory(10)->create()->each(function ($bill){
 //            $bill->items()->saveMany(Item::factory(rand(2,5))->create());
 //        });
@@ -46,12 +46,10 @@ class PurchasesSeeder extends Seeder
             $items =  Item::factory(rand(2,5))->create([
                 'bill_id' => $bill->id,
                 'warehouse_id' => $warehouseId ,
-                'transaction_id' =>$transaction->id ,
             ]);
 
             AccountingSeeder::seedType('CO',$group->id,$treasuryId,$supplierId,$bill->total);
             AccountingSeeder::seedPI('PI',$group->id,$warehouseId,$supplierId,$bill->total,$bill->sub_total,$bill->tax_total);
-
 
 //            dd($items->pluck('id'));
         }

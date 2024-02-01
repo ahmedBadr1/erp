@@ -3,6 +3,7 @@
 namespace App\Models\Inventory;
 
 use App\Models\Accounting\Tax;
+use App\Models\Accounting\Transaction;
 use App\Models\MainModelSoft;
 use App\Models\User;
 use Spatie\Activitylog\LogOptions;
@@ -66,6 +67,11 @@ class Product extends MainModelSoft
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class, 'product_transaction')->withPivot('quantity','price');
     }
 
     public function getActivitylogOptions(): LogOptions

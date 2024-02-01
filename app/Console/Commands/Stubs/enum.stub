@@ -1,8 +1,12 @@
 <?php
 namespace App\Enums;
 
+use App\Traits\EnumOptions;
+use App\Traits\EnumValues;
+
 enum {{class}} :string
 {
+    use EnumValues , EnumOptions ;
 {{values}}
 
     /**

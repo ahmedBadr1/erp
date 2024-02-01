@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('name');
 //            $table->string('code')->unique();
-            $table->string('phone');
-            $table->string('code');
+            $table->string('phone')->nullable();
+            $table->string('code')->nullable();
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('type')->nullable();
             $table->string('image')->nullable();
-            $table->foreignIdFor(\App\Models\System\Status::class);
+            $table->foreignIdFor(\App\Models\System\Status::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Account::class);
             $table->dateTime('last_action_at')->nullable();
             $table->timestamps();

@@ -3,8 +3,7 @@
 namespace Database\Factories\Crm;
 
 use App\Models\Crm\Action;
-use App\Models\Employee\Employee;
-use App\Models\Crm\Client;
+use App\Models\Sales\Client;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

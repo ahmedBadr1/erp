@@ -2,14 +2,9 @@
 
 namespace App\Services\Accounting;
 
+use App\Enums\TransactionTypeGroups;
 use App\Exports\UsersExport;
-use App\Models\Accounting\Account;
-use App\Models\Accounting\Entry;
-use App\Models\Accounting\Ledger;
-use App\Models\Accounting\Node;
 use App\Models\Accounting\Transaction;
-use App\Models\Crm\Client;
-use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
@@ -125,39 +120,49 @@ class TransactionService extends MainService
                 ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createTransaction(string $typeGroup,string $type, int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    public function createTransaction(TransactionTypeGroups $typeGroup,string $type,int $groupId, float $amount, int $ledger_id = null, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
 
         return Transaction::create([
+            'group_id' => $groupId,
             'type_group' => $typeGroup,
             'type' => $type,
             'amount' => $amount,
             'ledger_id' => $ledger_id,
             'first_party_id' => $first_party_id,
             'second_party_id' => $second_party_id,
-            'description' => $description,
-            'due' => $due,
-            'paper_ref' => $paper_ref,
-            'document_no' => $document_no,
+            'note' => $note ?? null,
+            'due' => $due ?? null,
+            'paper_ref' => $paper_ref ?? null,
             'responsible' => $user_id ?? auth()->id(),
             'created_by' => auth()->id(),
             'system' => $system,
         ]);
     }
 
-    public function createCI(int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    public function createCI(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null,  $system = 1)
     {
-        return $this->createTransaction('acc','CI', $amount, $ledger_id, $first_party_id, $second_party_id, $due, $description, $user_id, $paper_ref, $document_no, $system);
+        return $this->createTransaction(TransactionTypeGroups::ACC,'CI',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
     }
 
-    public function createCO(int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    public function createCO(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction('acc','CO', $amount, $ledger_id, $first_party_id, $second_party_id, $due, $description, $user_id, $paper_ref, $document_no, $system);
+        return $this->createTransaction(TransactionTypeGroups::ACC,'CO',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
     }
 
-    public function createSO(int $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    public function createSO(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction('acc','SO', $amount, $ledger_id, $first_party_id, $second_party_id, $due, $description, $user_id, $paper_ref, $document_no, $system);
+        return $this->createTransaction(TransactionTypeGroups::ACC,'SO',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
+    }
+
+    public function createRS(int $groupId,float $amount,  int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    {
+        return $this->createTransaction(TransactionTypeGroups::INV,'RS',$groupId, $amount, null, $first_party_id, $second_party_id, $due, $description, $user_id, $paper_ref, $system);
+    }
+
+    public function createPI(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    {
+        return $this->createTransaction(TransactionTypeGroups::ACC,'PI',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
     }
 
     public function update($transaction, array $data)

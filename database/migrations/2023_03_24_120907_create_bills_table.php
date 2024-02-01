@@ -20,6 +20,8 @@ return new class extends Migration
 
 //            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
 //            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
+            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
+
             $table->foreignIdFor(\App\Models\Inventory\Branch::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class);
             $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable(); // 3
@@ -28,8 +30,8 @@ return new class extends Migration
 
 
             $table->string('paper_ref')->nullable();
-            $table->dateTime('billed_at');
-            $table->dateTime('due_at')->nullable();
+            $table->dateTime('date');
+            $table->dateTime('deliver_at')->nullable();
 
             $table->boolean('tax_exclusive');
             $table->boolean('tax_inclusive');
@@ -43,7 +45,7 @@ return new class extends Migration
             $table->decimal('tax_total',15,2)->comment("Tax value")->default(0);
             $table->decimal('total',15,2)->comment("Sub Total after tax");
             $table->text('note')->nullable();
-
+            $table->boolean('canceled')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

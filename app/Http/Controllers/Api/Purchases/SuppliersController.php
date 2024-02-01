@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api\Purchases;
 
+use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\Purchases\StoreVendorRequest;
 use App\Http\Requests\System\StoreContact;
+use App\Http\Resources\NameResource;
 use App\Http\Resources\Purchases\ShowVendorResource;
 use App\Http\Resources\Purchases\SuppliersResource;
 use App\Models\Accounting\Account;
@@ -17,24 +19,37 @@ use App\Models\System\Contact;
 use App\Models\System\Country;
 use App\Models\System\Location;
 use App\Models\System\State;
+use App\Services\Purchases\SupplierService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class SuppliersController extends Controller
+class SuppliersController extends ApiController
 {
     public function __construct()
     {
-        $this->middleware('permission:purchases');
+        parent::__construct();
+        $this->class = "suppliers";
+        $this->table = "suppliers";
+        $this->middleware('auth');
+        $this->middleware('permission:purchases.suppliers.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:purchases.suppliers.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:purchases.suppliers.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:purchases.suppliers.delete', ['only' => ['destroy']]);
+
+        $this->service = new SupplierService();
     }
 
     public function list(ListRequest $request)
     {
-        $input = $request->all();
-        //
-        return  SuppliersResource::collection( Supplier::search($input['keywords'])
-//            ->with('locations','employee')
-//            ->orderBy($input['orderBy'], $input['orderDesc'] ? 'desc' : 'asc')
-            ->paginate($input['limit']));
+        if (auth('api')->user()->cannot('purchases.suppliers.index')) {
+            return $this->deniedResponse(null, null, 403);
+        }
+        if ($request->has("keywords")) {
+            $suppliers = $this->service->search($request->get("keywords"))->limit(5)->get();
+        }else{
+            $suppliers = $this->service->all(['id','name', 'code']);
+        }
+        return $this->successResponse(['suppliers' => NameResource::collection($suppliers)]);
     }
 
     public function create(){

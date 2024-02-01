@@ -4,10 +4,7 @@ namespace App\Services\Inventory;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Accounting\Entry;
-use App\Models\Crm\Client;
 use App\Models\Inventory\Product;
-use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use App\Services\System\TagService;
@@ -31,7 +28,7 @@ class ProductService extends MainService
         return empty($search) ? Product::query()
             : Product::query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('short_name', 'like', '%' . $search . '%')
-                ->orWhere('code', 'like', '%' . $search . '%')
+                ->orWhere('part_number', 'like', '%' . $search . '%')
                 ->orWhere('origin_number', 'like', '%' . $search . '%')
                 ->orWhere('barcode', 'like', '%' . $search . '%')
                 ->orWhere('hs_code', 'like', '%' . $search . '%')

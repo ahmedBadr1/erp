@@ -5,12 +5,7 @@ namespace App\Services\Accounting;
 use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
-use App\Models\Accounting\Entry;
 use App\Models\Accounting\Node;
-use App\Models\Crm\Client;
-use App\Models\System\Address;
-use App\Models\System\Contact;
-use App\Models\User;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use App\Services\System\AccessService;
@@ -24,22 +19,25 @@ use Maatwebsite\Excel\Facades\Excel;
 class AccountService extends MainService
 {
 
-    public function all($fields = null, $type_id = null,$node_id = null)
+    public function all($fields = null, $type_id = null, $node_id = null)
     {
         $data = $fields ?? (new Account())->getFillable();
 
-        $query =  Account::query() ;
-        if (!empty($node_id)){
+        $query = Account::query();
+        if (!empty($node_id)) {
             $node = Node::active()->with('descendants')->whereId($node_id)->first();
-            $nodeIds = collect([$node->id,...$node->descendants->pluck('id')]);
-            $query->whereIn('node_id',$nodeIds);
+            $nodeIds = collect([$node->id, ...$node->descendants->pluck('id')]);
+            $query->whereIn('node_id', $nodeIds);
         }
-        if (is_int($type_id)){
-            $query->where('account_type_id', $type_id);
-        }else{
-            $query->whereHas('type',fn($q)=>$q->where('code', $type_id));
 
+        if ($type_id) {
+            if (is_int($type_id)) {
+                $query->where('account_type_id', $type_id);
+            } else {
+                $query->whereHas('type', fn($q) => $q->where('code', $type_id));
+            }
         }
+
         return $query->get($data);
     }
 
@@ -70,7 +68,7 @@ class AccountService extends MainService
             DB::transaction(function () use ($data, $code) {
                 $inputs = [
                     'name' => $data['name'],
-                    'description' => $data['description'] ,
+                    'description' => $data['description'],
                     'credit_limit' => $data['credit_limit'] ?? null,
                     'debit_limit' => $data['debit_limit'] ?? null,
                     'cost_center_id' => $data['cost_center_id'] ?? null,
@@ -80,7 +78,7 @@ class AccountService extends MainService
                 ];
                 if ($code) {
                     $account = Account::where('code', $code)->firstOrFail();
-                    $inputs['active'] = $data['active'] ?? $account->active ;
+                    $inputs['active'] = $data['active'] ?? $account->active;
                     $account->update($inputs);
                 } else {
                     $node = Node::isLeaf()->withCount('accounts')->whereId($data['node_id'])->first();
@@ -93,7 +91,7 @@ class AccountService extends MainService
                     ]);
                 }
 
-                if (isset($data['contact']) ) {
+                if (isset($data['contact'])) {
                     (new ContactService())->store($data['contact'], $account->id, 'account');
                 }
 
@@ -101,13 +99,13 @@ class AccountService extends MainService
                     (new AddressService())->store($data['address'], $account->id, 'account');
                 }
                 if (isset($data['tags'])) {
-                    (new TagService())->sync($data['tags'] , $account,'account');
+                    (new TagService())->sync($data['tags'], $account, 'account');
                 }
-                if (isset($data['groups']) ) {
-                    (new AccessService())->sync($data['groups'], 'group' ,$account, 'account', );
+                if (isset($data['groups'])) {
+                    (new AccessService())->sync($data['groups'], 'group', $account, 'account',);
                 }
-                if (isset($data['users']) ) {
-                    (new AccessService())->sync( $data['users'] , 'user' , $account, 'account',);
+                if (isset($data['users'])) {
+                    (new AccessService())->sync($data['users'], 'user', $account, 'account',);
                 }
 
             });
@@ -129,11 +127,22 @@ class AccountService extends MainService
     public function updateBalance($account_id)
     {
         try {
-            $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
-            $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
-            $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
-            $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
-            $account->save();
+            if (is_array($account_id)) {
+                foreach ($account_id as $id) {
+                    $accounts = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($id)->get();
+                    $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
+                    $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
+                    $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+                    $account->save();
+                }
+            } else {
+                $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
+                $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
+                $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
+                $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+                $account->save();
+            }
+
         } catch (Exception $e) {
             return $e->getMessage();
         }

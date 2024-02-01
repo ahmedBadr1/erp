@@ -4,8 +4,7 @@ namespace App\Services\Sales;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Crm\Client;
-use App\Models\Purchases\Supplier;
+use App\Models\Sales\Client;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;

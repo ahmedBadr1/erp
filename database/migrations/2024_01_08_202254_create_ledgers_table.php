@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ledgers', function (Blueprint $table) {
             $table->id();
             $table->decimal('amount',15,2);
-            $table->text('description')->nullable();
+            $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();

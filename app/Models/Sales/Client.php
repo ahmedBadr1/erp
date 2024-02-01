@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Models\Crm;
+namespace App\Models\Sales;
 
 use App\Models\MainModelSoft;
-use App\Models\Sales\Invoice;
-use App\Models\Sales\Revenue;
 use App\Models\System\Country;
 use App\Models\System\State;
 use App\Models\System\Status;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Client extends MainModelSoft
 {

@@ -71,6 +71,11 @@ class ConstantSeeder extends Seeder
                 'slug' => 'seller',
                 'guard_name' => 'web',
             ],
+            [
+                'name' => 'buyer',
+                'slug' => 'buyer',
+                'guard_name' => 'web',
+            ],
         ];
 
         foreach ($roles as $key => $value) {
@@ -570,6 +575,14 @@ class ConstantSeeder extends Seeder
             'password' => $password,
         ]);
         $user3->assignRole(Role::where('name', 'seller')->value('id'));
+
+        $user3 = \App\Models\User::factory()->create([
+            'name' => ["first"=>'buyer' ,"last"=>'person'],
+            'username' => 'buyer',
+            'email' => 'buyer@erp.com',
+            'password' => $password,
+        ]);
+        $user3->assignRole(Role::where('name', 'buyer')->value('id'));
     }
 
 public  function seedGroups() :void

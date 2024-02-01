@@ -17,7 +17,6 @@ class CostCenterNodeResource extends JsonResource
         return [
             'code' => $this->code,
             'name' => $this->name,
-            'credit' => $this->credit,
             'parent_id' => $this->parent_id,
             'active' => $this->active,
             'children_count' => $this->whenCounted('children'),

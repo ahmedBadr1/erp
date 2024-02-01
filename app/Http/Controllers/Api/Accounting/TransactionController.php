@@ -69,11 +69,10 @@ class TransactionController extends ApiController
     public function store(StoreTransactionRequest $request)
     {
         $data = $request->validated();
-
         if ($data['type'] == 'CI') {
-            $e = $this->service->cashin($data);
+            $e = $this->service->cashin($data['treasury'],$data['accounts'],$data['amount'],$data['currency_id'],$data['due']?? null,$data['note']?? null,$data['paper_ref']?? null,$data['responsible']?? null,0);
         }elseif($data['type'] == 'CO'){
-            $e = $this->service->cashout($data);
+            $e = $this->service->cashout($data['treasury'],$data['accounts'],$data['amount'],$data['currency_id'],$data['due']?? null,$data['note']?? null,$data['paper_ref']?? null,$data['responsible']?? null,0);
         }else{
             $e = $this->service->jouranlEntry($data);
         }

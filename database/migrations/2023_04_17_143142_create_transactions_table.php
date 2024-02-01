@@ -17,9 +17,8 @@ return new class extends Migration
             $table->decimal('amount',15,2);
             $table->string('type_group')->index();
             $table->string('type')->index();
-            $table->text('description')->nullable();
+            $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
-            $table->string('document_no')->nullable();
             $table->dateTime('due');
             $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class)->nullable();

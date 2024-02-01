@@ -1,42 +1,49 @@
 <?php
 
-namespace App\Services\Purchase;
+namespace App\Services\Purchases;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Inventory\Product;
+use App\Models\Inventory\Item;
 use App\Models\Purchases\Supplier;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
-class SupplierService extends MainService
+class ItemService extends MainService
 {
 
     public function all($fields = null,$active=1)
     {
-        $data = $fields ?? (new Supplier())->getFillable();
+        $data = $fields ?? (new Item())->getFillable();
 
-        return Supplier::active($active)->get($data);
+        return Item::active($active)->get($data);
     }
 
 
     public function search($search)
     {
         $search = trim($search);
-        return empty($search) ? Supplier::query()
-            : Supplier::query()->where('name', 'like', '%' . $search . '%')
-                ->orWhere('business_name', 'like', '%' . $search . '%')
-                ->orWhere('code', 'like', '%' . $search . '%');
-//                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+        return empty($search) ? Item::query()
+            : Item::query()->where('name', 'like', '%' . $search . '%')
+                ->orWhere('sku', 'like', '%' . $search . '%')
+                ->orWhereHas('product', fn($q) => $q->where('code', 'like', '%' . $search . '%'));
     }
 
-    public function store(array $data)
+    public function store(int $billId ,int $productId ,int $quantity,float$price,string $comment = null,int $unitId = null,$expireAt = null)
     {
         try {
-            $Supplier = Supplier::create($data);
-            return $Supplier;
+            $Item = Item::create([
+                'bill_id'=> $billId,
+                'product_id'=> $productId,
+                'quantity'=> $quantity,
+                'price'=> $price,
+                'comment' => $comment,
+                'unit_id' => $unitId,
+                'expire_at' => $expireAt
+            ]);
+            return $Item;
         } catch (Exception $e) {
             return $e->getMessage();
         }

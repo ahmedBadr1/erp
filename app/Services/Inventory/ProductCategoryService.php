@@ -21,6 +21,19 @@ class ProductCategoryService extends MainService
         return ProductCategory::active($active)->get($data);
     }
 
+    public function tree($fields = null, $relations = [], $countRelations = [])
+    {
+        $data = $fields ?? (new ProductCategory)->getFillable();
+        $query = ProductCategory::tree();
+        if (!empty($relations )) {
+            $query->with(...$relations);
+        }
+        if (!empty($countRelations )) {
+            $query->withCount(...$countRelations);
+        }
+        return $query->get()->toTree();
+    }
+
 
     public function search($search)
     {

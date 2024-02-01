@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 class Bill extends MainModelSoft
 {
 
-    protected $fillable = ['code','warehouse_id','supplier_id', 'status_id', 'billed_at', 'due_at','paper_ref','group_id'
-        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note' ,'responsible_id','created_by','edited_by'];
+    protected $fillable = ['code','warehouse_id','supplier_id', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
+        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_exclusive','tax_inclusive' ,'canceled' ,'responsible_id','created_by','edited_by'];
 
     protected $casts = [
         'billed_at' => 'date',

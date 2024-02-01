@@ -3,10 +3,9 @@
 namespace App\Livewire\Clients;
 
 use App\Livewire\Basic\BasicTable;
-use App\Models\Crm\Client;
+use App\Models\Sales\Client;
 use App\Services\ClientService;
 use Livewire\Attributes\On;
-use Livewire\Component;
 
 class ClientsTable extends BasicTable
 {

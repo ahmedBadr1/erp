@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Exports\UsersExport;
-use App\Models\Crm\Client;
-use App\Models\User;
+use App\Models\Sales\Client;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 

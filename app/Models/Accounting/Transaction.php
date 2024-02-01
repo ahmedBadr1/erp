@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\Inventory\Product;
 use App\Models\MainModelSoft;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,8 +15,8 @@ class Transaction extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['code', 'amount','type_group', 'type', 'description', 'due', 'paper_ref', 'document_no',
-        'first_party_id','second_party_id',
+    protected $fillable = ['code', 'amount','type_group', 'type', 'note', 'due', 'paper_ref',
+        'first_party_id','second_party_id', 'group_id',
         'ledger_id', 'responsible_id','created_by','edited_by', 'posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
@@ -36,14 +37,13 @@ class Transaction extends MainModelSoft
         'IO', // Issue Offering to decrease items Form warehouse
         'RS', // Receive Supply to increase items To warehouse
         'IR',  // Issue Returns from warehouse to another
+        'RR',  // Receive Returns
         'IT',  // Issue Transfer from warehouse to another
         'RT',  // Receive Transfer from another warehouse
-        'RR',  // Receive Returns
 
         // 'SO', // sales order only View For Invoice
         'SI', // sales invoice Code For invoice
         'SR', // sales return Code to change later
-
 
     ];
 
@@ -83,7 +83,10 @@ class Transaction extends MainModelSoft
         return $this->belongsTo(User::class, 'responsible_id');
     }
 
-
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_transaction')->withPivot('quantity','price');
+    }
 
 
     public function getActivitylogOptions(): LogOptions

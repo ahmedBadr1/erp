@@ -2,9 +2,10 @@
 
 namespace App\Models\Accounting;
 
-use App\Models\Crm\Client;
+use App\Models\Inventory\Warehouse;
 use App\Models\MainModelSoft;
 use App\Models\Purchases\Supplier;
+use App\Models\Sales\Client;
 use App\Models\System\Status;
 use App\Models\User;
 use Spatie\Activitylog\LogOptions;
@@ -49,6 +50,8 @@ class Account extends MainModelSoft
         return $this->belongsTo(Currency::class);
     }
 
+
+
     public function status()
     {
         return $this->belongsTo(Status::class);
@@ -69,9 +72,14 @@ class Account extends MainModelSoft
         return $this->hasone(Client::class);
     }
 
+    public function warehouse()
+    {
+        return $this->hasOne(Warehouse::class);
+    }
+
     public function supplier()
     {
-        return $this->hasone(Supplier::class);
+        return $this->hasOne(Supplier::class);
     }
 
     public function taxes()
@@ -103,21 +111,50 @@ class Account extends MainModelSoft
         parent::boot();
         static::creating(function ($model) {
             $node = Node::withCount('children', 'accounts', 'ancestors')->find($model->node_id);
-
-            if ($node->children_count > 0) {
-                return false;
-            }
             $model->code = $node->code . str_pad(((int)$node->children_count + $node->accounts_count + 1), 4, '0', STR_PAD_LEFT);
             $model->credit = $node->credit;
             if (!$model->account_type_id) {
-                $model->account_type_id = $node->account_type_id;
+                if (isset($node->account_type_id)){
+                    $model->account_type_id = $node->account_type_id ;
+
+                }
+                $type = AccountType::withCount('accounts')->whereId($model->account_type_id)->first();
+                if ($type){
+                    if (isset($type->code) && $type->code == 'TR'){
+                        $model->type_code = $type->code . ((int)$type->accounts_count + 1);
+                    }else{
+                        $model->type_code = ((int)$type->accounts_count + 1) ;
+                    }
+                }
             }
-            $type = AccountType::withCount('accounts')->whereId($model->account_type_id)->first();
-            if (isset($type->code) && in_array($type->code,['I'])){
-                $model->type_code = ((int)$type->accounts_count + 1);
-            }else{
-                $model->type_code = $type->code . ((int)$type->accounts_count + 1);
-            }
+
         });
+
+        static::created(function ($model) {
+            switch ($model->type?->code){
+                case 'I' :
+                    Warehouse::create([
+                            'name' => $model->name,
+                        'account_id' => $model->id
+                        ]);
+                    break;
+                case 'AP' :
+                    Supplier::create([
+                        'name' => $model->name,
+                        'account_id' => $model->id
+                    ]);
+                    break;
+                case "AR" :
+                    Client::create([
+                        'name' => $model->name,
+                        'account_id' => $model->id
+                    ]);
+                    break;
+                default:
+            }
+
+
+        });
+
     }
 }

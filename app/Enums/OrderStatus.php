@@ -21,4 +21,13 @@ enum OrderStatus :string
         return $array;
     }
 
+    public static function next($status): OrderStatus
+    {
+        return match ($status) {
+            'unpaid' => self::PARTIALS,
+            'partials' => self::PAID,
+            'paid' =>null,
+        };
+    }
+
 }

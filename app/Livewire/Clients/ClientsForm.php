@@ -3,11 +3,10 @@
 namespace App\Livewire\Clients;
 
 use App\Livewire\Basic\BasicForm;
-use App\Models\Crm\Client;
+use App\Models\Sales\Client;
 use App\Models\System\Status;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Rule;
-use Livewire\Component;
 use Livewire\WithFileUploads;
 
 class ClientsForm extends BasicForm
