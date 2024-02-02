@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
             $table->boolean('credit');
-            $table->decimal('amount',15,2);
+            $table->decimal('amount',15,4);
             $table->foreignIdFor(\App\Models\Accounting\Account::class);
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class);
             $table->foreignIdFor(\App\Models\Accounting\CostCenter::class)->nullable();

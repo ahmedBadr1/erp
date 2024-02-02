@@ -3,6 +3,7 @@
 namespace App\Models\Purchases;
 
 use App\Models\Accounting\Account;
+use App\Models\Accounting\Currency;
 use App\Models\Accounting\Transaction;
 use App\Models\Accounting\TransactionGroup;
 use App\Models\Inventory\Branch;
@@ -17,8 +18,9 @@ use Illuminate\Database\Eloquent\Model;
 class Bill extends MainModelSoft
 {
 
-    protected $fillable = ['code','warehouse_id','supplier_id', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
-        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_exclusive','tax_inclusive' ,'canceled' ,'responsible_id','created_by','edited_by'];
+    protected $fillable = ['code','treasury_id','warehouse_id','supplier_id', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
+        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_exclusive','tax_inclusive' ,'canceled',
+        'currency_id','ex_rate','currency_total','responsible_id','created_by','edited_by'];
 
     protected $casts = [
         'billed_at' => 'date',
@@ -45,15 +47,25 @@ class Bill extends MainModelSoft
     }
     public function supplier()
     {
-        return $this->belongsTo(Account::class,'supplier_id');
+        return $this->belongsTo(Supplier::class,'supplier_id');
     }
     public function warehouse()
     {
-        return $this->belongsTo(Account::class,'warehouse_id');
+        return $this->belongsTo(Warehouse::class,'warehouse_id');
+    }
+
+    public function treasury()
+    {
+        return $this->belongsTo(Account::class,'treasury_id');
     }
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class,'currency_id');
     }
     public function status()
     {
@@ -94,7 +106,7 @@ class Bill extends MainModelSoft
         static::creating(function ($model) {
             if (!$model->code) {
                 $billsCount = Bill::count();
-                $warehouse_code = Account::whereId($model->warehouse_id)->value('type_code');
+                $warehouse_code = Account::whereHas('warehouse',fn($q)=>$q->whereid($model->warehouse_id))->value('type_code');
                 if (!$billsCount) {
                     $model->code = 'PO-'.$warehouse_code . '-' . 1;
                     return;

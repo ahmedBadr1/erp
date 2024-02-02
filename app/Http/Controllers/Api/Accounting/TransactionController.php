@@ -7,14 +7,13 @@ use App\Http\Requests\Accounting\PostingRequest;
 use App\Http\Requests\Accounting\StoreTransactionRequest;
 use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\ListRequest;
+use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\TransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\CostCenter;
-use App\Models\Accounting\Entry;
+use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use App\Services\Accounting\LedgerService;
-use App\Services\Accounting\TransactionService;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -50,8 +49,8 @@ class TransactionController extends ApiController
 
     public function posting(PostingRequest $request)
     {
-        $this->service->post($request->get('ids'),$request->get('posting')) ;
-        return $this->successResponse(null,__(($request->get('posting') ? '' : 'Un ' ) .'Posted Successfully'));
+        $this->service->post($request->get('ids'), $request->get('posting'));
+        return $this->successResponse(null, __(($request->get('posting') ? '' : 'Un ') . 'Posted Successfully'));
     }
 
     public function create()
@@ -62,26 +61,36 @@ class TransactionController extends ApiController
 
     public function show(Request $request, $code)
     {
-        $transaction = Transaction::with('ledger','group.transactions','group.bills','ledger.entries','ledger.entries.account','ledger.entries.costCenter','firstParty','secondParty', 'responsible')->where('code', $code)->firstOrFail();
-        return $this->successResponse(new  TransactionResource($transaction));
+        if (preg_match('/^JE-(\d+)/', $code, $matches)) {
+            $id = $matches[1];
+            $ledger = Ledger::with('transactions','group.invTransactions','group.ledgers', 'group.transactions', 'group.bills', 'entries.account', 'entries.costCenter', 'responsible')->whereId( $id)->firstOrFail();
+            return $this->successResponse(new  LedgerResource($ledger));
+        } else {
+            $transaction = Transaction::with('ledger','group.invTransactions','group.ledgers', 'group.transactions', 'group.bills', 'ledger.entries', 'ledger.entries.account', 'ledger.entries.costCenter', 'firstParty', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
+            return $this->successResponse(new  TransactionResource($transaction));
+        }
     }
 
     public function store(StoreTransactionRequest $request)
     {
         $data = $request->validated();
-        if ($data['type'] == 'CI') {
-            $e = $this->service->cashin($data['treasury'],$data['accounts'],$data['amount'],$data['currency_id'],$data['due']?? null,$data['note']?? null,$data['paper_ref']?? null,$data['responsible']?? null,0);
-        }elseif($data['type'] == 'CO'){
-            $e = $this->service->cashout($data['treasury'],$data['accounts'],$data['amount'],$data['currency_id'],$data['due']?? null,$data['note']?? null,$data['paper_ref']?? null,$data['responsible']?? null,0);
-        }else{
-            $e = $this->service->jouranlEntry($data);
-        }
-        if ($e) {
-            return $e;
-            return $this->errorResponse($e);
-        }
 
-        return $this->successResponse([], 'Transaction created successfully', 201);
+        DB::beginTransaction();
+        try {
+            if ($data['type'] === 'CI') {
+                $e = $this->service->cashin($data['treasury'], $data['accounts'], $data['amount'], $data['currency_id'], $data['due'] ?? null, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible'] ?? null, 0);
+            } elseif ($data['type'] === 'CO') {
+                $e = $this->service->cashout($data['treasury'], $data['accounts'], $data['amount'], $data['currency_id'], $data['due'] ?? null, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible'] ?? null, 0);
+            } else {
+                $e = $this->service->jouranlEntry($data);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
+        }
+        DB::commit();
+
+        return $this->successResponse(null, __('message.created', ['model' => __('Transaction')]), 201);
     }
 
     public function storeType(StoreTransactionTypeRequest $request)

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code');
-            $table->decimal('rate',4,2);
+            $table->decimal('rate',8,4);
             $table->json('scope')->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
             $table->boolean('exclusive')->default(true);

@@ -22,18 +22,19 @@ class ItemFactory extends Factory
      */
     public function definition(): array
     {
-
+$amount = $this->faker->numberBetween(5,300);
         return [
-
             'quantity' => $this->faker->numberBetween(1,200),
             'comment' => $this->faker->text(),
-            'price' => $this->faker->numberBetween(5,300),
+            'price' => $amount,
+            'cost' => $amount,
+
 //            'tax_exclusive' => $this->faker->numberBetween(1,3),
 //            'tax_inclusive' => $this->faker->numberBetween(1.1,3.7),
             'unit_id' => Unit::all()->random()->id,
 //            'cost' => $this->faker->numberBetween(5,200),
 //            'bill_id' => Bill::all()->random()->id,
-//            'product_id' => Product::all()->random()->id,
+            'product_id' => Product::all()->random()->id,
 //            'warehouse_id' => Warehouse::all()->random()->id,
             'user_id' => User::all()->random()->id,
             'expire_at' => $this->faker->dateTimeThisYear(now()->addYear()),

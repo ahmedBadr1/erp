@@ -23,7 +23,7 @@ class StoreBillRequest extends FormRequest
     {
         return [
 
-            'type' => 'required|string',
+            'type' => 'required|string|in:PO',
             'warehouse_id' => 'required|exists:warehouses,id',
             'supplier_id' => 'required|exists:suppliers,id',
             'responsible_id' => 'required|exists:users,id',

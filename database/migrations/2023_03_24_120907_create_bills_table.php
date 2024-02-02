@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->foreignIdFor(\App\Models\Accounting\Account::class,'warehouse_id'); // 1
-            $table->foreignIdFor(\App\Models\Accounting\Account::class,'supplier_id'); // 1
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'treasury_id')->nullable(); // 1
             $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
+            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable(); // 3
+            $table->float('ex_rate')->nullable();
+            $table->decimal('currency_total',15,4)->nullable();
 
-//            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
-//            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
-            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
+
 
             $table->foreignIdFor(\App\Models\Inventory\Branch::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class);
@@ -38,12 +40,12 @@ return new class extends Migration
             $table->boolean('cost_allocation')->default(false);
 
 
-            $table->decimal('paid',15,2)->nullable();
-            $table->decimal('gross_total',15,2)->comment("total Bill Items value and qty");
-            $table->decimal('discount',15,2)->comment("Discount cal to value not percentage")->default(0);
-            $table->decimal('sub_total',15,2)->comment("Gross Total after discount");
-            $table->decimal('tax_total',15,2)->comment("Tax value")->default(0);
-            $table->decimal('total',15,2)->comment("Sub Total after tax");
+            $table->decimal('paid',15,4)->nullable();
+            $table->decimal('gross_total',15,4)->comment("total Bill Items value and qty");
+            $table->decimal('discount',15,4)->comment("Discount cal to value not percentage")->default(0);
+            $table->decimal('sub_total',15,4)->comment("Gross Total after discount");
+            $table->decimal('tax_total',15,4)->comment("Tax value")->default(0);
+            $table->decimal('total',15,4)->comment("Sub Total after tax");
             $table->text('note')->nullable();
             $table->boolean('canceled')->default(false);
             $table->timestamps();

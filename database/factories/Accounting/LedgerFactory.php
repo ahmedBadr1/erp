@@ -19,7 +19,7 @@ class LedgerFactory extends Factory
     {
         return [
             'amount' => $this->faker->numberBetween(10,1000),
-            'description'=> $this->faker->text(),
+            'note'=> $this->faker->text(),
             'due'=> $this->faker->dateTimeThisYear(),
             'responsible_id' => 1,//User::all()->random()->id,
             'created_by' => 1,

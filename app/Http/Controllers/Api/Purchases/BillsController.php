@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Purchases;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Purchases\BillRequest;
 use App\Http\Requests\Purchases\StoreBillRequest;
+use App\Http\Resources\Purchases\BillsResource;
+use App\Models\Purchases\Bill;
 use App\Models\Purchases\Vendor;
 use App\Models\System\Status;
 use App\Services\Accounting\AccountService;
@@ -15,6 +17,8 @@ use App\Services\Inventory\WarehouseService;
 use App\Services\Purchases\BillService;
 use App\Services\System\TaxService;
 use App\Services\UserService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BillsController extends ApiController
 {
@@ -69,13 +73,20 @@ class BillsController extends ApiController
 
     public function store(StoreBillRequest $request)
     {
-
-        $res = $this->service->store($request->validated());
-        if ($res) {
-            return $this->errorResponse($res, 409);
+        DB::beginTransaction();
+        try {
+            $this->service->store($request->validated());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
         }
-
+        DB::commit();
         return $this->successResponse(null, __('message.created', ['model' => __('Purchase Order')]));
+    }
 
+    public function show(Request $request, $code)
+    {
+        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.bills', 'supplier', 'warehouse','treasury', 'currency', 'responsible')->where('code', $code)->firstOrFail();
+        return $this->successResponse(['bill' => new  BillsResource($bill)]);
     }
 }

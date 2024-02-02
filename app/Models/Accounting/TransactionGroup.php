@@ -2,6 +2,7 @@
 
 namespace App\Models\Accounting;
 
+use App\Models\Inventory\InvTransaction;
 use App\Models\MainModel;
 use App\Models\Purchases\Bill;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,12 @@ class TransactionGroup extends MainModel
     {
         return $this->hasMany(Transaction::class,'group_id');
     }
+
+    public function invTransactions()
+    {
+        return $this->hasMany(InvTransaction::class,'group_id');
+    }
+
 
     public function bills()
     {

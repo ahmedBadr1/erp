@@ -15,9 +15,9 @@ class EntryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-//            'id' => $this->id,
-            'credit' => $this->credit,
-            'amount' => $this->amount,
+            'id' => $this->whenNotNull($this->id),
+            'amount' => $this->whenNotNull($this->amount),
+            'credit' => $this->whenNotNull($this->credit),
             'comment' => $this->comment,
             'posted' => $this->post,
             'locked' => $this->locked,

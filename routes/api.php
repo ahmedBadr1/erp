@@ -205,6 +205,7 @@ Route::group(['middleware' => ['json.response']], function () {
                     Route::post('/', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'index']);
                     Route::post('/create', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'create']);
                     Route::post('/store', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'store']);
+                    Route::post('/{code}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'show']);
 
                     Route::patch('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'update']);
                     Route::delete('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'destroy']);
@@ -281,6 +282,22 @@ Route::group(['middleware' => ['json.response']], function () {
                     Route::patch('{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'update'])->name('update');
                     Route::delete('/{warehouse}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'destroy'])->name('destroy');
                 });
+
+                Route::group([
+                    'prefix' => 'transactions',
+                    'as' => 'transactions.',
+                ], function () {
+                    Route::post('/', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'index'])->name('index');
+                    Route::post('/list', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'list'])->name('list');
+                    Route::post('/posting', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'posting'])->name('index');
+
+                    Route::post('/create', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'create'])->name('create');
+                    Route::post('/store', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'store'])->name('store');
+                    Route::post('/store/type', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'storeType'])->name('storeType');
+                    Route::post('/edit/{id}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'edit'])->name('edit');
+                    Route::post('/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'show'])->name('show');
+                });
+
 
 
                 Route::get('/transfer', [\App\Http\Controllers\Admin\Inventory\TransfersController::class, 'posting'])->name('posting');

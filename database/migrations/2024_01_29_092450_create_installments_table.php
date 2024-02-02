@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('installments', function (Blueprint $table) {
             $table->id();
             $table->boolean('credit');
-            $table->decimal('amount',15,2)->nullable();
+            $table->decimal('amount',15,4)->nullable();
             $table->dateTime('due_at')->nullable();
             $table->string('note')->nullable();
             $table->string('paper_ref')->nullable();

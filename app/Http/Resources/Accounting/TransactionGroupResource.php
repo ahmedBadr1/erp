@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Accounting;
 
+use App\Http\Resources\NameResource;
 use App\Http\Resources\Purchases\BillsResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
@@ -19,17 +20,19 @@ class TransactionGroupResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'entries' => EntryResource::collection($this->whenLoaded('entries')),
-            'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
-            'ledgers' => TransactionResource::collection($this->whenLoaded('transactions')),
-            'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
+//            'entries' => EntryResource::collection($this->whenLoaded('entries')),
+            'transactions' => NameResource::collection($this->whenLoaded('transactions')),
+            'invTransactions' => NameResource::collection($this->whenLoaded('invTransactions')),
 
-            'bills' => BillsResource::collection($this->whenLoaded('bills')),
+            'ledgers' => NameResource::collection($this->whenLoaded('ledgers')),
+//            'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
 
 
-            'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
-            'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),
-            'firstCiTransaction' => new TransactionResource($this->whenLoaded('firstCiTransaction')),
+            'bills' => NameResource::collection($this->whenLoaded('bills')),
+
+            'firstTransaction' => new NameResource($this->whenLoaded('firstTransaction')),
+            'lastTransaction' => new NameResource($this->whenLoaded('lastTransaction')),
+            'firstCiTransaction' => new NameResource($this->whenLoaded('firstCiTransaction')),
 
         ];
     }

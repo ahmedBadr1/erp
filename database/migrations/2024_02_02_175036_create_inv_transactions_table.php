@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('inv_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('code');//->index()->unique();
             $table->decimal('amount',15,4);
@@ -19,18 +19,20 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'from_id');
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'to_id')->nullable();
             $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Ledger::class)->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
-            $table->float('ex_rate')->nullable();
-            $table->decimal('currency_total',15,4)->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Account::class,'first_party_id');
-            $table->foreignIdFor(\App\Models\Accounting\Account::class,'second_party_id');
+            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
+            $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
+            $table->foreignIdFor(\App\Models\Sales\Client::class)->nullable();
+            $table->foreignIdFor(\App\Models\Sales\Invoice::class)->nullable();
+
             $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable();
             $table->foreignIdFor(\App\Models\User::class,'created_by');
             $table->foreignIdFor(\App\Models\User::class,'edited_by')->nullable();
-            $table->boolean('posted')->default(false);
-            $table->boolean('locked')->default(false);
+            $table->string('reason')->nullable();
+            $table->dateTime('accepted_at')->nullable();
+            $table->boolean('pending')->default(true);
             $table->boolean('system')->default(true);
             $table->timestamps();
             $table->softDeletes();
@@ -42,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('inv_transactions');
     }
 };

@@ -2,6 +2,12 @@
 
 namespace App\Http\Resources\Purchases;
 
+use App\Http\Resources\Accounting\AccountResource;
+use App\Http\Resources\Accounting\EntryResource;
+use App\Http\Resources\Accounting\LedgerResource;
+use App\Http\Resources\Accounting\TransactionGroupResource;
+use App\Http\Resources\Inventory\WarehouseResource;
+use App\Http\Resources\NameResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,15 +21,26 @@ class BillsResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'code' => $this->code,
-            'vendor' => $this->vendor?->name,
-            'status' => $this->status?->name,
-            'billed_at' => $this->billed_at,
-            'billed' => $this->billed_at?->diffForHumans(),
-            'due' => $this->due_at?->diffForHumans(),
-            'due_at' => $this->due_at,
-            'total' => $this->name,
+            'id' => $this->whenNotNull($this->id),
+            'code' =>  $this->whenNotNull($this->code),
+            'paper_ref' => $this->whenNotNull($this->paper_ref),
+            'date' =>  $this->whenNotNull($this->date),
+            'deliver_at' => $this->whenNotNull($this->deliver_at),
+
+            'gross_total' =>  $this->whenNotNull($this->gross_total),
+            'discount' => $this->whenNotNull($this->discount),
+            'sub_total' =>  $this->whenNotNull($this->sub_total),
+            'tax_total' =>  $this->whenNotNull($this->tax_total),
+            'total' => $this->whenNotNull($this->total),
+
+            'items' => ItemResource::collection($this->whenLoaded('items')),
+            'treasury' => new NameResource($this->whenLoaded('treasury')),
+            'supplier' => new NameResource($this->whenLoaded('supplier')),
+            'warehouse' => new NameResource($this->whenLoaded('warehouse')),
+            'currency' => new NameResource($this->whenLoaded('currency')),
+            'responsible' => new NameResource($this->whenLoaded('responsible')),
+
+            'group' => new TransactionGroupResource($this->whenLoaded('group')),
         ];
     }
 }

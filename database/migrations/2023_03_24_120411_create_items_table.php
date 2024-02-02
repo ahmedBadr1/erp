@@ -16,13 +16,17 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Inventory\Product::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
             $table->string('quantity');
-            $table->decimal('price',12,2);
+            $table->decimal('price',15,4);
+            $table->decimal('cost',15,4);
+
 //            $table->decimal('tax_exclusive',10,2);
 //            $table->decimal('tax_inclusive',10,2);
 
             $table->foreignIdFor(\App\Models\Inventory\Unit::class)->nullable();
 
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'warehouse_id')->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class,)->nullable();
+
             $table->foreignIdFor(\App\Models\User::class);
 
             $table->text('comment')->nullable();

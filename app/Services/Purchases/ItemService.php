@@ -31,22 +31,20 @@ class ItemService extends MainService
                 ->orWhereHas('product', fn($q) => $q->where('code', 'like', '%' . $search . '%'));
     }
 
-    public function store(int $billId ,int $productId ,int $quantity,float$price,string $comment = null,int $unitId = null,$expireAt = null)
+    public function store(int $invTransactionId ,int $productId ,int $quantity,float$price,int $billId = null,string $comment = null,int $userId = null,int $unitId = null,$expireAt = null)
     {
-        try {
-            $Item = Item::create([
-                'bill_id'=> $billId,
+            return Item::create([
+                'bill_id'=> $billId ?? null,
+                'inv_transaction_id' => $invTransactionId,
                 'product_id'=> $productId,
                 'quantity'=> $quantity,
                 'price'=> $price,
+                'cost'=> $price, // TO DO LATER
                 'comment' => $comment,
                 'unit_id' => $unitId,
-                'expire_at' => $expireAt
+                'expire_at' => $expireAt,
+                'user_id' => $userId ?? auth()->id()
             ]);
-            return $Item;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
     }
 
     public function update($Supplier, array $data)

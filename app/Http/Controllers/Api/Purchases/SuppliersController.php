@@ -8,7 +8,7 @@ use App\Http\Requests\ListRequest;
 use App\Http\Requests\Purchases\StoreVendorRequest;
 use App\Http\Requests\System\StoreContact;
 use App\Http\Resources\NameResource;
-use App\Http\Resources\Purchases\ShowVendorResource;
+use App\Http\Resources\Purchases\ShowSupplierResource;
 use App\Http\Resources\Purchases\SuppliersResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Currency;
@@ -146,7 +146,7 @@ class SuppliersController extends ApiController
      */
     public function show(int $id)
     {
-        $vendorData = new ShowVendorResource(Vendor::with('contacts','locations','account')->findOrFail($id));
+        $vendorData = new ShowSupplierResource(Vendor::with('contacts','locations','account')->findOrFail($id));
         return $this->successResponse($vendorData);
     }
 

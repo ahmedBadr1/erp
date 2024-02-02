@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Accounting;
 
+use App\Http\Resources\NameResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,23 +17,23 @@ class LedgerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'code' => $this->code,
-            'amount' => $this->amount,
-            'description' => $this->description,
-            'ex_rate' => $this->ex_rate,
-            'paper_ref' => $this->paper_ref,
-            'posted' => $this->posted,
+            'id' => $this->whenNotNull($this->id),
+            'code' => $this->whenNotNull($this->code),
+            'amount' => $this->whenNotNull($this->amount),
+            'note' => $this->whenNotNull($this->note),
+            'paper_ref' => $this->whenNotNull($this->paper_ref),
+            'posted' => $this->whenNotNull($this->posted),
             'locked' => $this->whenNotNull($this->locked),
-            'due' => $this->due->format('d/m/Y'),
-            'responsible' => new UserResource ($this->whenLoaded('responsible')),
-            'creator' => new UserResource ($this->whenLoaded('responsible')),
-            'editor' => new UserResource ($this->whenLoaded('responsible')),
-            'currency' => new CurrencyResource($this->whenLoaded('currency')),
+            'created_at' => $this->whenNotNull($this->due)  ,
+            'responsible' => new NameResource($this->whenLoaded('responsible')),
+            'creator' => new NameResource ($this->whenLoaded('responsible')),
+            'editor' => new NameResource ($this->whenLoaded('responsible')),
+            'currency' => new NameResource($this->whenLoaded('currency')),
 
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
+            'group' => new TransactionGroupResource($this->whenLoaded('group')),
 
             'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
             'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),

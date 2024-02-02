@@ -16,8 +16,8 @@ class Transaction extends MainModelSoft
 //    use  LogsActivity;
 
     protected $fillable = ['code', 'amount','type_group', 'type', 'note', 'due', 'paper_ref',
-        'first_party_id','second_party_id', 'group_id',
-        'ledger_id', 'responsible_id','created_by','edited_by', 'posted', 'locked', 'system'];
+        'first_party_id','second_party_id', 'group_id', 'ledger_id','currency_id','ex_rate','currency_total',
+        'responsible_id','created_by','edited_by', 'posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
 
@@ -34,12 +34,13 @@ class Transaction extends MainModelSoft
         'PI', // purchase invoice Code for Bill
         'PR', // purchase return Code to change Later
 
-        'IO', // Issue Offering to decrease items Form warehouse
-        'RS', // Receive Supply to increase items To warehouse
-        'IR',  // Issue Returns from warehouse to another
-        'RR',  // Receive Returns
-        'IT',  // Issue Transfer from warehouse to another
-        'RT',  // Receive Transfer from another warehouse
+        // Inventory Transactions
+//        'IO', // Issue Offering to decrease items Form warehouse
+//        'RS', // Receive Supply to increase items To warehouse
+//        'IR',  // Issue Returns from warehouse to another
+//        'RR',  // Receive Returns
+//        'IT',  // Issue Transfer from warehouse to another
+//        'RT',  // Receive Transfer from another warehouse
 
         // 'SO', // sales order only View For Invoice
         'SI', // sales invoice Code For invoice
@@ -81,11 +82,6 @@ class Transaction extends MainModelSoft
     public function responsible()
     {
         return $this->belongsTo(User::class, 'responsible_id');
-    }
-
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_transaction')->withPivot('quantity','price');
     }
 
 

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_transaction', function (Blueprint $table) {
+        Schema::create('product_inv_transaction', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Inventory\Product::class);
-            $table->foreignIdFor(\App\Models\Accounting\Transaction::class);
+            $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class);
             $table->decimal('quantity',10);
-            $table->decimal('price',10)->nullable();
+            $table->decimal('price',15,4)->nullable();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_transaction');
+        Schema::dropIfExists('product_inv_transaction');
     }
 };

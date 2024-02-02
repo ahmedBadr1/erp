@@ -27,17 +27,17 @@ return new class extends Migration
             $table->string('origin_number')->nullable();
             $table->string('type')->nullable();
 
-            $table->decimal('s_price', 12, 2)->nullable();
-            $table->decimal('d_price', 12, 2)->nullable();
-            $table->decimal('sd_price', 12, 2)->nullable();
-            $table->decimal('min_price', 12, 2)->nullable();
-            $table->decimal('ref_price', 12, 2)->nullable();
-            $table->decimal('pur_price', 12, 2)->nullable();
+            $table->decimal('s_price', 15, 4)->nullable();
+            $table->decimal('d_price', 15, 4)->nullable();
+            $table->decimal('sd_price', 15, 4)->nullable();
+            $table->decimal('min_price', 15, 4)->nullable();
+            $table->decimal('ref_price', 15, 4)->nullable();
+            $table->decimal('pur_price', 15, 4)->nullable();
 
-            $table->decimal('last_cost', 12, 2)->nullable();
-            $table->decimal('avg_cost', 12, 2)->nullable();
-            $table->decimal('fifo', 12, 2)->nullable();
-            $table->decimal('lifo', 12, 2)->nullable();
+            $table->decimal('last_cost', 15, 4)->nullable();
+            $table->decimal('avg_cost', 15, 4)->nullable();
+            $table->decimal('fifo', 15, 4)->nullable();
+            $table->decimal('lifo', 15, 4)->nullable();
             $table->decimal('opening_balance', 12, 2)->nullable();
 
             $table->decimal('profit_margin', 8, 4)->nullable(); // %10

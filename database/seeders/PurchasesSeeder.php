@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\TransactionTypeGroups;
 use App\Models\Accounting\Transaction;
 use App\Models\Accounting\TransactionGroup;
+use App\Models\Inventory\InvTransaction;
 use App\Models\Inventory\Item;
 use App\Models\Purchases\Bill;
 use App\Models\Purchases\Supplier;
@@ -30,15 +31,18 @@ class PurchasesSeeder extends Seeder
             $group = TransactionGroup::create();
 
            $bill = Bill::factory()->create([
+               'currency_id' => 1,
+                'ex_rate' => 1,
+               'treasury_id' => $treasuryId,
                 'warehouse_id' => $warehouseId,
                 'supplier_id' => $supplierId,
                'group_id' => $group->id,
             ]);
-           $transaction =  Transaction::factory()->create([
-               'type_group' => TransactionTypeGroups::INV,
+           $transaction =  InvTransaction::factory()->create([
                 'type' => 'RS',
-                "first_party_id" => $warehouseId,
-                "second_party_id" => $supplierId,
+                "from_id" => $warehouseId,
+                "supplier_id" => $supplierId,
+                "bill_id" =>$bill->id,
                 'amount' => $bill->total,
                'group_id' => $group->id,
             ]);

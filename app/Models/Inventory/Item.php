@@ -14,7 +14,7 @@ class Item extends MainModelSoft
 {
     use Prunable;
 
-    protected $fillable = ['bill_id', 'product_id', 'quantity', 'price', 'comment', 'expire_at', 'unit_id', 'warehouse_id', 'user_id'];
+    protected $fillable = ['bill_id', 'product_id', 'quantity', 'price','cost', 'comment', 'expire_at','inv_transaction_id', 'unit_id', 'warehouse_id', 'user_id'];
 
     protected $casts = [
         'expire_at' => 'date'
@@ -25,11 +25,16 @@ class Item extends MainModelSoft
         return static::where('deleted_at', '<=', now()->subMonth('6'));
     }
 
-    public function category()
+
+    public function product()
     {
-        return $this->belongsToThrough('App\Models\Category', 'App\Models\Element');
+        return $this->belongsTo(Product::class);
     }
 
+    public function invTransaction()
+    {
+        return $this->belongsTo(InvTransaction::class);
+    }
 
     public function warehouse()
     {

@@ -32,10 +32,7 @@ class AccountingSeeder extends Seeder
 
         $this->seedCurrencies();
 
-        CostCenterNode::factory()->create(['name' => 'مركز تكلفة رئيسي', 'slug' => 'main_cost_center_node']);
-
-        CostCenter::factory()->create(['name' => 'مركز تكلفة رئيسي', 'system' => 1]);
-        CostCenter::factory(3)->create();
+        $this->seedCostCenters();
 
         $this->seedAccounts();
 
@@ -100,7 +97,7 @@ class AccountingSeeder extends Seeder
             $amount = rand(100, 1000);
         }
 
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $amount, 'currency_id' => 1, 'ex_rate' => 1]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $amount]);
         if ($type == 'CI') {
             if (!$secondPartyId) {
                 $secondPartyId = Account::whereHas('type', fn($q) => $q->where('code', 'AR'))->get()->random()->id;
@@ -116,7 +113,6 @@ class AccountingSeeder extends Seeder
             Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $treasuryId, 'credit' => 1]);
         }
         Transaction::factory()->create([
-            'type_group' => TransactionTypeGroups::ACC,
             'type' => $type,
             'first_party_id' => $treasuryId,
             'amount' => $ledger->amount,
@@ -131,7 +127,7 @@ class AccountingSeeder extends Seeder
         if (!$type) {
             $type = 'PI';
         }
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $total, 'currency_id' => 1, 'ex_rate' => 1]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $total]);
 
         Entry::factory()->create(['amount' => $subtotal, 'ledger_id' => $ledger->id, 'account_id' => $warehouseId, 'credit' => 0]);
         if ($tax) {
@@ -140,7 +136,6 @@ class AccountingSeeder extends Seeder
         }
         Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $supplierId, 'credit' => 1]);
         Transaction::factory()->create([
-            'type_group' => TransactionTypeGroups::ACC,
             'type' => $type,
             'first_party_id' => $warehouseId,
             'amount' => $ledger->amount,
@@ -386,5 +381,54 @@ class AccountingSeeder extends Seeder
             ]);
         }
 
+    }
+
+    /**
+     * @return void
+     */
+    public function seedCostCenters(): void
+    {
+        $costCenterNodes = [
+            [
+                'name' => 'اﻹدارات',
+            ],
+            [
+                'name' => 'المحلات',
+            ],
+        ];
+        foreach ($costCenterNodes as $costCenterNode) {
+            CostCenterNode::factory()->create(
+                ['name' => $costCenterNode['name']
+                ]);
+        }
+        $costCenters = [
+            [
+                'name' => 'اﻹدارة الرئيسية',
+                'cost_center_node_id' => 1
+            ],
+            [
+                'name' => 'اﻹدارة الفرعية',
+                'cost_center_node_id' => 1
+            ],
+            [
+                'name' => 'محل 1',
+                'cost_center_node_id' => 2
+            ],
+            [
+                'name' => 'محل 2',
+                'cost_center_node_id' => 2
+            ],
+            [
+                'name' => 'محل 3',
+                'cost_center_node_id' => 2
+            ],
+        ];
+
+        foreach ($costCenters as $costCenter) {
+            CostCenter::factory()->create([
+                'name' => $costCenter['name'],
+                'cost_center_node_id' => $costCenter['cost_center_node_id']
+            ]);
+        }
     }
 }

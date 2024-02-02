@@ -13,9 +13,16 @@ use Maatwebsite\Excel\Facades\Excel;
 class TransactionService extends MainService
 {
 
-    public function fetchAll()
+    public function all($fields = null, $type = null)
     {
-        return Transaction::get();
+        $data = $fields ?? (new Transaction())->getFillable();
+
+        $query = Transaction::query();
+        if ($type) {
+            $query->where('type', $type);
+        }
+
+        return $query->get($data);
     }
 
     public function types()
@@ -113,19 +120,20 @@ class TransactionService extends MainService
         $search = trim($search);
         return empty($search) ? Transaction::query()
             : Transaction::query()->where('amount', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%')
+                ->orWhere('note', 'like', '%' . $search . '%')
                 ->orWhere('type', 'like', '%' . $search . '%')
 //                ->orWhereHas('entries', fn($q) => $q->where('description', 'like', '%' . $search . '%'))
 //                ->orWhereHas('transaction', fn($q) => $q->where('type', 'like', '%' . $search . '%'))
                 ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createTransaction(TransactionTypeGroups $typeGroup,string $type,int $groupId, float $amount, int $ledger_id = null, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createTransaction(string $type, int $groupId, float $amount,
+                                      int $ledger_id = null, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null,
+                                      int $currency_id = null ,float $ex_rate  = null ,float $currency_total  = null, $system = 1)
     {
 
         return Transaction::create([
             'group_id' => $groupId,
-            'type_group' => $typeGroup,
             'type' => $type,
             'amount' => $amount,
             'ledger_id' => $ledger_id,
@@ -134,35 +142,33 @@ class TransactionService extends MainService
             'note' => $note ?? null,
             'due' => $due ?? null,
             'paper_ref' => $paper_ref ?? null,
+            'currency_id' => $currency_id ?? 1,
+            'ex_rate' => $ex_rate ?? 1.00,
+            'currency_total' => $currency_total ??$amount ,
             'responsible' => $user_id ?? auth()->id(),
             'created_by' => auth()->id(),
             'system' => $system,
         ]);
     }
 
-    public function createCI(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null,  $system = 1)
+    public function createCI(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction(TransactionTypeGroups::ACC,'CI',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
+        return $this->createTransaction( 'CI', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
     }
 
-    public function createCO(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createCO(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction(TransactionTypeGroups::ACC,'CO',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
+        return $this->createTransaction( 'CO', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
     }
 
-    public function createSO(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createSO(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction(TransactionTypeGroups::ACC,'SO',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
+        return $this->createTransaction('SO', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
     }
 
-    public function createRS(int $groupId,float $amount,  int $first_party_id, int $second_party_id, $due = null, string $description = null, $user_id = null, $paper_ref = null, $document_no = null, $system = 1)
+    public function createPI(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction(TransactionTypeGroups::INV,'RS',$groupId, $amount, null, $first_party_id, $second_party_id, $due, $description, $user_id, $paper_ref, $system);
-    }
-
-    public function createPI(int $groupId,float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
-    {
-        return $this->createTransaction(TransactionTypeGroups::ACC,'PI',$groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref,  $system);
+        return $this->createTransaction( 'PI', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
     }
 
     public function update($transaction, array $data)

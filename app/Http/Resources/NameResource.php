@@ -15,9 +15,9 @@ class NameResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'code' => $this->code,
+            'id' => $this->whenNotNull($this->id),
+            'name' =>  $this->whenNotNull($this->name),
+            'code' => $this->whenNotNull($this->code),
 
         ];
     }
