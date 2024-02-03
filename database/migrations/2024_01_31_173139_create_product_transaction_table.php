@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class);
             $table->decimal('quantity',10);
             $table->decimal('price',15,4)->nullable();
+            $table->decimal('cost',15,4)->nullable();
         });
     }
 

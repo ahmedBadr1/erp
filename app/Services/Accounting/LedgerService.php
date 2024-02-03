@@ -247,13 +247,13 @@ class LedgerService extends MainService
         $AccountService = new AccountService();
         $treasury = Account::find($treasuryId);
         $ledger = $this->store(groupId:  $groupId,amount:  $amount,currency_id:  $currencyId,due:  $date,note:  $note,user_id:  $responsible,system:  $system);
-        $EntryService->createDebitEntry($amount, $treasuryId, $ledger->id, $treasury->cost_center_id);
-        $AccountService->updateBalance($treasury->id);
+        $EntryService->createDebitEntry(amount: $amount, account_id:  $treasuryId, ledger_id:  $ledger->id,cost_center_id:  $treasury->cost_center_id);
+        $AccountService->updateBalance(account_id: $treasury->id);
         foreach ($accounts as $account) {
-            $EntryService->createCreditEntry($account['amount'], $account['id'], $ledger->id, $account['cost_center_id'], $account['comment'] ?? null);
-            $AccountService->updateBalance($account['id']);
+            $EntryService->createCreditEntry(amount: $account['amount'],account_id:  $account['id'],ledger_id:  $ledger->id,cost_center_id:  $account['cost_center_id'], comment: $account['comment'] ?? null);
+            $AccountService->updateBalance(account_id: $account['id']);
         }
-        $TransactionService->createCI($groupId, $amount, $ledger->id, $treasuryId, $account['id'], $date, $note, $responsible, $paperRef, $system);
+        $TransactionService->createCI(groupId:  $groupId,amount:  $amount,ledger_id:  $ledger->id,first_party_id:  $treasuryId,second_party_id:  $account['id'],due:  $date,note:  $note,user_id:  $responsible,paper_ref:  $paperRef,system:  $system);
 
 
         return false;
@@ -274,23 +274,23 @@ class LedgerService extends MainService
 //            dd($ledger);
         if (is_array($accounts)) {
             foreach ($accounts as $account) {
-                $EntryService->createDebitEntry($account['amount'], $account['id'], $ledger->id, $account['cost_center_id'] ?? null, $account['comment'] ?? null);
-                $AccountService->updateBalance($account['id']);
+                $EntryService->createDebitEntry(amount:  $account['amount'],account_id:  $account['id'],ledger_id:  $ledger->id,cost_center_id:  $account['cost_center_id'] ?? null,comment:  $account['comment'] ?? null);
+                $AccountService->updateBalance(account_id:  $account['id']);
             }
         } else { // Account Model
-            $EntryService->createDebitEntry($amount, $accounts->id, $ledger->id, $accounts->cost_center_id);
-            $AccountService->updateBalance($accounts->id);
+            $EntryService->createDebitEntry(amount:  $amount,account_id:  $accounts->id,ledger_id:  $ledger->id,cost_center_id:  $accounts->cost_center_id);
+            $AccountService->updateBalance(account_id:  $accounts->id);
             $account['id'] = $accounts->id;
         }
 
-        $EntryService->createCreditEntry($amount, $treasuryId, $ledger->id, $treasury->cost_center_id);
-        $AccountService->updateBalance($treasuryId);
-        $TransactionService->createCO($groupId, $amount, $ledger->id, $treasuryId, $account['id'], $date, $note, $responsible, $paperRef, $system);
+        $EntryService->createCreditEntry(amount:  $amount,account_id:  $treasuryId,ledger_id:  $ledger->id,cost_center_id:  $treasury->cost_center_id);
+        $AccountService->updateBalance(account_id:  $treasuryId);
+        $TransactionService->createCO(groupId:  $groupId,amount:  $amount,ledger_id:  $ledger->id,first_party_id:  $treasuryId,second_party_id:  $account['id'],due:  $date,note:  $note,user_id:  $responsible,paper_ref:  $paperRef,system:  $system);
 
         return false;
     }
 
-    public function jouranlEntry(array $data)
+    public function jouranlEntry(array $data,$groupId=null)
     {
         if (!isset($groupId)) {
             $groupId = TransactionGroup::create()->id;
@@ -302,18 +302,18 @@ class LedgerService extends MainService
 
         foreach ($data['accounts'] as $account) {
             if ($account['c_amount']) {
-                $EntryService->createCreditEntry($account['c_amount'], $account['id'], $ledger->id, $account['cost_center_id'], $account['comment'] ?? null);
+                $EntryService->createCreditEntry(amount:  $account['c_amount'],account_id:  $account['id'],ledger_id:  $ledger->id,cost_center_id:  $account['cost_center_id'],comment:  $account['comment'] ?? null);
             } else {
-                $EntryService->createDebitEntry($account['d_amount'], $account['id'], $ledger->id, $account['cost_center_id'], $account['comment'] ?? null);
+                $EntryService->createDebitEntry(amount:  $account['d_amount'],account_id:  $account['id'],ledger_id:  $ledger->id,cost_center_id:  $account['cost_center_id'],comment:  $account['comment'] ?? null);
             }
-            $AccountService->updateBalance($account['id']);
+            $AccountService->updateBalance(account_id:  $account['id']);
         }
 
         return false;
     }
 
 
-    public function PI($type, $groupId, $warehouseAcc, $supplierAcc, $currencyId, $date, $total, $subtotal, $tax = 0, $note = null, $paperRef = null, $responsible = null, $system = 1)
+    public function PI($type, $groupId, $warehouseAcc, $supplierAcc, $currencyId, $date, $total, $subtotal, $tax = 0,$taxAccountId = null, $note = null, $paperRef = null, $responsible = null, $system = 1)
     {
         if (!$type) {
             $type = 'PI';
@@ -324,16 +324,18 @@ class LedgerService extends MainService
 
         $ledger = $this->store(groupId:  $groupId,amount:  $total,currency_id:  $currencyId,due:  $date,note:  $note,user_id:  $responsible,system:  $system);
 //            dd($ledger);
-        $EntryService->createDebitEntry($subtotal, $warehouseAcc->id, $ledger->id, $warehouseAcc->cost_centet_id);
-        $AccountService->updateBalance($warehouseAcc->id);
+        $EntryService->createDebitEntry(amount:  $subtotal,account_id:  $warehouseAcc->id,ledger_id:  $ledger->id,cost_center_id:  $warehouseAcc->cost_centet_id);
+        $AccountService->updateBalance(account_id:  $warehouseAcc->id);
         if ($tax) {
-            $taxAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'T'))->value('id');
-            $EntryService->createDebitEntry($tax, $taxAccountId, $ledger->id);
+            if (!$taxAccountId){
+                $taxAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'T'))->value('id');
+            }
+            $EntryService->createDebitEntry(amount:  $tax,account_id:  $taxAccountId,ledger_id:  $ledger->id);
         }
 
-        $EntryService->createCreditEntry($total, $supplierAcc->id, $ledger->id, $supplierAcc->cost_center_id);
-        $AccountService->updateBalance($supplierAcc->id);
-        $TransactionService->createPI($groupId, $total, $ledger->id, $warehouseAcc->id, $supplierAcc->id, $date, $note, $responsible, $paperRef, $system);
+        $EntryService->createCreditEntry(amount:  $total,account_id:  $supplierAcc->id,ledger_id:  $ledger->id,cost_center_id:  $supplierAcc->cost_center_id);
+        $AccountService->updateBalance(account_id:  $supplierAcc->id);
+        $TransactionService->createPI(groupId:  $groupId,amount:  $total,ledger_id:  $ledger->id,first_party_id:  $warehouseAcc->id,second_party_id:  $supplierAcc->id,due:  $date,note:  $note,user_id:  $responsible,paper_ref:  $paperRef,system:  $system);
 
         return false;
     }

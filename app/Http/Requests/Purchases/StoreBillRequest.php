@@ -28,6 +28,7 @@ class StoreBillRequest extends FormRequest
             'supplier_id' => 'required|exists:suppliers,id',
             'responsible_id' => 'required|exists:users,id',
             'treasury_id' => 'required|exists:accounts,id',
+            'tax_id' => 'required|exists:taxes,id',
 
             'date' => 'required|date',
             'deliver_at' => 'nullable|date',// |after:date
@@ -44,6 +45,7 @@ class StoreBillRequest extends FormRequest
 
             'gross_total' => 'required|numeric|gt:0',
             'discount' => 'required|numeric|min:0',
+            'discount_rate' => 'nullable|numeric|min:0',
             'tax_total' => 'nullable|numeric|min:0',
             'sub_total' => 'required|numeric|gt:0',
             'total' => 'required|numeric|gt:0',

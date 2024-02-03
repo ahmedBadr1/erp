@@ -86,7 +86,7 @@ class InvTransaction extends MainModelSoft
 
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'product_inv_transaction')->withPivot('quantity', 'price');
+        return $this->belongsToMany(Product::class, 'product_inv_transaction')->withPivot('quantity', 'price','cost');
     }
 
 
@@ -105,7 +105,7 @@ class InvTransaction extends MainModelSoft
         static::creating(function ($model) {
             if (!$model->code) {
                 $transactionCount = InvTransaction::where('type', $model->type)->count();
-                $model->code = $model->type . '-' . $model->from_id . '-' . $transactionCount + 1;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+                $model->code = $model->type . '-' . $model->from_id . '-' . ((int) $transactionCount + 1);//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
             }
 
         });

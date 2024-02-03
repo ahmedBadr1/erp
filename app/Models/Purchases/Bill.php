@@ -4,6 +4,7 @@ namespace App\Models\Purchases;
 
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Currency;
+use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
 use App\Models\Accounting\TransactionGroup;
 use App\Models\Inventory\Branch;
@@ -19,7 +20,7 @@ class Bill extends MainModelSoft
 {
 
     protected $fillable = ['code','treasury_id','warehouse_id','supplier_id', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
-        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_exclusive','tax_inclusive' ,'canceled',
+        ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_id','tax_exclusive','tax_inclusive' ,'canceled',
         'currency_id','ex_rate','currency_total','responsible_id','created_by','edited_by'];
 
     protected $casts = [
@@ -66,6 +67,11 @@ class Bill extends MainModelSoft
     public function currency()
     {
         return $this->belongsTo(Currency::class,'currency_id');
+    }
+
+    public function tax()
+    {
+        return $this->belongsTo(Tax::class);
     }
     public function status()
     {

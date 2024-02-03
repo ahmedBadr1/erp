@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable(); // 3
+            $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable(); // 3
+
             $table->float('ex_rate')->nullable();
             $table->decimal('currency_total',15,4)->nullable();
 

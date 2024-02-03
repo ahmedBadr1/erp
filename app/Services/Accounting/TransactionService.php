@@ -153,22 +153,27 @@ class TransactionService extends MainService
 
     public function createCI(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction( 'CI', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
+        return $this->createTransaction( 'CI', groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
     }
 
     public function createCO(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction( 'CO', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
+        return $this->createTransaction( 'CO', groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
     }
 
     public function createSO(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction('SO', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
+        return $this->createTransaction('SO', groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
     }
 
     public function createPI(int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createTransaction( 'PI', $groupId, $amount, $ledger_id, $first_party_id, $second_party_id, $due, $note, $user_id, $paper_ref, $system);
+        return $this->createTransaction( type: 'PI',groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
+    }
+
+    public function createType(string $type ,int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    {
+        return $this->createTransaction( type: $type,groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
     }
 
     public function update($transaction, array $data)

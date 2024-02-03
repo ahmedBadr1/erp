@@ -14,6 +14,7 @@ use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use App\Services\Accounting\LedgerService;
+use App\Services\Accounting\TransactionGroupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -77,12 +78,13 @@ class TransactionController extends ApiController
 
         DB::beginTransaction();
         try {
+            $group = (new TransactionGroupService)->store();
             if ($data['type'] === 'CI') {
-                $e = $this->service->cashin($data['treasury'], $data['accounts'], $data['amount'], $data['currency_id'], $data['due'] ?? null, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible'] ?? null, 0);
+                $e = $this->service->cashin(groupId: $group->id,treasuryId:  $data['treasury'],accounts:  $data['accounts'],amount:  $data['amount'],currencyId:  $data['currency_id'],date:  $data['due'] ?? null,note:  $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(),system:  0);
             } elseif ($data['type'] === 'CO') {
-                $e = $this->service->cashout($data['treasury'], $data['accounts'], $data['amount'], $data['currency_id'], $data['due'] ?? null, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible'] ?? null, 0);
+                $e = $this->service->cashout(groupId: $group->id,treasuryId: ['treasury'], accounts: ['accounts'],amount:  $data['amount'],currencyId:  $data['currency_id'],date:  $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ??  auth('api')->id(), system: 0);
             } else {
-                $e = $this->service->jouranlEntry($data);
+                $e = $this->service->jouranlEntry(data: $data , groupId: $group->id);
             }
         } catch (\Exception $e) {
             DB::rollBack();

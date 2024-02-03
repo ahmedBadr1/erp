@@ -108,7 +108,7 @@ class InvTransactionService extends MainService
     }
 
     public function createType(string $type,int $groupId,$items, float $amount, int $from_id, int $supplier_id = null,int $bill_id = null, int $client_id = null, int $invoice_id = null,
-                                 $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+                                 $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null,$discount_rate = 0,$tax_rate = 0, $system = 1)
     {
         switch ($type){
             case 'RS':
@@ -122,9 +122,12 @@ class InvTransactionService extends MainService
         }
         foreach ($items as $item) {
             (new ItemService())->store(invTransactionId:$transaction->id,   productId: $item['product_id'], quantity: $item['quantity'], price: $item['price'], billId: $bill_id, comment: $item['comment'], userId: $user_id, unitId: $item['unit_id'] ?? null, expireAt: $item['expire_at'] ?? null);
-            $transaction->products()->attach($item['product_id'], [
+            $sub_cost = $item['price'] - ( $item['price'] * $discount_rate / 100 );
+            $cost = $sub_cost + ($sub_cost * $tax_rate / 100 ) ;
+                $transaction->products()->attach($item['product_id'], [
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
+                'cost' => (float) $cost ,
             ]);
         }
         $transaction->save();

@@ -71,7 +71,7 @@ class Product extends MainModelSoft
 
     public function transactions()
     {
-        return $this->belongsToMany(Transaction::class, 'product_transaction')->withPivot('quantity','price');
+        return $this->belongsToMany(InvTransaction::class, 'product_inv_transaction')->withPivot('quantity','price','cost');
     }
 
     public function getActivitylogOptions(): LogOptions

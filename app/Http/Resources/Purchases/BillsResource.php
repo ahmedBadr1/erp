@@ -5,6 +5,7 @@ namespace App\Http\Resources\Purchases;
 use App\Http\Resources\Accounting\AccountResource;
 use App\Http\Resources\Accounting\EntryResource;
 use App\Http\Resources\Accounting\LedgerResource;
+use App\Http\Resources\Accounting\TaxResource;
 use App\Http\Resources\Accounting\TransactionGroupResource;
 use App\Http\Resources\Inventory\WarehouseResource;
 use App\Http\Resources\NameResource;
@@ -38,6 +39,8 @@ class BillsResource extends JsonResource
             'supplier' => new NameResource($this->whenLoaded('supplier')),
             'warehouse' => new NameResource($this->whenLoaded('warehouse')),
             'currency' => new NameResource($this->whenLoaded('currency')),
+            'tax' => new TaxResource($this->whenLoaded('tax')),
+
             'responsible' => new NameResource($this->whenLoaded('responsible')),
 
             'group' => new TransactionGroupResource($this->whenLoaded('group')),

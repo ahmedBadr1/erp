@@ -86,7 +86,7 @@ class BillsController extends ApiController
 
     public function show(Request $request, $code)
     {
-        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.bills', 'supplier', 'warehouse','treasury', 'currency', 'responsible')->where('code', $code)->firstOrFail();
+        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.bills', 'supplier', 'warehouse','treasury', 'currency','tax', 'responsible')->where('code', $code)->firstOrFail();
         return $this->successResponse(['bill' => new  BillsResource($bill)]);
     }
 }

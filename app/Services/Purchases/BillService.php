@@ -6,6 +6,7 @@ use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Currency;
+use App\Models\Accounting\Tax;
 use App\Models\Purchases\Bill;
 use App\Models\System\Status;
 use App\Services\Accounting\LedgerService;
@@ -46,6 +47,7 @@ class BillService extends MainService
             $supplierAcc = Account::whereHas('supplier', fn($q) => $q->whereId($data['supplier_id']))->first();
             $paidStatus = Status::where('name', 'paid')->value('id');
             $currency = Currency::find($data['currency_id']);
+            $tax = Tax::with('account')->find($data['currency_id']);
 
             $bill = Bill::create([
                 'date' => $data['date'],
@@ -55,6 +57,7 @@ class BillService extends MainService
                 'warehouse_id' => $data['warehouse_id'],
                 'supplier_id' => $data['supplier_id'],
                 'responsible_id' => $data['responsible_id'],
+                'tax_id' => $data['tax_id'],
                 'currency_id' => $data['currency_id'],
                 'ex_rate' => $data['ex_rate'] ?? $currency->ex_rate ?? 1,
                 'currency_total' => $data['currency_total'] ?? ((float)$data['total'] * $currency->ex_rate),
@@ -72,11 +75,11 @@ class BillService extends MainService
                 'tax_inclusive' => 0,
             ]);
 
-            (new InvTransactionService())->createType(type: 'RS', groupId: $group->id, items: $data['items'], amount: $bill->gross_total, from_id: $data['warehouse_id'], supplier_id: $data['supplier_id'], bill_id: $bill->id, due: $data['date'], note: $data['note'], user_id: $data['responsible_id'], paper_ref: $data['paper_ref'], system: 1);
+            (new InvTransactionService())->createType(type: 'RS', groupId: $group->id, items: $data['items'], amount: $bill->gross_total, from_id: $data['warehouse_id'], supplier_id: $data['supplier_id'], bill_id: $bill->id, due: $data['date'], note: $data['note'], user_id: $data['responsible_id'], paper_ref: $data['paper_ref'],discount_rate: $data['discount_rate'],tax_rate: $tax->rate, system: 1);
 
 
             (new LedgerService())->cashout($group->id, $data['treasury_id'], $supplierAcc, $bill->total, $data['currency_id'], $data['date'] ?? now, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible_id']);
-            (new LedgerService())->PI('PI', $group->id, $warehouseAcc, $supplierAcc, $data['currency_id'], $data['date'], $bill->total, $bill->sub_total, $bill->tax_total, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible_id']);
+            (new LedgerService())->PI('PI', $group->id, $warehouseAcc, $supplierAcc, $data['currency_id'], $data['date'], $bill->total, $bill->sub_total, $bill->tax_total,$tax->account?->id, $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible_id']);
 
         } else {
             // check if has posted docs
