@@ -2,22 +2,22 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Accounting\TransactionGroup;
 use App\Models\MainModelSoft;
 use App\Models\Purchases\Bill;
 use App\Models\Purchases\Supplier;
 use App\Models\Sales\Client;
 use App\Models\Sales\Invoice;
+use App\Models\System\ModelGroup;
 use App\Models\User;
 use Spatie\Activitylog\LogOptions;
 
 class InvTransaction extends MainModelSoft
 {
 
-    protected $fillable = ['code', 'amount', 'type', 'note', 'due', 'accepted_at', 'paper_ref',
-        'from_id', 'to_id', 'group_id', 'supplier_id', 'responsible_id', 'created_by', 'edited_by', 'pending', 'system'];
+    protected $fillable = ['code','bill_id', 'amount', 'type', 'note', 'due', 'accepted_at', 'paper_ref',
+        'warehouse_id','group_id','second_party_type','second_party_id', 'responsible_id', 'created_by', 'edited_by','system'];
 
-    protected $casts = ['due' => 'datetime','accepted_at'=>'datetime'];
+    protected $casts = ['due' => 'datetime', 'accepted_at' => 'datetime'];
 
     public static array $TYPES = [
         'IO', // Issue Offering to decrease items Form warehouse
@@ -28,45 +28,48 @@ class InvTransaction extends MainModelSoft
         'RT',  // Receive Transfer from another warehouse
     ];
 
+    public static array $inOther = [
+            [
+                'id' => 1,
+                'name' => 'إستبدالات',
+            ],
+            [
+                'id' => 2,
+                'name' => 'تسوية زيادة الجرد',
+            ],
+        ];
+
+    public static array $outOther = [
+        [
+            'id' => 3,
+            'name' => 'أصول ثابتة',
+        ],
+        [
+            'id' => 4,
+            'name' => 'تسوية عجز الجرد',
+        ],
+    ];
+
+
     public function group()
     {
-        return $this->belongsTo(TransactionGroup::class, 'group_id');
+        return $this->belongsTo(ModelGroup::class, 'group_id');
     }
 
 
-    public function from()
+    public function warehouse()
     {
-        return $this->belongsTo(Warehouse::class, 'from_id');
+        return $this->belongsTo(Warehouse::class);
     }
 
-    public function to()
+    public function secondParty()
     {
-        return $this->belongsTo(Warehouse::class, 'to_id');
+        return $this->morphTo('second_party');
     }
 
     public function items()
     {
-        return $this->hasMany(Item::class,);
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class);
-    }
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function bill()
-    {
-        return $this->belongsTo(Bill::class);
-    }
-
-    public function invoice()
-    {
-        return $this->belongsTo(Invoice::class);
+        return $this->hasMany(InvTransactionItem::class,);
     }
 
     public function creator()
@@ -84,10 +87,7 @@ class InvTransaction extends MainModelSoft
         return $this->belongsTo(User::class, 'responsible_id');
     }
 
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_inv_transaction')->withPivot('quantity', 'price','cost');
-    }
+
 
 
     public function getActivitylogOptions(): LogOptions
@@ -105,7 +105,7 @@ class InvTransaction extends MainModelSoft
         static::creating(function ($model) {
             if (!$model->code) {
                 $transactionCount = InvTransaction::where('type', $model->type)->count();
-                $model->code = $model->type . '-' . $model->from_id . '-' . ((int) $transactionCount + 1);//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
+                $model->code = $model->type . '-' . $model->warehouse_id . '-' . ((int)$transactionCount + 1);//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);
             }
 
         });

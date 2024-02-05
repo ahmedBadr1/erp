@@ -5,44 +5,49 @@ namespace App\Services\Purchases;
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
 use App\Models\Inventory\Item;
+use App\Models\Purchases\BillItem;
 use App\Models\Purchases\Supplier;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ItemService extends MainService
+class BillItemService extends MainService
 {
 
     public function all($fields = null,$active=1)
     {
         $data = $fields ?? (new Item())->getFillable();
 
-        return Item::active($active)->get($data);
+        return BillItem::active($active)->get($data);
     }
 
 
     public function search($search)
     {
         $search = trim($search);
-        return empty($search) ? Item::query()
-            : Item::query()->where('name', 'like', '%' . $search . '%')
+        return empty($search) ? BillItem::query()
+            : BillItem::query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('sku', 'like', '%' . $search . '%')
                 ->orWhereHas('product', fn($q) => $q->where('code', 'like', '%' . $search . '%'));
     }
 
-    public function store(int $invTransactionId ,int $productId ,int $quantity,float$price,int $billId = null,string $comment = null,int $userId = null,int $unitId = null,$expireAt = null)
+    public function
+    store($billId ,int $productId ,int $quantity,float $price,float $cost,float $tax_value,string $comment = null,int $userId = null,int $unitId = null,$expireAt = null,$invTransactionId = null)
     {
-            return Item::create([
-                'bill_id'=> $billId ?? null,
-                'inv_transaction_id' => $invTransactionId,
+            return BillItem::create([
+                'bill_id'=> $billId ,
                 'product_id'=> $productId,
                 'quantity'=> $quantity,
                 'price'=> $price,
-                'cost'=> $price, // TO DO LATER
+                'cost'=> $cost,
+                'tax_value'=> $tax_value,
+                'sub_total'=> $quantity * $price,
+                'total'=> $tax_value + ($quantity * $price),
                 'comment' => $comment,
                 'unit_id' => $unitId,
                 'expire_at' => $expireAt,
+                'inv_transaction_id'=> $invTransactionId,
                 'user_id' => $userId ?? auth()->id()
             ]);
     }

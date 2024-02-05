@@ -19,13 +19,11 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'from_id');
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'to_id')->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class);
+            $table->morphs('second_party');
+            $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
-            $table->foreignIdFor(\App\Models\Sales\Client::class)->nullable();
-            $table->foreignIdFor(\App\Models\Sales\Invoice::class)->nullable();
+
 
             $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable();
             $table->foreignIdFor(\App\Models\User::class,'created_by');

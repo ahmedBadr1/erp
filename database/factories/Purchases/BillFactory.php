@@ -25,7 +25,6 @@ class BillFactory extends Factory
     {
         $statues = Status::where('type','paid')->pluck('id')->toArray();
 
-
         $grossTotal = $this->faker->numberBetween(10,1000) ;
         $discounts = [1,5,10,15,20,25,30];
         $discount =  $this->faker->boolean(80) ? ($grossTotal / Arr::random($discounts)) : 0 ;
@@ -47,11 +46,11 @@ class BillFactory extends Factory
             'deliver_at' => Carbon::parse($date)->addDays(rand(0,14)),
             'responsible_id' => User::all()->random()->id,
             'paid' => rand(0, 1),
-            'gross_total' => $grossTotal,
-            'discount' => $discount,
-            'sub_total' => $subtotal,
-            'tax_total' => $tax,
-            'total' => $subtotal - $tax,
+//            'gross_total' => $grossTotal,
+//            'discount' => $discount,
+//            'sub_total' => $subtotal,
+//            'tax_total' => $tax,
+//            'total' => $subtotal - $tax,
             'note' => $this->faker->sentence,
             'cost_allocation' => 0,
         ];

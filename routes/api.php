@@ -232,11 +232,10 @@ Route::group(['middleware' => ['json.response']], function () {
                     'prefix' => 'reports',
                     'as' => 'reports.',
                 ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'index'])->name('index');
+                    Route::post('/', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'index'])->name('index');
 
-                    Route::post('/account-ledger', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'accountLedger'])->name('accountLedger');
-                    Route::post('/cash', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'cash'])->name('cash');
-                    Route::post('/posting', [\App\Http\Controllers\Api\Accounting\ReportsController::class, 'posting'])->name('posting');
+                    Route::post('/orders', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'orders'])->name('orders');
+                    Route::post('/purchases', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'purchases'])->name('purchases');
                 });
 
             });
@@ -300,10 +299,15 @@ Route::group(['middleware' => ['json.response']], function () {
 
 
 
-                Route::get('/transfer', [\App\Http\Controllers\Admin\Inventory\TransfersController::class, 'posting'])->name('posting');
-                Route::get('/untransfer', [\App\Http\Controllers\Admin\Inventory\TransfersController::class, 'unposting'])->name('unposting');
-
-                Route::get('/reports', [\App\Http\Controllers\Admin\Inventory\ReportsController::class, 'index'])->name('reports');
+                Route::group([
+                    'prefix' => 'reports',
+                    'as' => 'reports.',
+                ], function () {
+                    Route::post('/', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'index'])->name('index');
+                    Route::post('/warehouses', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'warehouses'])->name('warehouses');
+                    Route::post('/cost', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cost'])->name('cost');
+                    Route::post('/orders', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'orders'])->name('orders');
+                });
             });
 
 

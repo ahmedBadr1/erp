@@ -2,6 +2,7 @@
 
 namespace App\Models\Sales;
 
+use App\Models\Accounting\Account;
 use App\Models\MainModelSoft;
 use App\Models\System\Country;
 use App\Models\System\State;
@@ -23,6 +24,10 @@ class Client extends MainModelSoft
         'account_id',
     ];
 
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
     public function state()
     {
         return $this->belongsTo(State::class);

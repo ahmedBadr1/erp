@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_inv_transaction', function (Blueprint $table) {
+        Schema::create('inv_transaction_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Inventory\Product::class);
             $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class);
+            $table->foreignIdFor(\App\Models\Inventory\Product::class);
             $table->decimal('quantity',10);
-            $table->decimal('price',15,4)->nullable();
-            $table->decimal('cost',15,4)->nullable();
+            $table->decimal('price',15,4);
+            $table->boolean('accepted')->default(false);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_inv_transaction');
+        Schema::dropIfExists('inv_transaction_items');
     }
 };

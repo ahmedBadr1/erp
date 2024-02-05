@@ -24,6 +24,7 @@ class AccountType extends MainModelSoft
         'NP' => 'Notes Payable',
         'I' => 'Inventory',
         'COG'=> 'Cost Of Goods',
+        'PD'=> 'Purchase Discount',
         'SD'=> 'Sales Discount',
         'T' => 'Tax',
         'OR' => 'Other Revenue',

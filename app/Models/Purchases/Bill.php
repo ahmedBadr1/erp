@@ -5,21 +5,17 @@ namespace App\Models\Purchases;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Tax;
-use App\Models\Accounting\Transaction;
-use App\Models\Accounting\TransactionGroup;
 use App\Models\Inventory\Branch;
-use App\Models\Inventory\Item;
 use App\Models\Inventory\Warehouse;
 use App\Models\MainModelSoft;
+use App\Models\System\ModelGroup;
 use App\Models\System\Status;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
 class Bill extends MainModelSoft
 {
 
-    protected $fillable = ['code','treasury_id','warehouse_id','supplier_id', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
+    protected $fillable = ['code','type','treasury_id','warehouse_id','second_party_id','second_party_type', 'status_id', 'deliver_at', 'date','paper_ref','group_id'
         ,'tax_id','gross_total','tax_total','discount','sub_total','total', 'note','tax_id','tax_exclusive','tax_inclusive' ,'canceled',
         'currency_id','ex_rate','currency_total','responsible_id','created_by','edited_by'];
 
@@ -28,9 +24,16 @@ class Bill extends MainModelSoft
         'due_at' => 'date',
     ];
 
+    public static array $TYPES =[
+        'PO' => 'Purchases Order',
+        'PR' => 'Purchases Return',
+        'SO' => 'Sales Order',
+        'SR' => 'Sales Return',
+    ];
+
     public function group()
     {
-        return $this->belongsTo(TransactionGroup::class, 'group_id');
+        return $this->belongsTo(ModelGroup::class, 'group_id');
     }
     public function creator()
     {
@@ -46,9 +49,9 @@ class Bill extends MainModelSoft
     {
         return $this->belongsTo(User::class, 'responsible_id');
     }
-    public function supplier()
+    public function secondParty()
     {
-        return $this->belongsTo(Supplier::class,'supplier_id');
+        return $this->morphTo('second_party');
     }
     public function warehouse()
     {
@@ -80,7 +83,7 @@ class Bill extends MainModelSoft
 
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(BillItem::class);
     }
     public function payments()
     {
@@ -111,13 +114,19 @@ class Bill extends MainModelSoft
 
         static::creating(function ($model) {
             if (!$model->code) {
-                $billsCount = Bill::count();
-                $warehouse_code = Account::whereHas('warehouse',fn($q)=>$q->whereid($model->warehouse_id))->value('type_code');
-                if (!$billsCount) {
-                    $model->code = 'PO-'.$warehouse_code . '-' . 1;
+                $billCode = Bill::where('type',$model->type)->latest()->value('code')  ;
+//                $warehouse_code = Account::whereHas('warehouse',fn($q)=>$q->whereid($model->warehouse_id))->value('type_code');
+                if (!$billCode) {
+                    $model->code =$model->type . '-'. $model->warehouse_id . '-' . 1;
                     return;
+                }else{
+                    if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $billCode, $matches)) {
+                        $count = $matches[1] + 1;
+                        $model->code = $model->type . '-'.  $model->warehouse_id . '-'  . $count ;
+                    } else{
+                        throw new \Exception('Wrong Bill Code');
+                    }
                 }
-                $model->code = 'PO-'.$warehouse_code . '-'  . $billsCount + 1 ;
             }
         });
     }

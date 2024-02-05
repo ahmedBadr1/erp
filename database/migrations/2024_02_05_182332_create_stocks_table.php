@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_groups', function (Blueprint $table) {
+        Schema::create('stocks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('created_by')->nullable()->constrained('users')->onUpdate('cascade');
+            $table->foreignIdFor(\App\Models\Inventory\Product::class);
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class);
+            $table->bigInteger('balance')->default(0);
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_groups');
+        Schema::dropIfExists('stocks');
     }
 };

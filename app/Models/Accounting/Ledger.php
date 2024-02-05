@@ -3,11 +3,9 @@
 namespace App\Models\Accounting;
 
 use App\Models\MainModelSoft;
+use App\Models\System\ModelGroup;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Ledger extends MainModelSoft
 {
@@ -21,7 +19,7 @@ class Ledger extends MainModelSoft
 
     public function group()
     {
-        return $this->belongsTo(TransactionGroup::class, 'group_id');
+        return $this->belongsTo(ModelGroup::class, 'group_id');
     }
 
     public function creator()

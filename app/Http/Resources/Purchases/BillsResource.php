@@ -2,13 +2,9 @@
 
 namespace App\Http\Resources\Purchases;
 
-use App\Http\Resources\Accounting\AccountResource;
-use App\Http\Resources\Accounting\EntryResource;
-use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\TaxResource;
-use App\Http\Resources\Accounting\TransactionGroupResource;
-use App\Http\Resources\Inventory\WarehouseResource;
 use App\Http\Resources\NameResource;
+use App\Http\Resources\System\ModelGroupResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,16 +30,16 @@ class BillsResource extends JsonResource
             'tax_total' =>  $this->whenNotNull($this->tax_total),
             'total' => $this->whenNotNull($this->total),
 
-            'items' => ItemResource::collection($this->whenLoaded('items')),
+            'items' => BillItemRequest::collection($this->whenLoaded('items')),
             'treasury' => new NameResource($this->whenLoaded('treasury')),
-            'supplier' => new NameResource($this->whenLoaded('supplier')),
+            'secondParty' => new NameResource($this->whenLoaded('second_party')),
             'warehouse' => new NameResource($this->whenLoaded('warehouse')),
             'currency' => new NameResource($this->whenLoaded('currency')),
             'tax' => new TaxResource($this->whenLoaded('tax')),
 
             'responsible' => new NameResource($this->whenLoaded('responsible')),
 
-            'group' => new TransactionGroupResource($this->whenLoaded('group')),
+            'group' => new ModelGroupResource($this->whenLoaded('group')),
         ];
     }
 }

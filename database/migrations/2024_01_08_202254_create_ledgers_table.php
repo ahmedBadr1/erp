@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
+            $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();
             $table->foreignId('created_by')->constrained('users')->onUpdate('cascade');
             $table->foreignId('responsible_id')->nullable()->constrained('users')->onUpdate('cascade');
             $table->foreignId('edited_by')->nullable()->constrained('users')->onUpdate('cascade')->onDelete('set null');

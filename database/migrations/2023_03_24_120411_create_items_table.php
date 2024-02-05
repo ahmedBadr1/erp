@@ -13,26 +13,22 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Inventory\Product::class)->nullable();
-            $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
-            $table->string('quantity');
-            $table->decimal('price',15,4);
-            $table->decimal('cost',15,4);
+            $table->foreignIdFor(\App\Models\Inventory\Product::class);
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class);
+            $table->integer('quantity');
+            $table->decimal('price',15,4)->nullable();
+            $table->decimal('avg_cost',15,4)->nullable();
+            $table->morphs('second_party');
+            $table->integer('balance');
 
-//            $table->decimal('tax_exclusive',10,2);
-//            $table->decimal('tax_inclusive',10,2);
 
             $table->foreignIdFor(\App\Models\Inventory\Unit::class)->nullable();
 
-            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class,'warehouse_id')->nullable();
-            $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class,)->nullable();
-
-            $table->foreignIdFor(\App\Models\User::class);
-
-            $table->text('comment')->nullable();
-
-
-            $table->dateTime('expire_at')->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\InvTransaction::class)->nullable();
+//            $table->decimal('local_max_limit', 12, 2)->nullable();
+//            $table->decimal('local_min_limit', 12, 2)->nullable();
+//            $table->decimal('local_reorder_limit', 12, 2)->nullable();
+            $table->boolean('in');
             $table->timestamps();
             $table->softDeletes();
         });

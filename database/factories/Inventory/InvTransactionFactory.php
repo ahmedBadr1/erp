@@ -34,7 +34,7 @@ class InvTransactionFactory extends Factory
             'created_by' => 1,
 //            'edited_by' => 1,
 //            'supplier_id'=> Supplier::all()->random()->id,
-            'from_id'=>  Warehouse::all()->random()->id,
+            'warehouse_id'=>  Warehouse::all()->random()->id,
 //            'to_id'=>  Warehouse::all()->random()->id,
         ];
     }

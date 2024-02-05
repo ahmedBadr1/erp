@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Accounting;
 
 use App\Http\Resources\NameResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\System\ModelGroupResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,7 +33,7 @@ class LedgerResource extends JsonResource
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
-            'group' => new TransactionGroupResource($this->whenLoaded('group')),
+            'group' => new ModelGroupResource($this->whenLoaded('group')),
 
             'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
             'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),

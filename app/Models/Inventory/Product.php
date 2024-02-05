@@ -5,6 +5,7 @@ namespace App\Models\Inventory;
 use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
 use App\Models\MainModelSoft;
+use App\Models\Purchases\Supplier;
 use App\Models\User;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -14,7 +15,7 @@ class Product extends MainModelSoft
     use LogsActivity;
 
     protected $fillable = [
-        'name', 'short_name', 'warehouse_id', 'origin_number', 'type','barcode', 'hs_code', 'batch_number',
+        'name', 'short_name','balance', 'warehouse_id', 'origin_number', 'type','barcode', 'hs_code', 'batch_number',
       'warehouse_shelf_id',  'part_number', 'sku', 'location', 'oe_number','e_code' ,'e_code_type',
         's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost','last_cost', 'fifo', 'lifo',
         'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit','reorder_limit',
@@ -36,7 +37,7 @@ class Product extends MainModelSoft
 
     public function supplier()
     {
-        return $this->belongsTo(Warehouse::class);
+        return $this->belongsTo(Supplier::class);
     }
 
     public function responsible()
@@ -47,6 +48,11 @@ class Product extends MainModelSoft
     public function items()
     {
         return $this->hasMany(Item::class);
+    }
+
+    public function lastItem ()
+    {
+        return $this->hasOne(Item::class)->latestOfMany()->withDefault();
     }
 
     public function user()
@@ -69,10 +75,17 @@ class Product extends MainModelSoft
         return $this->belongsTo(Unit::class);
     }
 
-    public function transactions()
+    public function stocks()
     {
-        return $this->belongsToMany(InvTransaction::class, 'product_inv_transaction')->withPivot('quantity','price','cost');
+        return $this->hasMany(Stock::class);
     }
+
+    public function stock()
+    {
+        return $this->hasOne(Stock::class)->latestOfMany();
+    }
+
+
 
     public function getActivitylogOptions(): LogOptions
     {

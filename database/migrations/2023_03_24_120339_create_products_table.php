@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Accounting\Tax;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,8 @@ return new class extends Migration
             $table->string('short_name')->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\WarehouseShelf::class)->nullable();
+            $table->integer('balance')->default(0);
+
             $table->string('part_number')->nullable();
             $table->string('sku')->nullable();
             $table->string('location')->nullable();
@@ -47,6 +50,9 @@ return new class extends Migration
             $table->string('barcode')->nullable();
             $table->string('hs_code')->nullable();
             $table->string('batch_number')->nullable();
+            $table->foreignIdFor(Tax::class)->nullable();
+            $table->foreignIdFor(Tax::class,'withholding_tax_id')->nullable();
+
             $table->foreignIdFor(\App\Models\Inventory\Unit::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Brand::class)->nullable();
             $table->foreignIdFor(\App\Models\Purchases\Supplier::class)->nullable();

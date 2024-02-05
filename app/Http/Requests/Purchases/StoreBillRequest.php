@@ -26,9 +26,8 @@ class StoreBillRequest extends FormRequest
             'type' => 'required|string|in:PO',
             'warehouse_id' => 'required|exists:warehouses,id',
             'supplier_id' => 'required|exists:suppliers,id',
-            'responsible_id' => 'required|exists:users,id',
+            'responsible_id' => 'nullable|exists:users,id',
             'treasury_id' => 'required|exists:accounts,id',
-            'tax_id' => 'required|exists:taxes,id',
 
             'date' => 'required|date',
             'deliver_at' => 'nullable|date',// |after:date
@@ -39,8 +38,10 @@ class StoreBillRequest extends FormRequest
             'items.*.product_id' => ['required', 'exists:products,id',],
             'items.*.quantity' => ['required', 'numeric', 'gt:0'],
             'items.*.price' => ['required', 'numeric', 'gt:0'],
+            'items.*.sub_total' => ['required', 'numeric', 'gt:0'],
             'items.*.total' => ['required', 'numeric', 'gt:0'],
             'items.*.barcode' => ['nullable', 'string'],
+            'items.*.tax' => ['nullable'],
             'items.*.comment' => ['nullable', 'string'],
 
             'gross_total' => 'required|numeric|gt:0',

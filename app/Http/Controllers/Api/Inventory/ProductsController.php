@@ -96,9 +96,9 @@ class ProductsController extends ApiController
         if ($request->has("keywords")) {
             $products = $this->service->search($request->get("keywords"))->limit(5)->get();
         }else{
-            $products = $this->service->all(['id','name']);
+            $products = $this->service->all(['id','name','tax_id']);
         }
-        return $this->successResponse(['products' => NameResource::collection($products)]);
+        return $this->successResponse(['products' => NameResource::collection($products) ]);
     }
 
     public function tree(Request $request)

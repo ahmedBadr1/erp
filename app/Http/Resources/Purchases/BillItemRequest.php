@@ -9,7 +9,7 @@ use App\Http\Resources\NameResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ItemResource extends JsonResource
+class BillItemRequest extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,6 +24,9 @@ class ItemResource extends JsonResource
             'quantity' => $this->quantity,
             'price' => $this->price,
             'cost' => $this->cost,
+            'tax_value' => $this->tax_value,
+            'sub_total' => $this->sub_total,
+            'total' => $this->total,
             'comment' => $this->comment,
             'product' =>  new NameResource($this->whenLoaded('product')),
             'supplier' =>  new NameResource($this->whenLoaded('supplier')),

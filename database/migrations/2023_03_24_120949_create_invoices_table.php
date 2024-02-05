@@ -13,21 +13,42 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('invoiced_at');
-            $table->dateTime('due_at');
-            $table->string('number')->nullable();
-            $table->text('notes')->nullable();
-            $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable();
-            $table->decimal('paid',15,2)->nullable();
-            $table->decimal('sub_total',15,2);
-            $table->decimal('tax_total',15,2)->default(0);
-            $table->decimal('discount',15,2)->default(0);
-            $table->decimal('total',15,2);
+            $table->string('code');
+            $table->foreignIdFor(\App\Models\Accounting\Account::class,'treasury_id')->nullable(); // 1
+            $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();
+            $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
+            $table->foreignIdFor(\App\Models\Sales\Client::class); // 3
+            $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable(); // 3
+            $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable(); // 3
 
-            $table->foreignIdFor(\App\Models\Sales\Client::class);
+            $table->float('ex_rate')->nullable();
+            $table->decimal('currency_total',15,4)->nullable();
+
+
+
+            $table->foreignIdFor(\App\Models\Inventory\Branch::class)->nullable();
             $table->foreignIdFor(\App\Models\System\Status::class);
+            $table->foreignIdFor(\App\Models\User::class,'responsible_id')->nullable(); // 3
+            $table->foreignIdFor(\App\Models\User::class,'created_by')->nullable(); // 3
+            $table->foreignIdFor(\App\Models\User::class,'updated_by')->nullable(); // 3
 
-            $table->integer('parent_id')->default(0);
+
+            $table->string('paper_ref')->nullable();
+            $table->dateTime('date');
+            $table->dateTime('deliver_at')->nullable();
+
+            $table->boolean('tax_exclusive');
+            $table->boolean('tax_inclusive');
+            $table->boolean('cost_allocation')->default(false);
+
+            $table->decimal('paid',15,4)->nullable();
+            $table->decimal('gross_total',15,4)->comment("total Invoice Items value and qty");
+            $table->decimal('discount',15,4)->comment("Discount cal to value not percentage")->default(0);
+            $table->decimal('sub_total',15,4)->comment("Gross Total after discount");
+            $table->decimal('tax_total',15,4)->comment("Tax value")->default(0);
+            $table->decimal('total',15,4)->comment("Sub Total after tax");
+            $table->text('note')->nullable();
+            $table->boolean('canceled')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

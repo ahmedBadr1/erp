@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories\Accounting;
+namespace Database\Factories\Inventory;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Accounting\TransactionGroup>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Inventory\Stock>
  */
-class TransactionGroupFactory extends Factory
+class StockFactory extends Factory
 {
     /**
      * Define the model's default state.

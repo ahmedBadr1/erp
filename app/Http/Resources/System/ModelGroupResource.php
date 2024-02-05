@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Accounting;
+namespace App\Http\Resources\System;
 
 use App\Http\Resources\NameResource;
-use App\Http\Resources\Purchases\BillsResource;
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TransactionGroupResource extends JsonResource
+class ModelGroupResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -28,7 +26,9 @@ class TransactionGroupResource extends JsonResource
 //            'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
 
 
-            'bills' => NameResource::collection($this->whenLoaded('bills')),
+            'po' => NameResource::collection($this->whenLoaded('po')),
+            'so' => NameResource::collection($this->whenLoaded('so')),
+
 
             'firstTransaction' => new NameResource($this->whenLoaded('firstTransaction')),
             'lastTransaction' => new NameResource($this->whenLoaded('lastTransaction')),

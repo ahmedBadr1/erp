@@ -7,8 +7,11 @@ use App\Models\Accounting\Entry;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use App\Models\Inventory\Warehouse;
+use App\Models\Purchases\Supplier;
+use App\Models\Sales\Client;
 use Database\Seeders\AccountingSeeder;
 use Database\Seeders\PurchasesSeeder;
+use Database\Seeders\SalesSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Process\Pool;
 use Illuminate\Support\Facades\Process;
@@ -38,14 +41,11 @@ class Seed extends Command
      */
     public function handle()
     {
-        $treasuries = Account::whereHas('type',fn($q)=>$q->where('code','TR'))->pluck('id');
+        $treasuries = Account::with('costCenter')->whereHas('type',fn($q)=>$q->where('code','TR'))->get();
 
-        $warehouses =  Account::whereHas('type',fn($q)=>$q->where('code','I'))->pluck('id');
-
-        $clients =  Account::whereHas('type',fn($q)=>$q->where('code','AR'))->pluck('id');
-
-        $suppliers =  Account::whereHas('type',fn($q)=>$q->where('code','AP'))->pluck('id');
-
+        $warehouses =  Warehouse::with('account')->get();
+        $clients = Client::with('account')->get();
+        $suppliers = Supplier::with('account')->get();
 
         $processes = (int)$this->option('processes');
         if ($processes) {
@@ -56,7 +56,7 @@ class Seed extends Command
                 echo ".";
             }
 //            try {
-            $this->insert($treasuries->random(),$warehouses->random(),$suppliers->random(),$clients->random());
+            $this->insert($i ,$treasuries->random(),$warehouses->random(),$suppliers->random(),$clients->random());
 //            } catch (\Throwable $e){
 //                // nothing
 //            }
@@ -65,12 +65,14 @@ class Seed extends Command
         echo "\nDone Seeding ;) \n";
     }
 
-    protected function insert($treasuryId , $warehouseId,$supplierId,$clientId)
+    protected function insert($i,$treasury , $warehouse,$supplier,$client)
     {
-//        AccountingSeeder::seed();
-        AccountingSeeder::seedType('CI',null,$treasuryId);
-        AccountingSeeder::seedType('CO',null,$treasuryId);
-        PurchasesSeeder::seedType('PO',$warehouseId,$supplierId,$treasuryId);
+        AccountingSeeder::seedType('CI',null,$treasury,$client->account);
+        AccountingSeeder::seedType('CO',null,$treasury,$supplier->account);
+        PurchasesSeeder::seedType(type: 'PO', warehouse: $warehouse,supplier: $supplier,treasury:  $treasury);
+        if($i > 20){
+            SalesSeeder::seedType(type: 'SO', warehouse: $warehouse,client: $client,treasury:  $treasury);
+        }
 
     }
 

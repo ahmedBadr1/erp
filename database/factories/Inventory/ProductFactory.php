@@ -2,6 +2,7 @@
 
 namespace Database\Factories\Inventory;
 
+use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
 use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Unit;
@@ -43,9 +44,13 @@ class ProductFactory extends Factory
             'warehouse_id' => Warehouse::all()->random()?->id,
 //            'warehouse_shelf_id' => WarehouseShelf::all()?->random()?->id,
             'unit_id' => Unit::all()?->random()?->id,
+            'tax_id' => Tax::all()?->random()?->id ,
+//            'withholding_tax_id' => Tax::all()?->random()?->id ,
+
 //            'brand_id' => Brand::all()?->random()?->id ,
             'supplier_id' => Supplier::all()->random()?->id,
             'user_id' => User::all()->random()?->id,
+
         ];
     }
 }

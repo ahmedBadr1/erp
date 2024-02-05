@@ -2,14 +2,8 @@
 
 namespace App\Http\Resources\Inventory;
 
-use App\Http\Resources\Accounting\AccountChartResource;
-use App\Http\Resources\Accounting\AccountResource;
-use App\Http\Resources\Accounting\EntryResource;
-use App\Http\Resources\Accounting\LedgerResource;
-use App\Http\Resources\Accounting\TransactionGroupResource;
 use App\Http\Resources\NameResource;
-use App\Http\Resources\Purchases\ItemResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\System\ModelGroupResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -37,13 +31,12 @@ class InvTransactionResource extends JsonResource
 
 
             'items' => ItemResource::collection($this->whenLoaded('items')),
-            'group' => new TransactionGroupResource($this->whenLoaded('group')),
-            'from' => new NameResource($this->whenLoaded('from')),
-            'to' => new NameResource($this->whenLoaded('to')),
-            'supplier' => new NameResource($this->whenLoaded('supplier')),
-            'client' => new NameResource($this->whenLoaded('client')),
+            'group' => new ModelGroupResource($this->whenLoaded('group')),
+            'warehouse' => new NameResource($this->whenLoaded('warehouse')),
+            'secondParty' => new NameResource($this->whenLoaded('second_party')),
+
             'bill' => new NameResource($this->whenLoaded('bill')),
-            'invoice' => new NameResource($this->whenLoaded('invoice')),
+//            'invoice' => new NameResource($this->whenLoaded('invoice')),
 
 
             'creator' => new NameResource ($this->whenLoaded('creator')),

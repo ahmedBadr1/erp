@@ -58,9 +58,13 @@ class BillsController extends ApiController
 
         // Notes Payable
 
-//        $billNumber = Bill::latest()->first()->number; + 1
+        $billCode = Bill::latest()->value('code')  ;
 
+        if (preg_match('/^PO-[1-9]-(\d+)/', $billCode, $matches)) {
+            $count = $matches[1] + 1;
+        }
         return $this->successResponse([
+            'count' => $count ?? null,
             'warehouses' => $warehouses,
             'branches' => $branches,
             'treasuries' => $treasuries,
@@ -86,7 +90,7 @@ class BillsController extends ApiController
 
     public function show(Request $request, $code)
     {
-        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.bills', 'supplier', 'warehouse','treasury', 'currency','tax', 'responsible')->where('code', $code)->firstOrFail();
+        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.po','group.so', 'secondParty', 'warehouse','treasury', 'currency','tax', 'responsible')->where('code', $code)->firstOrFail();
         return $this->successResponse(['bill' => new  BillsResource($bill)]);
     }
 }

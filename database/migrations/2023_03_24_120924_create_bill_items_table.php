@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoice_items', function (Blueprint $table) {
+        Schema::create('bill_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Sales\Invoice::class)->nullable();
+            $table->foreignIdFor(\App\Models\Purchases\Bill::class)->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Product::class);
             $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable();
 
             $table->integer('quantity');
             $table->decimal('price',15,4);
             $table->decimal('cost',15,4);
+            $table->decimal('avg_cost',15,4)->nullable();
             $table->decimal('tax_value',15,4);
             $table->decimal('sub_total',15,4);
             $table->decimal('total',15,4);
@@ -36,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoice_items');
+        Schema::dropIfExists('bill_items');
     }
 };

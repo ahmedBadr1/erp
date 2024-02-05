@@ -11,11 +11,17 @@ use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Node;
 use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
+use App\Models\Inventory\InvTransaction;
+use App\Models\Inventory\InvTransactionItem;
+use App\Models\Inventory\Item;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Bill;
+use App\Models\Purchases\BillItem;
 use App\Models\Purchases\Supplier;
+use App\Models\Sales\Client;
+use App\Models\Sales\Invoice;
 use App\Models\System\Address;
 use App\Models\System\Contact;
 use App\Models\System\Group;
@@ -66,10 +72,18 @@ class AppServiceProvider extends ServiceProvider
 
             'product' => Product::class,
             'warehouse' => Warehouse::class,
+            'item' => Item::class,
             'unit' => Unit::class,
+            'invTransaction' => InvTransaction::class,
+            'InvTransactionItem' => InvTransactionItem::class,
+
 
             'supplier' => Supplier::class,
             'bill' => Bill::class,
+            'billItem' => BillItem::class,
+
+            'client' => Client::class,
+            'invoice' => Invoice::class,
 
         ]);
 

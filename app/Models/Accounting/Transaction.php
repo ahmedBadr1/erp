@@ -2,14 +2,10 @@
 
 namespace App\Models\Accounting;
 
-use App\Models\Inventory\Product;
 use App\Models\MainModelSoft;
+use App\Models\System\ModelGroup;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Transaction extends MainModelSoft
 {
@@ -50,7 +46,7 @@ class Transaction extends MainModelSoft
 
     public function group()
     {
-        return $this->belongsTo(TransactionGroup::class, 'group_id');
+        return $this->belongsTo(ModelGroup::class, 'group_id');
     }
     public function ledger()
     {

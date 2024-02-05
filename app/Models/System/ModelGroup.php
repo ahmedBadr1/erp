@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\Accounting;
+namespace App\Models\System;
 
+use App\Models\Accounting\Ledger;
+use App\Models\Accounting\Transaction;
 use App\Models\Inventory\InvTransaction;
 use App\Models\MainModel;
 use App\Models\Purchases\Bill;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class TransactionGroup extends MainModel
+class ModelGroup extends MainModel
 {
     public $timestamps = false ;
 
@@ -30,9 +30,14 @@ class TransactionGroup extends MainModel
     }
 
 
-    public function bills()
+    public function po()
     {
-        return $this->hasMany(Bill::class,'group_id');
+        return $this->hasMany(Bill::class,'group_id')->where('type','PO');
+    }
+
+    public function so()
+    {
+        return $this->hasMany(Bill::class,'group_id')->where('type','SO');
     }
 
     public function firstTransaction()
@@ -46,9 +51,9 @@ class TransactionGroup extends MainModel
     }
 
 
-    public function firstWhTransaction()
+    public function firstInvTransaction()
     {
-        return $this->hasOne(Transaction::class,'group_id')->where('type','WH')->oldestOfMany();
+        return $this->hasOne(InvTransaction::class,'group_id')->oldestOfMany();
     }
 
     public function ciTransactions()

@@ -25,6 +25,8 @@ return new class extends Migration
             $table->float('d_opening')->nullable();
             $table->dateTime('opening_date')->nullable();
             $table->float('balance')->default(0);
+
+            $table->boolean('usable')->default(true)->index();
             $table->boolean('system')->default(false)->index();
             $table->boolean('active')->default(true)->index();
             $table->foreignIdFor(\App\Models\Accounting\Node::class);

@@ -3,6 +3,7 @@
 namespace Database\Factories\Accounting;
 
 use App\Models\Accounting\AccountType;
+use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Node;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,7 +31,7 @@ class AccountFactory extends Factory
             'node_id' => Node::isLeaf()->get()->random()->id,//
             'currency_id' => Currency::all()->random()->id,
 //            'account_type_id' => AccountType::all()->random()->id,
-
+            'cost_center_id' => CostCenter::all()->random()->id,
 //            'status_id' => $statues[array_rand($statues)],
 //            'opening_balance' => $this->faker->numberBetween(100,10000),
 //            'opening_date' => $this->faker->dateTimeThisYear(),

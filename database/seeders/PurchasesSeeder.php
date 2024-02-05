@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Enums\TransactionTypeGroups;
-use App\Models\Accounting\Transaction;
-use App\Models\Accounting\TransactionGroup;
 use App\Models\Inventory\InvTransaction;
+use App\Models\Inventory\InvTransactionItem;
 use App\Models\Inventory\Item;
+use App\Models\Inventory\Product;
+use App\Models\Inventory\Stock;
 use App\Models\Purchases\Bill;
-use App\Models\Purchases\Supplier;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Purchases\BillItem;
+use App\Models\System\ModelGroup;
 use Illuminate\Database\Seeder;
 
 class PurchasesSeeder extends Seeder
@@ -25,36 +25,118 @@ class PurchasesSeeder extends Seeder
 //        });
     }
 
-    public static function seedType($type,$warehouseId,$supplierId,$treasuryId)
+    /**
+     * @throws RandomException
+     */
+    public static function seedType($type, $warehouse, $supplier, $treasury)
     {
-        if ($type === 'PO'){
-            $group = TransactionGroup::create();
+        if ($type === 'PO') {
+            $group = ModelGroup::create();
 
-           $bill = Bill::factory()->create([
-               'currency_id' => 1,
+            $items = BillItem::factory(random_int(2, 5))->create();
+
+            $gross_total = 0;
+            $tax_total = 0;
+
+            $sub_total = 0;
+            $total = 0;
+            $discountRate = random_int(1, 30);
+            foreach ($items as $item) {
+                $gross_total += $item->sub_total;
+                $tax_total += $item->tax_value;
+            }
+            $discount = $gross_total * $discountRate / 100;
+            $sub_total = $gross_total - $discount;
+            $total = $sub_total + $tax_total;
+
+            $bill = Bill::factory()->create([
+                'type' => $type,
+                'gross_total' => $gross_total,
+                'discount' => $discount,
+                'sub_total' => $sub_total,
+                'tax_total' => $tax_total,
+                'total' => $total,
+                'currency_id' => 1,
                 'ex_rate' => 1,
-               'treasury_id' => $treasuryId,
-                'warehouse_id' => $warehouseId,
-                'supplier_id' => $supplierId,
-               'group_id' => $group->id,
-            ]);
-           $transaction =  InvTransaction::factory()->create([
-                'type' => 'RS',
-                "from_id" => $warehouseId,
-                "supplier_id" => $supplierId,
-                "bill_id" =>$bill->id,
-                'amount' => $bill->total,
-               'group_id' => $group->id,
+                'treasury_id' => $treasury->id,
+                'warehouse_id' => $warehouse->id,
+                'second_party_type' => 'supplier',
+                'second_party_id' => $supplier->id,
+                'group_id' => $group->id,
             ]);
 
-            $items =  Item::factory(rand(2,5))->create([
+            $transaction = InvTransaction::factory()->create([
                 'bill_id' => $bill->id,
-                'warehouse_id' => $warehouseId ,
+                'type' => 'RS',
+                'amount' => $sub_total,
+                'warehouse_id' => $warehouse->id,
+                'second_party_type' => 'supplier',
+                'second_party_id' => $supplier->id,
+                'group_id' => $group->id,
+                'accepted_at' => fake()->boolean(80) ? now() : null
             ]);
 
-            AccountingSeeder::seedType('CO',$group->id,$treasuryId,$supplierId,$bill->total);
-            AccountingSeeder::seedPI('PI',$group->id,$warehouseId,$supplierId,$bill->total,$bill->sub_total,$bill->tax_total);
 
+            foreach ($items as $item) {
+                $cost = $item->price - ($item->price * $discountRate / 100);
+                $item->update([
+                    'bill_id' => $bill->id,
+                    'cost' => $cost,
+                ]);
+                InvTransactionItem::factory()->create([
+                    'quantity' => $item->quantity,
+                    'price' => $cost,
+                    'product_id' => $item->product_id,
+//                    'warehouse_id' => $warehouse->id,
+                    'inv_transaction_id' => $transaction->id,
+                    'accepted' => (bool)$transaction->accepted_at,
+                ]);
+            }
+
+            AccountingSeeder::seedType('CO', $group->id, $treasury, $supplier->account, $bill->total);
+            AccountingSeeder::seedPI(type: 'PI', groupId: $group->id, warehouseId: $warehouse->account->id, supplierId: $supplier->account->id,
+                total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount);
+
+
+            if (isset($transaction->accepted_at)) {
+                foreach ($transaction->items()->get() as $item) {
+                    $stock  = Stock::firstOrCreate([
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $transaction->warehouse_id,
+                    ]);
+//                    $product = Product::with(["stock" => fn($q) => $q->where('warehouse_id', $transaction->warehouse_id)])->find($item->product_id);
+                    $product = Product::withSum('stocks as stocks_balance','balance')->find($item->product_id);
+
+                    if ($stock->balance) {
+                        $balance = $stock->balance + $item->quantity;
+                    } else {
+                        $balance = $item->quantity;
+                    }
+                    $stock->update([
+                        'balance' => $balance
+                    ]);
+
+                    $avg_cost = ( $product->avg_cost * $product->stocks_balance + $item->quantity * $item->price ) / ($product->stocks_balance +  $item->quantity);
+
+
+                    $product->update(['avg_cost'=>$avg_cost]);
+
+                    Item::factory()->create([
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'avg_cost' => $avg_cost ,
+                        'balance' => $balance,
+                        'product_id' => $item->product_id,
+                        'warehouse_id' => $warehouse->id,
+                        'inv_transaction_id' => $transaction->id,
+                        'second_party_type' => 'supplier',
+                        'second_party_id' => $supplier->id,
+                        'in' => true,
+                    ]);
+
+
+                }
+            }
 //            dd($items->pluck('id'));
         }
     }

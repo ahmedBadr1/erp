@@ -16,7 +16,7 @@ class Account extends MainModelSoft
 
     protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id',
         'accept_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
-        'opening_date', 'system', 'active', 'node_id', 'currency_id','group_account_id', 'status_id'];
+        'opening_date','usable', 'system', 'active', 'node_id', 'currency_id','group_account_id', 'status_id'];
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
 

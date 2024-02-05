@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->string('code');
+            $table->string('type');
             $table->foreignIdFor(\App\Models\Accounting\Account::class,'treasury_id')->nullable(); // 1
-            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
+            $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();
             $table->foreignIdFor(\App\Models\Inventory\Warehouse::class); // 2
-            $table->foreignIdFor(\App\Models\Purchases\Supplier::class); // 3
+            $table->morphs('second_party');
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable(); // 3
             $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable(); // 3
 

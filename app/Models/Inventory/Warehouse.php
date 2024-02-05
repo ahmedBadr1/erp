@@ -3,6 +3,7 @@
 namespace App\Models\Inventory;
 
 
+use App\Models\Accounting\Account;
 use App\Models\Employee\Employee;
 use App\Models\MainModelSoft;
 use App\Models\User;
@@ -20,17 +21,27 @@ class Warehouse extends MainModelSoft
         'name',
         'type',
         'address',
-        'manager_id',
+        'account_id',
     ];
 
-    public function products()
+    public function account()
     {
-        return $this->hasMany(Product::class);
+        return $this->belongsTo(Account::class,);
     }
 
-    public function items ()
+
+    public function stocks()
+    {
+        return $this->hasMany(Stock::class);
+    }
+    public function items()
     {
         return $this->hasMany(Item::class);
+    }
+
+    public function lastItem ()
+    {
+        return $this->hasOne(Item::class)->latestOfMany();
     }
     public function manager()
     {

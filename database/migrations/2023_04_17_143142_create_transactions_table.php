@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('note')->nullable();
             $table->string('paper_ref')->nullable();
             $table->dateTime('due');
-            $table->foreignIdFor(\App\Models\Accounting\TransactionGroup::class,'group_id')->nullable();
+            $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Ledger::class)->nullable();
             $table->foreignIdFor(\App\Models\Accounting\Currency::class)->nullable();
             $table->float('ex_rate')->nullable();

@@ -14,7 +14,7 @@ use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use App\Services\Accounting\LedgerService;
-use App\Services\Accounting\TransactionGroupService;
+use App\Services\System\ModelGroupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -64,10 +64,10 @@ class TransactionController extends ApiController
     {
         if (preg_match('/^JE-(\d+)/', $code, $matches)) {
             $id = $matches[1];
-            $ledger = Ledger::with('transactions','group.invTransactions','group.ledgers', 'group.transactions', 'group.bills', 'entries.account', 'entries.costCenter', 'responsible')->whereId( $id)->firstOrFail();
+            $ledger = Ledger::with('transactions', 'group.invTransactions', 'group.ledgers', 'group.transactions','group.po','group.so', 'entries.account', 'entries.costCenter', 'responsible')->whereId($id)->firstOrFail();
             return $this->successResponse(new  LedgerResource($ledger));
         } else {
-            $transaction = Transaction::with('ledger','group.invTransactions','group.ledgers', 'group.transactions', 'group.bills', 'ledger.entries', 'ledger.entries.account', 'ledger.entries.costCenter', 'firstParty', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
+            $transaction = Transaction::with('ledger', 'group.invTransactions', 'group.ledgers', 'group.transactions','group.po','group.so', 'ledger.entries', 'ledger.entries.account', 'ledger.entries.costCenter', 'firstParty', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
             return $this->successResponse(new  TransactionResource($transaction));
         }
     }
@@ -78,13 +78,13 @@ class TransactionController extends ApiController
 
         DB::beginTransaction();
         try {
-            $group = (new TransactionGroupService)->store();
+            $group = (new ModelGroupService)->store();
             if ($data['type'] === 'CI') {
-                $e = $this->service->cashin(groupId: $group->id,treasuryId:  $data['treasury'],accounts:  $data['accounts'],amount:  $data['amount'],currencyId:  $data['currency_id'],date:  $data['due'] ?? null,note:  $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(),system:  0);
+                $this->service->cashin(groupId: $group->id, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
             } elseif ($data['type'] === 'CO') {
-                $e = $this->service->cashout(groupId: $group->id,treasuryId: ['treasury'], accounts: ['accounts'],amount:  $data['amount'],currencyId:  $data['currency_id'],date:  $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ??  auth('api')->id(), system: 0);
+                $this->service->cashout(groupId: $group->id, treasuryId: ['treasury'], accounts: ['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
             } else {
-                $e = $this->service->jouranlEntry(data: $data , groupId: $group->id);
+                $this->service->jouranlEntry(data: $data, groupId: $group->id);
             }
         } catch (\Exception $e) {
             DB::rollBack();

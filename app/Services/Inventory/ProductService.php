@@ -9,12 +9,13 @@ use App\Services\ClientsExport;
 use App\Services\MainService;
 use App\Services\System\TagService;
 use Exception;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductService extends MainService
 {
 
-    public function all($fields = null,$active=1)
+    public function all($fields = null, $active = 1)
     {
         $data = $fields ?? (new Product())->getFillable();
 
@@ -42,7 +43,7 @@ class ProductService extends MainService
             $product = Product::create($data);
 
             if (isset($data['tags'])) {
-                (new TagService())->sync($data['tags'] , $product,'product');
+                (new TagService())->sync($data['tags'], $product, 'product');
             }
             return true;
         } catch (Exception $e) {
@@ -69,8 +70,28 @@ class ProductService extends MainService
         }
     }
 
-    public function export($collection =null)
+
+
+
+    public function updateBalance($productId)
     {
-        return Excel::download(new ProductsExport($collection), 'products_'.date('d-m-Y').'.xlsx');
+
+        $product = Product::with('stocks')->withSum('stocks as total_balance', 'balance')->find($productId);
+
+        $product->balance = (int) $product->total_balance ;
+
+//        $product = Product::whereHas('items', fn($q) => $q->where('quantity', '>', 0))
+//            ->withSum('items as items_quantity', 'quantity')
+//            ->withSum('items as items_price', 'price')->find($productId);
+
+//        $product->balance = $product->items_quantity;
+//        $product->avg_cost = $product->items_price / $product->items_quantity;
+        $product->save();
+        return true;
+    }
+
+    public function export($collection = null)
+    {
+        return Excel::download(new ProductsExport($collection), 'products_' . date('d-m-Y') . '.xlsx');
     }
 }

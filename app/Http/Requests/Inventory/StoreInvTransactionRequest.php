@@ -28,7 +28,7 @@ class StoreInvTransactionRequest extends FormRequest
             'supplier' => "required|boolean",
             'supplier_id' => 'required_if:supplier,1|exists:suppliers,id',
             'other_id' => 'required_if:supplier,0',
-            'responsible_id' => 'required|exists:users,id',
+            'responsible_id' => 'nullable|exists:users,id',
 
             'date' => 'required|date',
             'deliver_at' => 'nullable|date',// |after:date

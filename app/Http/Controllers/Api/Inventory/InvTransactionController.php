@@ -5,29 +5,18 @@ namespace App\Http\Controllers\Api\Inventory;
 use App\Http\Controllers\Api\Accounting\TransactionsResourses;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Accounting\PostingRequest;
-use App\Http\Requests\Accounting\StoreTransactionRequest;
 use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\Inventory\StoreInvTransactionRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Requests\TypeRequest;
-use App\Http\Resources\Accounting\LedgerResource;
-use App\Http\Resources\Accounting\TransactionResource;
 use App\Http\Resources\Inventory\InvTransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\CostCenter;
-use App\Models\Accounting\Ledger;
-use App\Models\Accounting\Transaction;
-use App\Models\Accounting\TransactionGroup;
 use App\Models\Inventory\InvTransaction;
-use App\Models\Inventory\Warehouse;
-use App\Models\System\Status;
-use App\Services\Accounting\AccountService;
-use App\Services\Accounting\CurrencyService;
+use App\Models\System\ModelGroup;
 use App\Services\Accounting\LedgerService;
-use App\Services\Hr\BranchService;
 use App\Services\Inventory\InvTransactionService;
 use App\Services\Inventory\WarehouseService;
-use App\Services\System\TaxService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -76,29 +65,10 @@ class InvTransactionController extends ApiController
         $warehouses = (new WarehouseService())->all(['name', 'id']);
         $users = (new UserService())->all(['username', 'id']);
         if (in_array($request->type,['RS','IR'])){
-            $others = [
-                [
-                    'id' => 1,
-                    'name' => 'إستبدالات',
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'تسوية زيادة الجرد',
-                ],
-            ];
+         $others = InvTransaction::$inOther;
         }else{
-            $others = [
-                [
-                    'id' => 3,
-                    'name' => 'أصول ثابتة',
-                ],
-                [
-                    'id' => 4,
-                    'name' => 'تسوية عجز الجرد',
-                ],
-            ];
+            $others = InvTransaction::$outOther;
         }
-
 
         return $this->successResponse([
             'warehouses' => $warehouses,
@@ -109,7 +79,7 @@ class InvTransactionController extends ApiController
 
     public function show(Request $request, $code)
     {
-            $transaction = InvTransaction::with('from','to','group.ledgers', 'group.transactions','group.invTransactions', 'group.bills', 'items.product', 'supplier','client','bill','invoice', 'responsible')->where('code', $code)->firstOrFail();
+            $transaction = InvTransaction::with('warehouse','group.ledgers', 'group.transactions','group.invTransactions', 'group.po','group.so', 'items.product', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
             return $this->successResponse(new  InvTransactionResource($transaction));
     }
 
@@ -119,8 +89,8 @@ class InvTransactionController extends ApiController
 
         DB::beginTransaction();
         try {
-            $groupId = TransactionGroup::create()->id;
-                $this->service->createType(type:$data['type'], groupId: $groupId,items: $data['items'], amount: $data['total'], from_id: $data['warehouse_id'], supplier_id: $data['supplier_id'] ?? null,client_id: $data['client_id'] ?? null, due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
+            $groupId = ModelGroup::create()->id;
+                $this->service->createType(type: $data['type'], groupId: $groupId,items: $data['items'], amount: $data['total'], warehouse_id: $data['warehouse_id'], supplier_id: $data['supplier_id'] ?? null,client_id: $data['client_id'] ?? null, due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 409);

@@ -1,31 +1,31 @@
 <?php
 
-namespace App\Services\Accounting;
+namespace App\Services\System;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Accounting\TransactionGroup;
+use App\Models\System\ModelGroup;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
-class TransactionGroupService extends MainService
+class ModelGroupService extends MainService
 {
 
     public function all($fields = null, $active = 1)
     {
-        $data = $fields ?? (new TransactionGroup())->getFillable();
+        $data = $fields ?? (new ModelGroup())->getFillable();
 
-        return TransactionGroup::active($active)->get($data);
+        return ModelGroup::active($active)->get($data);
     }
 
 
     public function search($search)
     {
         $search = trim($search);
-        return empty($search) ? TransactionGroup::query()
-            : TransactionGroup::query()->where('name', 'like', '%' . $search . '%')
+        return empty($search) ? ModelGroup::query()
+            : ModelGroup::query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('business_name', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%');
 //                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
@@ -33,7 +33,7 @@ class TransactionGroupService extends MainService
 
     public function store(array $data = [])
     {
-        return TransactionGroup::create([...$data, 'created_by' => auth()->id()]);
+        return ModelGroup::create([...$data, 'created_by' => auth()->id()]);
     }
 
     public function update($Branch, array $data)
