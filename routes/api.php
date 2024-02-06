@@ -288,7 +288,8 @@ Route::group(['middleware' => ['json.response']], function () {
                 ], function () {
                     Route::post('/', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'index'])->name('index');
                     Route::post('/list', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'list'])->name('list');
-                    Route::post('/posting', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'posting'])->name('index');
+                    Route::post('/pending', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'getPending'])->name('getPending');
+                    Route::post('/accept/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'accept'])->name('accept');
 
                     Route::post('/create', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'create'])->name('create');
                     Route::post('/store', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'store'])->name('store');
@@ -306,6 +307,7 @@ Route::group(['middleware' => ['json.response']], function () {
                     Route::post('/', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'index'])->name('index');
                     Route::post('/warehouses', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'warehouses'])->name('warehouses');
                     Route::post('/cost', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cost'])->name('cost');
+                    Route::post('/cards', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cards'])->name('cards');
                     Route::post('/orders', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'orders'])->name('orders');
                 });
             });

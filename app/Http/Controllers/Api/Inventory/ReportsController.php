@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Api\Inventory;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Accounting\Reports\CashReportRequest;
 use App\Http\Requests\Accounting\Reports\ShowPostingRequest;
+use App\Http\Requests\Inventory\Reports\CostReportRequest;
 use App\Http\Requests\Inventory\Reports\InventoryReportRequest;
+use App\Http\Requests\Inventory\Reports\StockCardsReportRequest;
 use App\Http\Requests\Inventory\Reports\WarehousesReportRequest;
 use App\Http\Requests\Inventory\Reports\WorkOrdersReportRequest;
 use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\TransactionResource;
 use App\Http\Resources\Inventory\InvTransactionResource;
+use App\Http\Resources\Inventory\ItemResource;
 use App\Http\Resources\Inventory\ProductResource;
+use App\Http\Resources\Inventory\ProductStockResource;
 use App\Http\Resources\Inventory\StockResource;
 use App\Models\Inventory\InvTransaction;
 use App\Models\Inventory\Warehouse;
@@ -21,6 +25,7 @@ use App\Services\ClientService;
 use App\Services\Hr\BranchService;
 use App\Services\Inventory\BrandService;
 use App\Services\Inventory\InvTransactionService;
+use App\Services\Inventory\ItemService;
 use App\Services\Inventory\ProductCategoryService;
 use App\Services\Inventory\ProductService;
 use App\Services\Inventory\StockService;
@@ -108,6 +113,24 @@ class ReportsController extends ApiController
 
         return $this->successResponse($data);
     }
+    public function warehouses(WarehousesReportRequest $request)//
+    {
+        $result = (new ProductService())->stocks($request->validated()); // ->collection->groupBy('product.name')
+
+        return $this->successResponse(['rows' => ProductStockResource::collection($result['rows']), 'dataset' => $result['dataset']]);
+    }
+
+    public function cost(CostReportRequest $request)//
+    {
+        [$rows ,$dataset ] = (new ProductService())->cost($request->validated()); // ->collection->groupBy('product.name')
+        return $this->successResponse(['rows' => ProductStockResource::collection($rows), 'dataset' => $dataset]);
+    }
+
+    public function cards(StockCardsReportRequest $request)//
+    {
+        [$rows ,$dataset ] = (new ItemService())->cards($request->validated()); // ->collection->groupBy('product.name')
+        return $this->successResponse(['rows' => ItemResource::collection($rows), 'dataset' => $dataset]);
+    }
 
     public function orders(WorkOrdersReportRequest $request)//
     {
@@ -115,16 +138,6 @@ class ReportsController extends ApiController
         return $this->successResponse(['rows' => InvTransactionResource::collection($result['rows']), 'dataset' => $result['dataset']]);
     }
 
-    public function warehouses(WarehousesReportRequest $request)//
-    {
-        $result = (new StockService())->warehouses($request->validated()); // ->collection->groupBy('product.name')
 
-        return $this->successResponse(['rows' => StockResource::collection($result['rows']), 'dataset' => $result['dataset']]);
-    }
 
-    public function posting(ShowPostingRequest $request)
-    {
-        $result = (new LedgerService())->posting($request->validated());
-        return $this->successResponse(['rows' => LedgerResource::collection($result['rows']), 'dataset' => $result['dataset']]);
-    }
 }

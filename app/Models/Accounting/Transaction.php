@@ -53,6 +53,10 @@ class Transaction extends MainModelSoft
         return $this->belongsTo(Ledger::class);
     }
 
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
 
     public function firstParty()
     {
@@ -98,7 +102,7 @@ class Transaction extends MainModelSoft
                 $transactionCount = Transaction::where('type', $model->type)->count();
                 $first_party_type_code = Account::whereId($model->first_party_id)->value('type_code');
                 if (!$transactionCount) {
-                    $model->code = $model->type . '-' . 1;
+                    $model->code = $model->type . '-' . $first_party_type_code . '-' .  1;
                     return;
                 }
                 $model->code = $model->type . '-' . $first_party_type_code . '-' . $transactionCount + 1;//str_pad(((int)$transactionCount+ 1), 5, '0', STR_PAD_LEFT);

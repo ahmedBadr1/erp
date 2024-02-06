@@ -13,6 +13,7 @@ use App\Http\Resources\Inventory\InvTransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\CostCenter;
 use App\Models\Inventory\InvTransaction;
+use App\Models\Purchases\Bill;
 use App\Models\System\ModelGroup;
 use App\Services\Accounting\LedgerService;
 use App\Services\Inventory\InvTransactionService;
@@ -51,10 +52,23 @@ class InvTransactionController extends ApiController
             ->paginate($input['limit']));
     }
 
-    public function pending(PostingRequest $request)
+
+    public function getPending(TypeRequest $request)
     {
-        $this->service->pending($request->get('ids'), $request->get('posting'));
-        return $this->successResponse(null, __(($request->get('posting') ? '' : 'Un ') . 'Posted Successfully'));
+        return $this->successResponse(['orders'=>InvTransactionResource::collection($this->service->getPending($request->get('type')))]);
+    }
+
+    public function accept(Request $request,$code)
+    {
+        DB::beginTransaction();
+        try {
+            $this->service->accept($code);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
+        }
+        DB::commit();
+        return $this->successResponse(null, __('Accepted Successfully'));
     }
 
     public function create(TypeRequest $request)
@@ -70,7 +84,14 @@ class InvTransactionController extends ApiController
             $others = InvTransaction::$outOther;
         }
 
+        $TransactionCode = InvTransaction::where('type',$request->get('type'))->latest()->value('code')  ;
+
+        if (preg_match('/^[A-z]*-[1-9]*-(\d+)/', $TransactionCode, $matches)) {
+            $count = $matches[1] + 1;
+        }
+
         return $this->successResponse([
+            'count' => $count ?? null,
             'warehouses' => $warehouses,
             'users' => $users,
             'others' => $others

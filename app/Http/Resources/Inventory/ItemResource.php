@@ -16,12 +16,20 @@ class ItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->product?->name,
-            'quantity' => $this->quantity,
-            'price' => $this->price,
+            'id' => $this->whenNotNull($this->id),
+            'name' => $this->whenNotNull($this->product?->name),
+
+            'quantity' => $this->whenNotNull($this->quantity),
+            'price' => $this->whenNotNull($this->price),
+            'avg_cost' => $this->whenNotNull($this->avg_cost),
+            'balance' => $this->whenNotNull($this->balance),
+            'in' => $this->whenNotNull($this->in),
+            'created_at' => $this->whenNotNull($this->created_at)?->format('d-m-Y h:i a'),
+
             'product' =>  new NameResource($this->whenLoaded('product')),
             'warehouse' =>  new NameResource($this->whenLoaded('warehouse')),
+            'transaction' =>  new NameResource($this->whenLoaded('transaction')),
+            'secondParty' =>  new NameResource($this->whenLoaded('second_party')),
         ];
     }
 }

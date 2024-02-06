@@ -43,6 +43,11 @@ class Ledger extends MainModelSoft
         return $this->hasMany(Transaction::class);
     }
 
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
+
     public function firstTransaction()
     {
         return $this->hasOne(Transaction::class)->oldestOfMany();
@@ -52,21 +57,14 @@ class Ledger extends MainModelSoft
     {
         return $this->hasOne(Transaction::class)->latestOfMany();
     }
-
-
-    public function firstWhTransaction()
+    public function ciTransaction()
     {
-        return $this->hasOne(Transaction::class)->where('type','WH')->oldestOfMany();
+        return $this->hasOne(Transaction::class)->where('type','CI');
     }
 
-    public function ciTransactions()
+    public function coTransaction()
     {
-        return $this->hasMany(Transaction::class)->where('type','CI');
-    }
-
-    public function coTransactions()
-    {
-        return $this->hasMany(Transaction::class)->where('type','CO');
+        return $this->hasOne(Transaction::class)->where('type','CO');
     }
     public function entries()
     {

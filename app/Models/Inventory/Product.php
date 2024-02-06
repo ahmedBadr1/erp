@@ -27,7 +27,7 @@ class Product extends MainModelSoft
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class);
+        return $this->belongsTo(ProductCategory::class,'product_category_id');
     }
 
     public function warehouse()

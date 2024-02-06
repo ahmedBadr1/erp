@@ -26,14 +26,15 @@ class LedgerResource extends JsonResource
             'locked' => $this->whenNotNull($this->locked),
             'created_at' => $this->whenNotNull($this->due)  ,
             'responsible' => new NameResource($this->whenLoaded('responsible')),
-            'creator' => new NameResource ($this->whenLoaded('responsible')),
-            'editor' => new NameResource ($this->whenLoaded('responsible')),
+            'creator' => new NameResource ($this->whenLoaded('creator')),
+            'editor' => new NameResource ($this->whenLoaded('editor')),
             'currency' => new NameResource($this->whenLoaded('currency')),
 
             'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'transactions' => TransactionResource::collection($this->whenLoaded('transactions')),
             'accounts' => AccountResource::collection($this->whenLoaded('accounts')),
             'group' => new ModelGroupResource($this->whenLoaded('group')),
+            'transaction' => new TransactionResource($this->whenLoaded('transaction')),
 
             'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
             'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),

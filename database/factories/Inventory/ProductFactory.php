@@ -24,13 +24,13 @@ class ProductFactory extends Factory
         $price = rand(10, 500);
         $d_price = $price - $this->faker->numberBetween(1, $price);
         return [
-            'name' => $this->faker->streetName(),
+            'name' => $this->faker->name(),
             'short_name' => $this->faker->name(),
             'part_number' => $this->faker->unique()->randomNumber(6),
             'origin_number' => $this->faker->numerify(),
-//            'batch_number' => $this->faker->numerify(),
-//            'barcode' => $this->faker->numerify(),
-//            'hs_code' => $this->faker->numerify(),
+            'batch_number' => $this->faker->numerify(),
+            'barcode' => $this->faker->numerify(),
+            'hs_code' => $this->faker->numerify(),
 
 //            'name', 'name_2', 'code', 'warehouse_id', 'origin_number', 'type', 'name_2', 'price', 'd_price', 'sd_price', 'min_price', 'ref_price',
 //            'last_cost', 'avg_cost', 'first_cost', 'profit_margin', 'warranty', 'expire_date', 'barcode', 'hs_code', 'batch_number',

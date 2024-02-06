@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api\Accounting;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\Reports\AccountingReportRequest;
+use App\Http\Requests\Accounting\Reports\AccountLedgerRequest;
 use App\Http\Requests\Accounting\Reports\WorkOrdersReportRequest;
 use App\Http\Requests\Accounting\Reports\CashReportRequest;
 use App\Http\Requests\Accounting\Reports\InventoryReportRequest;
 use App\Http\Requests\Accounting\Reports\ShowPostingRequest;
 use App\Http\Resources\Accounting\AccountChartResource;
+use App\Http\Resources\Accounting\AccountResource;
+use App\Http\Resources\Accounting\EntryResource;
 use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\NodeResource;
 use App\Http\Resources\Accounting\TransactionResource;
@@ -20,6 +23,7 @@ use App\Models\Accounting\Ledger;
 use App\Services\Accounting\AccountService;
 use App\Services\Accounting\CostCenterService;
 use App\Services\Accounting\CurrencyService;
+use App\Services\Accounting\EntryService;
 use App\Services\Accounting\LedgerService;
 use App\Services\Accounting\NodeService;
 use App\Services\Accounting\TaxService;
@@ -104,7 +108,15 @@ class ReportsController extends ApiController
 
     public function accountLedger(AccountLedgerRequest $request)//
     {
-        return $this->successResponse(LedgerResource::collection((new LedgerService())->accounts($request->validated())) );
+        [$rows , $dataset , $accounts] = (new EntryService())->accounts($request->validated()) ;
+        $rows =  EntryResource::collection($rows) ;
+//        $credit_sum = $rows->collection->when(true, function ($collection) {
+//                return $collection->where('credit', true);
+//            })->sum('amount');
+//        $debit_sum = $rows->collection->when(true, function ($collection) {
+//        return $collection->where('credit', false);
+//    })->sum('amount');
+        return $this->successResponse(['rows'=> $rows,'dataset'=> $dataset,'accounts'=> AccountResource::collection($accounts)]);
     }
 
     public function cash(CashReportRequest $request)//

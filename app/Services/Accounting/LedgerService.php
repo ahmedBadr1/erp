@@ -43,9 +43,9 @@ class LedgerService extends MainService
         }
         if ($data['related_accounts']) {
             foreach ($data['accounts'] as $account) {
-                $group_account_id = Account::whereId($account)->value('group_account_id');
+                $group_account_id = Account::whereId($account)->value('account_group_id');
                 if ($group_account_id) {
-                    $related = Account::where('group_account_id', $group_account_id)->whereNotIn('id', $accounts)->pluck('id')->toArray();
+                    $related = Account::where('account_group_id', $group_account_id)->whereNotIn('id', $accounts)->pluck('id')->toArray();
                     array_push($accounts, ...$related);
                 }
             }

@@ -32,7 +32,13 @@ class Item extends MainModelSoft
 
     public function transaction()
     {
-        return $this->belongsTo(InvTransaction::class);
+        return $this->belongsTo(InvTransaction::class,'inv_transaction_id');
     }
+
+    public function secondParty()
+    {
+        return $this->morphTo('second_party');
+    }
+
 
 }

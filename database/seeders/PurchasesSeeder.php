@@ -137,7 +137,7 @@ class PurchasesSeeder extends Seeder
 
                 }
             }
-//            dd($items->pluck('id'));
+
         }
     }
 }

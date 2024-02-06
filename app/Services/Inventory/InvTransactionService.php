@@ -3,6 +3,9 @@
 namespace App\Services\Inventory;
 use App\Models\Accounting\Ledger;
 use App\Models\Inventory\InvTransaction;
+use App\Models\Inventory\Item;
+use App\Models\Inventory\Product;
+use App\Models\Inventory\Stock;
 use App\Services\MainService;
 use App\Services\Purchases\BillItemService;
 use Exception;
@@ -35,6 +38,41 @@ class InvTransactionService extends MainService
             'RT' => 'Receive Transfer',
         ];
         return $types ?? InvTransaction::$TYPES;
+    }
+
+    public function getPending($type)
+    {
+        return InvTransaction::with('warehouse','secondParty','responsible')->where('type',$type)->whereNull('accepted_at')->get();
+    }
+
+    public function accept($code)
+    {
+
+            $transaction = InvTransaction::with('items')->where('code',$code)->firstOrFail();
+            $in  = in_array($transaction->type,['RS','IR','RT']);
+            foreach ($transaction->items as $item) {
+                $stock  = Stock::firstOrCreate([
+                    'product_id' => $item->product_id,
+                    'warehouse_id' => $transaction->warehouse_id,
+                ]);
+//                    $product = Product::with(["stock" => fn($q) => $q->where('warehouse_id', $transaction->warehouse_id)])->find($item->product_id);
+                $product = Product::withSum('stocks as stocks_balance','balance')->find($item->product_id);
+                if ($stock->balance) {
+                    $balance = $stock->balance + $item->quantity;
+                } else {
+                    $balance = $item->quantity;
+                }
+                $stock->update([
+                    'balance' => $balance
+                ]);
+                $avg_cost = ( $product->avg_cost * $product->stocks_balance + $item->quantity * $item->price ) / ($product->stocks_balance +  $item->quantity);
+                $product->update(['avg_cost'=>$avg_cost]);
+                (new ItemService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,
+                    quantity: $item->quantity, price: $item->price, second_party_id: $transaction->second_party_id, second_party_type: $transaction->second_party_type, in: $in, balance: $balance, avg_cost: $avg_cost,userId:  auth('api')->id());
+
+            }
+
+        return $transaction->update(['accepted_at'=>now()]);
     }
 
     public function search($search)
@@ -73,25 +111,25 @@ class InvTransactionService extends MainService
     }
 
 
-    public function rs(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id ,
+    public function rs(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id = null ,
                                  $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'RS', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function io(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id ,
+    public function io(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id  = null,
      $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'IO', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createIR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,   int $bill_id,
+    public function createIR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,   int $bill_id = null,
                                  $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'IR', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createRR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,nt $bill_id,
+    public function createRR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,nt $bill_id = null,
                              $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'RR', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
@@ -123,7 +161,6 @@ class InvTransactionService extends MainService
         foreach ($items as $item) {
             $cost = $item['price'] - ( $item['price'] * $discount_rate / 100 );
             (new InvTransactionItemService())->store(warehouseId: $warehouse_id,  invTransactionId:$transaction->id,   productId: $item['product_id'], quantity: $item['quantity'], price:$cost,  unitId: $item['unit_id'] ?? null);
-
         }
 //        $transaction->save();
         return $transaction ;

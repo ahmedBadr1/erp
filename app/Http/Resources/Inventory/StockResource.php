@@ -19,6 +19,8 @@ class StockResource extends JsonResource
         return [
             'id' =>  $this->whenNotNull($this->id),
             'balance' =>  $this->whenNotNull($this->balance),
+            'warehouse_id' =>  $this->whenNotNull($this->warehouse_id),
+            'product_id' =>  $this->whenNotNull($this->product_id),
             'warehouse' => new NameResource ($this->whenLoaded('warehouse')),
             'product' => new NameResource ($this->whenLoaded('product')),
 

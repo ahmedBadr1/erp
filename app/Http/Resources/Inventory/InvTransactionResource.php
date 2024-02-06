@@ -23,11 +23,9 @@ class InvTransactionResource extends JsonResource
             'amount' =>  $this->whenNotNull($this->amount),
             'note' => $this->whenNotNull($this->note),
             'paper_ref' =>  $this->whenNotNull($this->paper_ref),
-            'due' => $this->whenNotNull($this->due),
+            'due' => $this->whenNotNull($this->due)->format('d-m-Y h:i a'),
             'accepted_at' => $this->whenNotNull($this->accepted_at),
             'pending' =>$this->whenNotNull($this->pending),
-
-
 
 
             'items' => ItemResource::collection($this->whenLoaded('items')),

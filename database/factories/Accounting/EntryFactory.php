@@ -26,6 +26,7 @@ class EntryFactory extends Factory
             'account_id'=> rand(1,100),// Account::all()->random()->id,
             'cost_center_id'=> rand(1,11),
 //            'ledger_id'=> Ledger::all()->random()->id,
+        'created_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }
