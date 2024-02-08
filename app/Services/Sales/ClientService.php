@@ -26,7 +26,6 @@ class ClientService extends MainService
         $search = trim($search);
         return empty($search) ? Client::query()
             : Client::query()->where('name', 'like', '%' . $search . '%')
-                ->orWhere('business_name', 'like', '%' . $search . '%')
                 ->orWhere('code', 'like', '%' . $search . '%');
 //                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }

@@ -246,15 +246,24 @@ class LedgerService extends MainService
         $TransactionService = new TransactionService();
         $AccountService = new AccountService();
         $treasury = Account::find($treasuryId);
+
+
         $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
         $EntryService->createDebitEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id);
         $AccountService->updateBalance(account_id: $treasury->id);
-        foreach ($accounts as $account) {
-            $EntryService->createCreditEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'], comment: $account['comment'] ?? null);
-            $AccountService->updateBalance(account_id: $account['id']);
-        }
-        $TransactionService->createCI(groupId: $groupId, amount: $amount, ledger_id: $ledger->id, first_party_id: $treasuryId, second_party_id: $account['id'], due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 
+        if (is_array($accounts)) {
+            foreach ($accounts as $account) {
+                $EntryService->createCreditEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'], comment: $account['comment'] ?? null);
+                $AccountService->updateBalance(account_id: $account['id']);
+            }
+        } else { // Account Model
+            $EntryService->createCreditEntry(amount: $amount, account_id: $accounts->id, ledger_id: $ledger->id, cost_center_id: $accounts->cost_center_id);
+            $AccountService->updateBalance(account_id: $accounts->id);
+            $account['id'] = $accounts->id;
+        }
+
+        $TransactionService->createCI(groupId: $groupId, amount: $amount, ledger_id: $ledger->id, first_party_id: $treasuryId, second_party_id: $account['id'], due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 
         return false;
     }
@@ -342,6 +351,66 @@ class LedgerService extends MainService
         $EntryService->createCreditEntry(amount: $total, account_id: $supplierAcc->id, ledger_id: $ledger->id, cost_center_id: $supplierAcc->cost_center_id);
         $AccountService->updateBalance(account_id: $supplierAcc->id);
         $TransactionService->createPI(groupId: $groupId, amount: $ledger->amount, ledger_id: $ledger->id, first_party_id: $warehouseAcc->id, second_party_id: $supplierAcc->id, due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
+
+        return false;
+    }
+
+
+    public function SI($type, $groupId, $warehouseAcc, $clientAcc, $currencyId, $date, $total, $subTotal, $grossTotal, $tax = 0, $taxAccountId = null, $discount = null, $note = null, $paperRef = null, $responsible = null, $system = 1)
+    {
+        if (!$type) {
+            $type = 'SI';
+        }
+        $EntryService = new EntryService();
+        $TransactionService = new TransactionService();
+        $AccountService = new AccountService();
+
+        $ledger = $this->store(groupId: $groupId, amount: $total + $discount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+
+        $EntryService->createDebitEntry(amount: $total, account_id: $clientAcc->id, ledger_id: $ledger->id, cost_center_id: $clientAcc->cost_centet_id);
+        $AccountService->updateBalance(account_id: $clientAcc->id);
+
+        if ($discount) {
+            $discountAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'SD'))->value('id');
+            $EntryService->createDebitEntry(amount: $discount, account_id: $discountAccountId, ledger_id: $ledger->id);
+            $AccountService->updateBalance(account_id: $discountAccountId);
+        }
+
+        $salesAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'S'))->value('id');
+        $EntryService->createCreditEntry(amount: $grossTotal, account_id: $salesAccountId, ledger_id: $ledger->id,);
+        $AccountService->updateBalance(account_id: $salesAccountId);
+
+        if ($tax) {
+            if (!$taxAccountId) {
+                $taxAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'T'))->value('id');
+            }
+            $EntryService->createCreditEntry(amount: $tax, account_id: $taxAccountId, ledger_id: $ledger->id);
+            $AccountService->updateBalance(account_id: $taxAccountId);
+        }
+
+
+        $TransactionService->createType(type: 'SI', groupId: $groupId, amount: $ledger->amount, ledger_id: $ledger->id, first_party_id: $warehouseAcc->id, second_party_id: $clientAcc->id, due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
+
+        return false;
+    }
+
+    public function COGS($groupId,$warehouseAcc ,$amount,$currencyId,$date, $note = null, $paperRef = null, $responsible = null, $system = 1)
+    {
+
+        $EntryService = new EntryService();
+        $TransactionService = new TransactionService();
+        $AccountService = new AccountService();
+
+        $ledger = $this->store(groupId: $groupId, amount:$amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+        $cogsAccount =  Account::whereHas('type', fn($q) => $q->where('code', 'COG'))->first();
+        $EntryService->createCreditEntry(amount: $amount, account_id: $cogsAccount->id, ledger_id: $ledger->id,cost_center_id:  $cogsAccount->cost_center_id);
+        $AccountService->updateBalance(account_id: $cogsAccount->id);
+
+        $EntryService->createDebitEntry(amount: $amount, account_id: $warehouseAcc->id, ledger_id: $ledger->id, cost_center_id: $warehouseAcc->cost_centet_id);
+        $AccountService->updateBalance(account_id: $warehouseAcc->id);
+
+
+        $TransactionService->createType(type: 'COGS',groupId: $groupId, amount: $ledger->amount, ledger_id: $ledger->id, first_party_id: $warehouseAcc->id, second_party_id: $cogsAccount->id, due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 
         return false;
     }

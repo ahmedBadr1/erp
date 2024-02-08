@@ -1,13 +1,11 @@
 <?php
 
 namespace App\Services\Inventory;
-use App\Models\Accounting\Ledger;
+
 use App\Models\Inventory\InvTransaction;
-use App\Models\Inventory\Item;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Stock;
 use App\Services\MainService;
-use App\Services\Purchases\BillItemService;
 use Exception;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -42,37 +40,46 @@ class InvTransactionService extends MainService
 
     public function getPending($type)
     {
-        return InvTransaction::with('warehouse','secondParty','responsible')->where('type',$type)->whereNull('accepted_at')->get();
+        return InvTransaction::with('warehouse', 'secondParty', 'responsible')->where('type', $type)->whereNull('accepted_at')->get();
     }
 
     public function accept($code)
     {
-
-            $transaction = InvTransaction::with('items')->where('code',$code)->firstOrFail();
-            $in  = in_array($transaction->type,['RS','IR','RT']);
-            foreach ($transaction->items as $item) {
-                $stock  = Stock::firstOrCreate([
-                    'product_id' => $item->product_id,
-                    'warehouse_id' => $transaction->warehouse_id,
-                ]);
+        $transaction = InvTransaction::with('items')->where('code', $code)->firstOrFail();
+        $in = in_array($transaction->type, ['RS', 'IR', 'RT']);
+        foreach ($transaction->items as $item) {
+            $stock = Stock::firstOrCreate([
+                'product_id' => $item->product_id,
+                'warehouse_id' => $transaction->warehouse_id,
+            ]);
 //                    $product = Product::with(["stock" => fn($q) => $q->where('warehouse_id', $transaction->warehouse_id)])->find($item->product_id);
-                $product = Product::withSum('stocks as stocks_balance','balance')->find($item->product_id);
+            if ($in) {
+                $product = Product::withSum('stocks as stocks_balance', 'balance')->find($item->product_id);
                 if ($stock->balance) {
                     $balance = $stock->balance + $item->quantity;
                 } else {
                     $balance = $item->quantity;
                 }
-                $stock->update([
-                    'balance' => $balance
-                ]);
-                $avg_cost = ( $product->avg_cost * $product->stocks_balance + $item->quantity * $item->price ) / ($product->stocks_balance +  $item->quantity);
-                $product->update(['avg_cost'=>$avg_cost]);
-                (new ItemService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,
-                    quantity: $item->quantity, price: $item->price, second_party_id: $transaction->second_party_id, second_party_type: $transaction->second_party_type, in: $in, balance: $balance, avg_cost: $avg_cost,userId:  auth('api')->id());
 
+                $avg_cost = ($product->avg_cost * $product->stocks_balance + $item->quantity * $item->price) / ($product->stocks_balance + $item->quantity);
+                $product->update(['avg_cost' => $avg_cost]);
+            } else {
+                if ($stock->balance <  $item->quantity){
+                    throw new Exception('Not Balance Enough');
+                }
+                $balance = $stock->balance - $item->quantity;
             }
+            $stock->update([
+                'balance' => $balance
+            ]);
 
-        return $transaction->update(['accepted_at'=>now()]);
+
+            (new ItemService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,
+                quantity: $item->quantity, price: $item->price, second_party_id: $transaction->second_party_id, second_party_type: $transaction->second_party_type, in: $in, balance: $balance, avg_cost: $avg_cost ?? null, userId: auth('api')->id());
+
+        }
+
+        return $transaction->update(['accepted_at' => now()]);
     }
 
     public function search($search)
@@ -87,9 +94,9 @@ class InvTransactionService extends MainService
 //                ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createInvTransaction(string $type, int $groupId, float $amount, int $warehouse_id, $second_party_id ,$second_party_type , int $bill_id = null,
+    public function createInvTransaction(string $type, int $groupId, float $amount, int $warehouse_id, $second_party_id, $second_party_type, int $bill_id = null,
 
-     $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+                                                $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
 
         return InvTransaction::create([
@@ -111,59 +118,59 @@ class InvTransactionService extends MainService
     }
 
 
-    public function rs(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id = null ,
-                                 $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function rs(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $second_party_type, int $bill_id = null,
+                           $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'RS', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function io(int $groupId, float $amount, int $warehouse_id, int $second_party_id ,$second_party_type, int $bill_id  = null,
-     $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function io(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $second_party_type, int $bill_id = null,
+                           $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'IO', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createIR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,   int $bill_id = null,
+    public function createIR(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $second_party_type, int $bill_id = null,
                                  $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'IR', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createRR(int $groupId, float $amount, int $warehouse_id,int $second_party_id ,$second_party_type,nt $bill_id = null,
-                             $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createRR(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $second_party_type, nt $bill_id = null,
+                                 $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createInvTransaction(type: 'RR', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createIT(int $groupId, float $amount, int $warehouse_id,int$second_party_id, $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createIT(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createInvTransaction(type: 'IT',groupId: $groupId,amount: $amount, warehouse_id: $warehouse_id,second_party_id:  $second_party_id,second_party_type:  $second_party_type,due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
+        return $this->createInvTransaction(type: 'IT', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createRT(int $groupId, float $amount, int $warehouse_id,int$second_party_id,$second_party_type, $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
+    public function createRT(int $groupId, float $amount, int $warehouse_id, int $second_party_id, $second_party_type, $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
-        return $this->createInvTransaction(type: 'RT',groupId: $groupId,amount: $amount, warehouse_id: $warehouse_id,second_party_id:  $second_party_id,second_party_type:  $second_party_type,due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
+        return $this->createInvTransaction(type: 'RT', groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
     }
 
-    public function createType(string $type,int $groupId,$items, float $amount, int $warehouse_id, int $supplier_id = null,int $bill_id = null, int $client_id = null, int $invoice_id = null,
-                                 $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null,$discount_rate = 0, $system = 1)
+    public function createType(string $type, int $groupId, $items, float $amount, int $warehouse_id, int $second_party_id = null, int $bill_id = null, string $second_party_type = null, int $invoice_id = null,
+                                      $due = null, $accepted_at = null, string $note = null, $user_id = null, $paper_ref = null, $discount_rate = 0, $system = 1)
     {
-        switch ($type){
+        switch ($type) {
             case 'RS':
-                $transaction = $this->rs(groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $supplier_id,second_party_type: 'supplier', bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
+                $transaction = $this->rs(groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
                 break;
             case 'IO':
-                $transaction = $this->io(groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $client_id,second_party_type: 'client',bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
+                $transaction = $this->io(groupId: $groupId, amount: $amount, warehouse_id: $warehouse_id, second_party_id: $second_party_id, second_party_type: $second_party_type, bill_id: $bill_id, due: $due, accepted_at: $accepted_at, note: $note, user_id: $user_id, paper_ref: $paper_ref, system: $system);
                 break;
             default:
-                return false ;
+                return false;
         }
-        foreach ($items as $item) {
-            $cost = $item['price'] - ( $item['price'] * $discount_rate / 100 );
-            (new InvTransactionItemService())->store(warehouseId: $warehouse_id,  invTransactionId:$transaction->id,   productId: $item['product_id'], quantity: $item['quantity'], price:$cost,  unitId: $item['unit_id'] ?? null);
-        }
+//        foreach ($items as $item) {
+//            $cost = $item['price'] - ($item['price'] * $discount_rate / 100);
+//            (new InvTransactionItemService())->store(warehouseId: $warehouse_id, invTransactionId: $transaction->id, productId: $item['product_id'], quantity: $item['quantity'], price: $cost, unitId: $item['unit_id'] ?? null);
+//        }
 //        $transaction->save();
-        return $transaction ;
+        return $transaction;
     }
 
 
@@ -201,7 +208,7 @@ class InvTransactionService extends MainService
 //        $dataset[] = $data['posted'] ? 'Posted' : 'Un Posted';
 
 
-        $query->with(['warehouse','responsible']);
+        $query->with(['warehouse', 'responsible']);
 
 //        if (isset($columns['responsible']) && $columns['responsible']) {
 
@@ -240,7 +247,7 @@ class InvTransactionService extends MainService
 
 
         if (!empty($data['warehouses'])) {
-            $query->where(fn($q) => $q->whereIn( 'warehouse_id',[1])->orWhereIn('second_party_id',[1]));
+            $query->where(fn($q) => $q->whereIn('warehouse_id', [1])->orWhereIn('second_party_id', [1]));
         }
 
         if (!empty($data['suppliers'])) {

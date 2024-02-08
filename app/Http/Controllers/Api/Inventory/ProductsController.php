@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Api\Inventory;
 use App\Enums\OrderStatus;
 use App\Enums\ProductECodeEnum;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Requests\Inventory\SearchProductRequest;
 use App\Http\Requests\Inventory\StoreProductRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Inventory\ProductCategoryResource;
 use App\Http\Resources\Inventory\ProductCollection;
 use App\Http\Resources\Inventory\ProductResource;
+use App\Http\Resources\Inventory\ProductSearchResource;
 use App\Http\Resources\NameResource;
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
@@ -88,17 +90,22 @@ class ProductsController extends ApiController
        return $this->resourceResponse(new ProductCollection($products));
     }
 
-    public function list(ListRequest $request)
+    public function list(SearchProductRequest $request)
     {
         if (auth('api')->user()->cannot('purchases.suppliers.index')) {
             return $this->deniedResponse(null, null, 403);
         }
         if ($request->has("keywords")) {
-            $products = $this->service->search($request->get("keywords"))->limit(5)->get();
+            $products = $this->service->search($request->get("keywords"))
+                ->when($request->get('warehouse_id'),fn($qu)=>$qu->withSum(['stocks as warehouse_balance'=>fn($q)=>
+              $q->where('warehouse_id',$request->get('warehouse_id'))],'balance'))
+                ->withSum('stocks as stocks_balance','balance')
+                ->limit(10)->get();
         }else{
             $products = $this->service->all(['id','name','tax_id']);
         }
-        return $this->successResponse(['products' => NameResource::collection($products) ]);
+//        return   $this->successResponse($products);
+        return $this->successResponse(['products' => ProductSearchResource::collection($products) ]);
     }
 
     public function tree(Request $request)

@@ -117,7 +117,7 @@ class Bill extends MainModelSoft
                 $billCode = Bill::where('type',$model->type)->latest()->value('code')  ;
 //                $warehouse_code = Account::whereHas('warehouse',fn($q)=>$q->whereid($model->warehouse_id))->value('type_code');
                 if (!$billCode) {
-                    $model->code =$model->type . '-'. $model->warehouse_id . '-' . 1;
+                    $model->code = $model->type . '-'. $model->warehouse_id . '-' . 1;
                     return;
                 }else{
                     if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $billCode, $matches)) {

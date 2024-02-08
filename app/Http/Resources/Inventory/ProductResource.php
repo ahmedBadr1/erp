@@ -48,6 +48,8 @@ class ProductResource extends JsonResource
             'can_be_purchased' => $this->whenNotNull($this->can_be_purchased),
             'returnable' => $this->whenNotNull($this->returnable),
             'active' =>$this->whenNotNull($this->active),
+            'stocks_balance' =>$this->whenNotNull($this->stocks_balance),
+
             'warehouse' => $this->whenLoaded('warehouse'),
             'unit' => $this->whenLoaded('unit'),
             'brand' => $this->whenLoaded('brand'),

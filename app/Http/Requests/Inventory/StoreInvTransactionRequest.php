@@ -25,9 +25,8 @@ class StoreInvTransactionRequest extends FormRequest
 
             'type' => 'required|string|in:RS,IO,IR,RR,IT,RT',
             'warehouse_id' => 'required|exists:warehouses,id',
-            'supplier' => "required|boolean",
-            'supplier_id' => 'required_if:supplier,1|exists:suppliers,id',
-            'other_id' => 'required_if:supplier,0',
+            'second_party_type' => "required|in:supplier,inOther,client,outOther",
+            'second_party_id' => 'required',
             'responsible_id' => 'nullable|exists:users,id',
 
             'date' => 'required|date',

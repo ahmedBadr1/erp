@@ -4,6 +4,7 @@ namespace App\Models\Inventory;
 
 use App\Models\MainModelSoft;
 use App\Models\Purchases\Bill;
+use App\Models\Purchases\BillItem;
 use App\Models\Purchases\Supplier;
 use App\Models\Sales\Client;
 use App\Models\Sales\Invoice;
@@ -69,7 +70,7 @@ class InvTransaction extends MainModelSoft
 
     public function items()
     {
-        return $this->hasMany(InvTransactionItem::class,);
+        return $this->hasMany(BillItem::class,);
     }
 
     public function creator()

@@ -20,6 +20,7 @@ class ItemResource extends JsonResource
             'name' => $this->whenNotNull($this->product?->name),
 
             'quantity' => $this->whenNotNull($this->quantity),
+            'cost' => $this->whenNotNull($this->cost),
             'price' => $this->whenNotNull($this->price),
             'avg_cost' => $this->whenNotNull($this->avg_cost),
             'balance' => $this->whenNotNull($this->balance),

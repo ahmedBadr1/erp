@@ -1,46 +1,45 @@
 <?php
 
-namespace App\Http\Controllers\Api\Purchases;
+namespace App\Http\Controllers\Api\Sales;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\Purchases\BillRequest;
-use App\Http\Requests\Purchases\StoreBillRequest;
-use App\Http\Requests\TypeRequest;
-use App\Http\Resources\Purchases\BillsResource;
-use App\Models\Purchases\Bill;
-use App\Models\Purchases\Vendor;
+use App\Http\Requests\Sales\InvoiceRequest;
+use App\Http\Requests\Sales\StoreInvoiceRequest;
+use App\Http\Resources\Sales\InvoicesResource;
+use App\Models\Sales\Invoice;
+use App\Models\Sales\Vendor;
 use App\Models\System\Status;
 use App\Services\Accounting\AccountService;
 use App\Services\Accounting\CurrencyService;
 use App\Services\CalculationService;
 use App\Services\Hr\BranchService;
 use App\Services\Inventory\WarehouseService;
-use App\Services\Purchases\BillService;
+use App\Services\Sales\InvoiceService;
 use App\Services\System\TaxService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class BillsController extends ApiController
+class InvoicesController extends ApiController
 {
     public function __construct()
     {
         parent::__construct();
-        $this->class = "bills";
-        $this->table = "bills";
+        $this->class = "invoices";
+        $this->table = "invoices";
         $this->middleware('auth');
-        $this->middleware('permission:purchases.bills.view', ['only' => ['index', 'show']]);
-        $this->middleware('permission:purchases.bills.create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:purchases.bills.edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:purchases.bills.delete', ['only' => ['destroy']]);
+        $this->middleware('permission:sales.invoices.view', ['only' => ['index', 'show']]);
+        $this->middleware('permission:sales.invoices.create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:sales.invoices.edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:sales.invoices.delete', ['only' => ['destroy']]);
 
-        $this->service = new BillService();
+        $this->service = new InvoiceService();
     }
 
 
-    public function create(TypeRequest $request)
+    public function create()
     {
-        if (auth('api')->user()->cannot('purchases.bills.create')) {
+        if (auth('api')->user()->cannot('sales.invoices.create')) {
             return $this->deniedResponse(null, null, 403);
         }
 
@@ -53,22 +52,19 @@ class BillsController extends ApiController
         $currencies = (new CurrencyService())->all(['code', 'id']);
         $buyers = (new UserService())->all(['username', 'id'], 'buyer');
 
-        $statuses = Status::where('type', 'supplier')->get(['id', 'name']);
+        $statuses = Status::where('type', 'client')->get(['id', 'name']);
 
         $taxes = (new TaxService())->all(['id', 'name', 'rate']);
 
         // Notes Payable
 
+        $invoiceCode = Invoice::latest()->value('code')  ;
 
-
-        $billCode = Bill::where('type',$request->get('type'))->latest()->value('code')  ;
-
-        if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $billCode, $matches)) {
+        if (preg_match('/^PO-[1-9]-(\d+)/', $invoiceCode, $matches)) {
             $count = $matches[1] + 1;
         }
-
         return $this->successResponse([
-            'count' => $count ?? 1,
+            'count' => $count ?? null,
             'warehouses' => $warehouses,
             'branches' => $branches,
             'treasuries' => $treasuries,
@@ -79,7 +75,7 @@ class BillsController extends ApiController
     }
 
 
-    public function store(StoreBillRequest $request)
+    public function store(StoreInvoiceRequest $request)
     {
         DB::beginTransaction();
         try {
@@ -89,12 +85,12 @@ class BillsController extends ApiController
             return $this->errorResponse($e->getMessage(), 409);
         }
         DB::commit();
-        return $this->successResponse(null, __('message.created', ['model' => __('Order')]));
+        return $this->successResponse(null, __('message.created', ['model' => __('Purchase Order')]));
     }
 
     public function show(Request $request, $code)
     {
-        $bill = Bill::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.po','group.so', 'secondParty', 'warehouse','treasury', 'currency','tax', 'responsible')->where('code', $code)->firstOrFail();
-        return $this->successResponse(['bill' => new  BillsResource($bill)]);
+        $invoice = Invoice::with('items.product','group.invTransactions', 'group.ledgers','group.transactions', 'group.po','group.so', 'secondParty', 'warehouse','treasury', 'currency','tax', 'responsible')->where('code', $code)->firstOrFail();
+        return $this->successResponse(['invoice' => new  InvoicesResource($invoice)]);
     }
 }

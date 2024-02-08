@@ -14,11 +14,7 @@ class Client extends MainModelSoft
     protected $fillable = [
         'code',
         'name',
-        'phone',
-        'code',
-        'email',
         'status_id',
-        'address',
         'type',
         'image',
         'account_id',

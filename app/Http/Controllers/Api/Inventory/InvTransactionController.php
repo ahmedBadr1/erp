@@ -86,12 +86,12 @@ class InvTransactionController extends ApiController
 
         $TransactionCode = InvTransaction::where('type',$request->get('type'))->latest()->value('code')  ;
 
-        if (preg_match('/^[A-z]*-[1-9]*-(\d+)/', $TransactionCode, $matches)) {
+        if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $TransactionCode, $matches)) {
             $count = $matches[1] + 1;
         }
 
         return $this->successResponse([
-            'count' => $count ?? null,
+            'count' => $count ?? 1,
             'warehouses' => $warehouses,
             'users' => $users,
             'others' => $others
@@ -111,7 +111,7 @@ class InvTransactionController extends ApiController
         DB::beginTransaction();
         try {
             $groupId = ModelGroup::create()->id;
-                $this->service->createType(type: $data['type'], groupId: $groupId,items: $data['items'], amount: $data['total'], warehouse_id: $data['warehouse_id'], supplier_id: $data['supplier_id'] ?? null,client_id: $data['client_id'] ?? null, due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
+                $this->service->createType(type: $data['type'], groupId: $groupId,items: $data['items'], amount: $data['total'], warehouse_id: $data['warehouse_id'], second_party_id: $data['second_party_id'] ,second_party_type: $data['second_party_type'] , due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 409);
