@@ -79,13 +79,15 @@ class BillService extends MainService
                 'tax_exclusive' => 0,
                 'tax_inclusive' => 0,
             ]);
+if ($type === 'SO' ){
+    $items = collect($data['items']);
+    $total_cost = $items->sum(function ($item) {
+            return $item['quantity'];
+        }) * $items->avg(function ($item) {
+            return $item['avg_cost'] ?? Product::whereId($item['product_id'])->value('avg_cost') ??  throw new \RuntimeException('Avg Cost Zero');
+        });
+}
 
-            $items = collect($data['items']);
-            $total_cost = $items->sum(function ($item) {
-                    return $item['quantity'];
-                }) * $items->avg(function ($item) {
-                    return $item['avg_cost'] ?? Product::whereId($item['product_id'])->value('avg_cost') ??  throw new \RuntimeException('Avg Cost Zero');
-                });
 
             $transType = match ($type) {
                 'PO' => 'RS',
@@ -103,12 +105,12 @@ class BillService extends MainService
         }
 
 
-        if ($type == 'PO') {
+        if ($type === 'PO') {
 
             (new LedgerService())->cashout($group->id, $data['treasury_id'], $secondPartyAcc, $bill->total, $data['currency_id'], $data['date'] ?? now(), $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible_id'] ?? null);
             (new LedgerService())->PI(type: 'PI', groupId: $group->id, warehouseAcc: $warehouseAcc, supplierAcc: $secondPartyAcc, currencyId: $data['currency_id'], date: $data['date'], total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible_id'] ?? null);
 
-        } elseif ($type == 'SO') {
+        } elseif ($type === 'SO') {
 
             (new LedgerService())->cashin($group->id, $data['treasury_id'], $secondPartyAcc, $bill->total, $data['currency_id'], $data['date'] ?? now(), $data['note'] ?? null, $data['paper_ref'] ?? null, $data['responsible_id'] ?? null);
             (new LedgerService())->SI(type: 'PI', groupId: $group->id, warehouseAcc: $warehouseAcc, clientAcc: $secondPartyAcc, currencyId: $data['currency_id'], date: $data['date'], total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible_id'] ?? null);

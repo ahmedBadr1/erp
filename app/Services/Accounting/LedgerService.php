@@ -12,6 +12,7 @@ use App\Models\System\ModelGroup;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
+use http\Exception\RuntimeException;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -254,7 +255,7 @@ class LedgerService extends MainService
 
         if (is_array($accounts)) {
             foreach ($accounts as $account) {
-                $EntryService->createCreditEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'], comment: $account['comment'] ?? null);
+                $EntryService->createCreditEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'] ?? null, comment: $account['comment'] ?? null);
                 $AccountService->updateBalance(account_id: $account['id']);
             }
         } else { // Account Model
@@ -280,10 +281,10 @@ class LedgerService extends MainService
         $treasury = Account::find($treasuryId);
 
         $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
-//            dd($ledger);
+
         if (is_array($accounts)) {
             foreach ($accounts as $account) {
-                $EntryService->createDebitEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'] ?? null, comment: $account['comment'] ?? null);
+                $EntryService->createDebitEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'] ?? null , comment: $account['comment'] ?? null);
                 $AccountService->updateBalance(account_id: $account['id']);
             }
         } else { // Account Model
@@ -291,8 +292,9 @@ class LedgerService extends MainService
             $AccountService->updateBalance(account_id: $accounts->id);
             $account['id'] = $accounts->id;
         }
+//        throw  new \RuntimeException($treasuryId);
 
-        $EntryService->createCreditEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id);
+        $EntryService->createCreditEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id );
         $AccountService->updateBalance(account_id: $treasuryId);
         $TransactionService->createCO(groupId: $groupId, amount: $amount, ledger_id: $ledger->id, first_party_id: $treasuryId, second_party_id: $account['id'], due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 

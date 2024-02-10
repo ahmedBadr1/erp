@@ -232,8 +232,8 @@ class AccountingSeeder extends Seeder
             ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0,],
             ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1],
             ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1],
-            ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 0],
-            ['code' => 5, 'name' => 'المصروفات', 'parent_id' => null, 'credit' => 1],
+            ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 1],
+            ['code' => 5, 'name' => 'المصروفات', 'parent_id' => null, 'credit' => 0],
 
             ['name' => 'اﻷصول المتداولة', 'parent_id' => 1], // 6
             ['name' => 'اﻷصول الثابتة', 'parent_id' => 1], // 7

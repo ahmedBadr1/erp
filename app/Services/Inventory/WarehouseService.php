@@ -33,12 +33,7 @@ class WarehouseService extends MainService
 
     public function store(array $data)
     {
-        try {
-            $warehouse = Warehouse::create($data);
-            return $account;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+            return Warehouse::create($data);
     }
 
     public function update($warehouse, array $data)

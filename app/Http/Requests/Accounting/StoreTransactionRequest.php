@@ -50,7 +50,7 @@ class StoreTransactionRequest extends FormRequest
             foreach ($this->accounts as $i => $account) {
                 $accounts[] = [
                     'id'=> Account::where('code', $account['code'])->value('id'),
-                    'cost_center_id' =>CostCenter::where('code', $account['costCenter']['code'])->value('id'),
+                    'cost_center_id' => isset($account['costCenter']) ? CostCenter::where('code', $account['costCenter']['code'])->value('id') : null,
                     ...$account,
                 ];
             }

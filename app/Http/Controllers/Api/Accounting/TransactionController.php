@@ -75,14 +75,14 @@ class TransactionController extends ApiController
     public function store(StoreTransactionRequest $request)
     {
         $data = $request->validated();
-
+//        return $data['accounts'];
         DB::beginTransaction();
         try {
             $group = (new ModelGroupService)->store();
             if ($data['type'] === 'CI') {
                 $this->service->cashin(groupId: $group->id, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
             } elseif ($data['type'] === 'CO') {
-                $this->service->cashout(groupId: $group->id, treasuryId: ['treasury'], accounts: ['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
+                $this->service->cashout(groupId: $group->id, treasuryId:  $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
             } else {
                 $this->service->jouranlEntry(data: $data, groupId: $group->id);
             }

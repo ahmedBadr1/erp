@@ -6,8 +6,11 @@ use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\Node;
+use App\Services\ClientService;
 use App\Services\ClientsExport;
+use App\Services\Inventory\WarehouseService;
 use App\Services\MainService;
+use App\Services\Purchases\SupplierService;
 use App\Services\System\AccessService;
 use App\Services\System\AddressService;
 use App\Services\System\ContactService;
@@ -89,6 +92,15 @@ class AccountService extends MainService
                         'accept_cost_center' => $node->accept_cost_center,
                         'credit' => $node->credit,
                     ]);
+                    $accountType = AccountType::find($account->account_type_id);
+//                    $new = ['name'=>$account->name,'account_id'=>$account->id];
+//                    $transType = match ($node->id) {
+//                        19 =>  (new WarehouseService())->store($new),
+//                        20 =>  (new ClientService())->store($new),
+//                        29 =>  (new SupplierService())->store($new),
+////                        default => throw new \RuntimeException('No Type Matches'),
+//                    };
+
                 }
 
                 if (isset($data['contact'])) {
@@ -107,6 +119,8 @@ class AccountService extends MainService
                 if (isset($data['users'])) {
                     (new AccessService())->sync($data['users'], 'user', $account, 'account',);
                 }
+
+
 
             });
             return true;
