@@ -16,7 +16,10 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'ERP'),
+
+    'front_url' => env('FRONT_APP_URL', 'Laravel'),
+
 
     /*
     |--------------------------------------------------------------------------

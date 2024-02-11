@@ -23,7 +23,7 @@ class Invitation extends MainModelSoft
 
     public function getLink() {
 
-        return urldecode( env('FRONT_APP_URL').'reg/' .$this->token);
+        return urldecode( config('app.front_url').'reg/' .$this->token);
    ///   return urldecode(route('reg', $this->invitation_token));
 
     }

@@ -27,21 +27,22 @@ return new class extends Migration
             $table->string('e_code')->nullable();
             $table->string('e_code_type')->nullable();
 
+            $table->string('image')->nullable();
             $table->string('origin_number')->nullable();
             $table->string('type')->nullable();
 
-            $table->decimal('s_price', 15, 4)->nullable();
-            $table->decimal('d_price', 15, 4)->nullable();
-            $table->decimal('sd_price', 15, 4)->nullable();
-            $table->decimal('min_price', 15, 4)->nullable();
-            $table->decimal('ref_price', 15, 4)->nullable();
-            $table->decimal('pur_price', 15, 4)->nullable();
+            $table->decimal('s_price', 15, 4)->default('0.0000');
+            $table->decimal('d_price', 15, 4)->default('0.0000');
+            $table->decimal('sd_price', 15, 4)->default('0.0000');
+            $table->decimal('min_price', 15, 4)->default('0.0000');
+            $table->decimal('ref_price', 15, 4)->default('0.0000');
+            $table->decimal('pur_price', 15, 4)->default('0.0000');
 
-            $table->decimal('last_cost', 15, 4)->nullable();
-            $table->decimal('avg_cost', 15, 4)->nullable();
-            $table->decimal('fifo', 15, 4)->nullable();
-            $table->decimal('lifo', 15, 4)->nullable();
-            $table->decimal('opening_balance', 12, 2)->nullable();
+            $table->decimal('last_cost', 15, 4)->default('0.0000');
+            $table->decimal('avg_cost', 15, 4)->default('0.0000');
+            $table->decimal('fifo', 15, 4)->default('0.0000');
+            $table->decimal('lifo', 15, 4)->default('0.0000');
+            $table->decimal('opening_balance', 15, 4)->default('0.0000');
 
             $table->decimal('profit_margin', 8, 4)->nullable(); // %10
 
@@ -49,6 +50,7 @@ return new class extends Migration
             $table->tinyInteger('valid_to')->nullable()->comment('in month'); // 1 = 12 month
             $table->string('barcode')->nullable();
             $table->string('hs_code')->nullable();
+
             $table->string('batch_number')->nullable();
             $table->foreignIdFor(Tax::class)->nullable();
             $table->foreignIdFor(Tax::class,'withholding_tax_id')->nullable();
@@ -62,10 +64,12 @@ return new class extends Migration
             $table->decimal('min_limit', 12, 2)->nullable();
             $table->decimal('reorder_limit', 12, 2)->nullable();
 
+//            $table->boolean('available_online')->default(false);
+//            $table->boolean('featured')->default(false);
 
-//            $table->boolean('has_serial')->default(false);
-            $table->boolean('require_barcode')->default(false);
-            $table->boolean('repeat_barcode')->default(false);
+            $table->boolean('track_stock')->default(false)->comment('send notifications on min - max limits');
+            $table->boolean('require_serial')->default(false)->comment('enforce serial entry');
+            $table->boolean('repeat_serial')->default(false)->comment('allow serial repeat');
             $table->boolean('negative_stock')->default(false);
             $table->boolean('can_be_sold')->default(true);
             $table->boolean('can_be_purchased')->default(true);

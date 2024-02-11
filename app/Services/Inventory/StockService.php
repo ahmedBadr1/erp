@@ -4,7 +4,7 @@ namespace App\Services\Inventory;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Stock;
 use App\Models\Inventory\Warehouse;

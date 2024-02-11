@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\DeleteTempUploadedFiles;
+use App\Jobs\CheckProductExpiry;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('backup:run')->daily()->at('01:00');
         $schedule->command(DeleteTempUploadedFiles::class)->hourly();
-        // notification offical paper
+
+//        $schedule->job(new CheckProductExpiry)->daily();
     }
 
     /**

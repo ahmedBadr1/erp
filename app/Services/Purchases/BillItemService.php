@@ -4,7 +4,7 @@ namespace App\Services\Purchases;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\Purchases\BillItem;
 use App\Models\Purchases\Supplier;
 use App\Services\ClientsExport;
@@ -17,7 +17,7 @@ class BillItemService extends MainService
 
     public function all($fields = null,$active=1)
     {
-        $data = $fields ?? (new Item())->getFillable();
+        $data = $fields ?? (new ItemHistory())->getFillable();
 
         return BillItem::active($active)->get($data);
     }

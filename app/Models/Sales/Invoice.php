@@ -2,7 +2,7 @@
 
 namespace App\Models\Sales;
 
-use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\MainModelSoft;
 use App\Models\System\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,7 +28,7 @@ class Invoice extends MainModelSoft
 
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(ItemHistory::class);
     }
     public function revenues()
     {

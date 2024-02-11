@@ -46,7 +46,9 @@ class AuthController extends ApiController
     public function register(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string',
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+
             'username' => 'required|string|max:199|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|confirmed'
@@ -61,7 +63,7 @@ class AuthController extends ApiController
 //        return 'goo' ;
 
         $user = \App\Models\User::create([
-            'username' => $data['username'],
+            'username' => ['first' => $data['first_name'],'last' => $data['last_name']],
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password'])

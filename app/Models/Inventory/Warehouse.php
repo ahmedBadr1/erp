@@ -36,12 +36,12 @@ class Warehouse extends MainModelSoft
     }
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(ItemHistory::class);
     }
 
     public function lastItem ()
     {
-        return $this->hasOne(Item::class)->latestOfMany();
+        return $this->hasOne(ItemHistory::class)->latestOfMany();
     }
     public function manager()
     {

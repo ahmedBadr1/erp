@@ -7,7 +7,7 @@ use App\Http\Controllers\MainController;
 use App\Http\Requests\ItemsInsertRequest;
 use App\Models\Element;
 use App\Models\Inventory\Warehouse;
-use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use Illuminate\Http\Request;
 
 
@@ -44,7 +44,7 @@ class InventoryController extends MainController
 
     public function pending()
     {
-        $pendingItems = Item::where('type','material')->doesnthave('inventory')->orderByDesc('id')->get();
+        $pendingItems = ItemHistory::where('type','material')->doesnthave('inventory')->orderByDesc('id')->get();
 
         return view('inventory.pending',compact('pendingItems'));
     }
@@ -60,7 +60,7 @@ class InventoryController extends MainController
        }
 
        foreach ($request->items as $id){
-          $item = Item::find($id) ;
+          $item = ItemHistory::find($id) ;
           $item->inventory_id = 1;
           $item->update();
        }
@@ -75,7 +75,7 @@ class InventoryController extends MainController
 
     public function productsPending()
     {
-        $pendingItems = Item::where('type','product')->doesnthave('inventory')->get();
+        $pendingItems = ItemHistory::where('type','product')->doesnthave('inventory')->get();
 
         return view('inventory.products-pending',compact('pendingItems'));
     }
@@ -92,7 +92,7 @@ class InventoryController extends MainController
         }
 
         foreach ($request->items as $id){
-            $item = Item::find($id) ;
+            $item = ItemHistory::find($id) ;
             $item->inventory_id = 2;
             $item->update();
         }

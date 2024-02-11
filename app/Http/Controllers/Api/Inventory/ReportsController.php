@@ -25,7 +25,7 @@ use App\Services\ClientService;
 use App\Services\Hr\BranchService;
 use App\Services\Inventory\BrandService;
 use App\Services\Inventory\InvTransactionService;
-use App\Services\Inventory\ItemService;
+use App\Services\Inventory\ItemHistoryService;
 use App\Services\Inventory\ProductCategoryService;
 use App\Services\Inventory\ProductService;
 use App\Services\Inventory\StockService;
@@ -128,7 +128,7 @@ class ReportsController extends ApiController
 
     public function cards(StockCardsReportRequest $request)//
     {
-        [$rows ,$dataset ] = (new ItemService())->cards($request->validated()); // ->collection->groupBy('product.name')
+        [$rows ,$dataset ] = (new ItemHistoryService())->cards($request->validated()); // ->collection->groupBy('product.name')
         return $this->successResponse(['rows' => ItemResource::collection($rows), 'dataset' => $dataset]);
     }
 

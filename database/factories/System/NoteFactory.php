@@ -1,13 +1,13 @@
 <?php
 
-namespace Database\Factories\Inventory;
+namespace Database\Factories\System;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Inventory\InvTransactionItem>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\System\Note>
  */
-class InvTransactionItemFactory extends Factory
+class NoteFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +17,7 @@ class InvTransactionItemFactory extends Factory
     public function definition(): array
     {
         return [
-//            'accepted'=>$this->faker->boolean(80)
+            //
         ];
     }
 }

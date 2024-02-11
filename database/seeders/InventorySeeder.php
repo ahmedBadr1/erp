@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Inventory\ProductCategory;
-use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;

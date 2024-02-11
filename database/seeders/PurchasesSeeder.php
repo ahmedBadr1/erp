@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Inventory\InvTransaction;
-use App\Models\Inventory\InvTransactionItem;
 use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Stock;
 use App\Models\Purchases\Bill;
@@ -83,7 +83,7 @@ class PurchasesSeeder extends Seeder
                     'bill_id' => $bill->id,
                     'cost' => $cost,
                 ]);
-                InvTransactionItem::factory()->create([
+                Item::factory()->create([
                     'quantity' => $item->quantity,
                     'price' => $cost,
                     'product_id' => $item->product_id,
@@ -121,7 +121,7 @@ class PurchasesSeeder extends Seeder
 
                     $product->update(['avg_cost'=>$avg_cost]);
 
-                    Item::factory()->create([
+                    ItemHistory::factory()->create([
                         'quantity' => $item->quantity,
                         'price' => $item->price,
                         'avg_cost' => $avg_cost ,

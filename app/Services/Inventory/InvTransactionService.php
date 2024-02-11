@@ -74,7 +74,7 @@ class InvTransactionService extends MainService
             ]);
 
 
-            (new ItemService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,
+            (new ItemHistoryService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,
                 quantity: $item->quantity, price: $item->price, second_party_id: $transaction->second_party_id, second_party_type: $transaction->second_party_type, in: $in, balance: $balance, avg_cost: $avg_cost ?? null, userId: auth('api')->id());
 
         }

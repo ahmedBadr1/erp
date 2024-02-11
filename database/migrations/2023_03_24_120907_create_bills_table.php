@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Accounting\Tax::class)->nullable(); // 3
 
             $table->float('ex_rate')->nullable();
-            $table->decimal('currency_total',15,4)->nullable();
+            $table->decimal('currency_total',15,4)->default('0.0000');
 
 
 
@@ -42,13 +42,12 @@ return new class extends Migration
             $table->boolean('tax_inclusive');
             $table->boolean('cost_allocation')->default(false);
 
-
             $table->decimal('paid',15,4)->nullable();
-            $table->decimal('gross_total',15,4)->comment("total Bill Items value and qty");
-            $table->decimal('discount',15,4)->comment("Discount cal to value not percentage")->default(0);
-            $table->decimal('sub_total',15,4)->comment("Gross Total after discount");
-            $table->decimal('tax_total',15,4)->comment("Tax value")->default(0);
-            $table->decimal('total',15,4)->comment("Sub Total after tax");
+            $table->decimal('gross_total',15,4)->default('0.0000')->comment("total Bill Items value and qty");
+            $table->decimal('discount',15,4)->default('0.0000')->comment("Discount cal to value not percentage");
+            $table->decimal('sub_total',15,4)->default('0.0000')->comment("Gross Total after discount");
+            $table->decimal('tax_total',15,4)->default('0.0000')->comment("Tax value");
+            $table->decimal('total',15,4)->default('0.0000')->comment("Sub Total after tax");
             $table->text('note')->nullable();
             $table->boolean('canceled')->default(false);
             $table->timestamps();

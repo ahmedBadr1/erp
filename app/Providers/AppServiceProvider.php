@@ -12,8 +12,8 @@ use App\Models\Accounting\Node;
 use App\Models\Accounting\Tax;
 use App\Models\Accounting\Transaction;
 use App\Models\Inventory\InvTransaction;
-use App\Models\Inventory\InvTransactionItem;
 use App\Models\Inventory\Item;
+use App\Models\Inventory\ItemHistory;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
@@ -72,10 +72,10 @@ class AppServiceProvider extends ServiceProvider
 
             'product' => Product::class,
             'warehouse' => Warehouse::class,
-            'item' => Item::class,
+            'item' => ItemHistory::class,
             'unit' => Unit::class,
             'invTransaction' => InvTransaction::class,
-            'InvTransactionItem' => InvTransactionItem::class,
+            'InvTransactionItem' => Item::class,
 
 
             'supplier' => Supplier::class,

@@ -253,7 +253,7 @@ class UsersController extends ApiController
         if ($invitation->registered_at){
             return $this->errorResponse('Invitation Already Used',200);
         }
-        $invitation->delete();
+        $invitation->forceDelete();
         return $this->successResponse('success','Invitation Deleted Successfully');
     }
 }

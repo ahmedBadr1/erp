@@ -13,6 +13,7 @@ use App\Traits\HasDiscount;
 use App\Traits\HasInstallment;
 use App\Traits\HasMessages;
 use App\Traits\HasAccess;
+use App\Traits\HasNote;
 use App\Traits\HasTicket;
 use App\Traits\ReferenceTrait;
 use App\Traits\Taggable;
@@ -29,7 +30,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class MainModel extends Model implements HasMedia
 {
     use HasFactory, HasAddress, HasAttachments, HasContacts, Emojiable, HasMessages, Taggable, Commentable, WorkAtTrait ,HasTicket ,HasDevice,ReferenceTrait;
-    use InteractsWithMedia , BelongsToThrough ,HasAccess ,HasDiscount,HasDimension ,HasInstallment;
+    use InteractsWithMedia , BelongsToThrough ,HasAccess ,HasDiscount,HasDimension ,HasInstallment , HasNote;
 
     public static $withoutAppends = false;
 

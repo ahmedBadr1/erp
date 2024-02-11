@@ -2,43 +2,21 @@
 
 namespace App\Models\Inventory;
 
-use App\Models\Element;
 use App\Models\MainModelSoft;
-use App\Models\ProductionOrder;
-use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Item extends MainModelSoft
 {
-    use Prunable;
+   protected $fillable = ['inv_transaction_id','bill_item_id','product_id','serial','related_serial','price','sold'];
 
-    protected $fillable = ['product_id', 'warehouse_id', 'quantity', 'price','avg_cost','unit_id', 'inv_transaction_id', 'second_party_id','second_party_type', 'balance', 'in',];
+   public function transaction ()
+   {
+       return $this->belongsTo(InvTransaction::class);
+   }
 
-
-    public function prunable()
-    {
-        return static::where('deleted_at', '<=', now()->subMonth('6'));
-    }
-
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
-
-    public function warehouse()
-    {
-        return $this->belongsTo(Warehouse::class);
-    }
-
-    public function transaction()
-    {
-        return $this->belongsTo(InvTransaction::class,'inv_transaction_id');
-    }
-
-    public function secondParty()
-    {
-        return $this->morphTo('second_party');
-    }
-
-
+   public function product()
+   {
+       return $this->belongsTo(Product::class);
+   }
 }
