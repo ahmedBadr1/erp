@@ -2,10 +2,12 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Check;
 use App\Console\Commands\DeleteTempUploadedFiles;
 use App\Jobs\CheckProductExpiry;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,9 +17,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('backup:run')->daily()->at('01:00');
-        $schedule->command(DeleteTempUploadedFiles::class)->hourly();
-        $schedule->job(new CheckProductExpiry)->everyMinute();
+//        $schedule->command('backup:run')->daily()->at('01:00');
+//        $schedule->command(DeleteTempUploadedFiles::class)->hourly();
+//        $schedule->job(new CheckProductExpiry)->everyMinute();
+        $schedule->command(Check::class)->everyMinute();
     }
 
     /**

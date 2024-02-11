@@ -39,10 +39,8 @@ class CheckProductExpiry implements ShouldQueue
 //        $data['email'] = 'ahmedbauomy30@gmail.com';
 //        dispatch(new SendEmailJob($data,'checkMail'));
 
-//        $email = new CheckMail();
-//        Mail::to('ahmedbauomy30@gmail.com')->send($email);
 
-        Log::info('done');
+
 
     }
 }
