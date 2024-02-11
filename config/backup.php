@@ -168,11 +168,11 @@ return [
         'notifiable' => \Spatie\Backup\Notifications\Notifiable::class,
 
         'mail' => [
-            'to' => 'admin@vision.com',
+            'to' => 'ramasoft.eg@gmail.com',
 
             'from' => [
-                'address' => env('MAIL_FROM_ADDRESS', 'system@vision.com'),
-                'name' => env('MAIL_FROM_NAME', 'System'),
+                'address' => env('MAIL_FROM_ADDRESS', 'sys@rssgroup.co'),
+                'name' => env('MAIL_FROM_NAME', 'ERP'),
             ],
         ],
 

@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-//        $schedule->command('backup:run')->daily()->at('01:00');
+        $schedule->command('backup:run')->daily()->at('01:00')->timezone('Africa/Cairo');
 //        $schedule->command(DeleteTempUploadedFiles::class)->hourly();
 //        $schedule->job(new CheckProductExpiry)->everyMinute();
         $schedule->command(Check::class)->daily()->at('01:30')->timezone('Africa/Cairo');
