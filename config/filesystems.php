@@ -76,8 +76,7 @@ return [
             'clientSecret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
             'refreshToken' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
             'folderId' => env('GOOGLE_DRIVE_FOLDER_ID'),
-//            'folder' => env('GOOGLE_DRIVE_FOLDER'),
-
+            'folder' => env('GOOGLE_DRIVE_FOLDER'),
         ],
         'dropbox' => [
             'driver' => 'dropbox',
