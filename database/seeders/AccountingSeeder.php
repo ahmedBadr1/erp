@@ -255,7 +255,7 @@ class AccountingSeeder extends Seeder
             ['name' => 'أصول غير ملموسة', 'parent_id' => 7,], // 22
             ['name' => 'أصول ملموسة', 'parent_id' => 7,], // 23
             ['name' => 'اﻹستثمارات', 'parent_id' => 7,], // 24
-            ['name' => 'أجهزة كومبيزتر', 'parent_id' => 23,], // 25
+            ['name' => 'أجهزة كومبيوتر', 'parent_id' => 23,], // 25
             ['name' => 'أثاث', 'parent_id' => 23,], // 26
             ['name' => 'أجهزة كهربائية', 'parent_id' => 23,], // 27
             ['name' => 'تشطبيات ومستلزمات', 'parent_id' => 23,], // 28

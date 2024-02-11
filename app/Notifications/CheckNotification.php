@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeMessage extends Notification
+class CheckNotification extends Notification
 {
     use Queueable;
 
@@ -26,10 +26,7 @@ class WelcomeMessage extends Notification
      */
     public function via(object $notifiable): array
     {
-        return [
-           'database',
-            'mail'
-        ];
+        return ['mail'];
     }
 
     /**
@@ -38,24 +35,21 @@ class WelcomeMessage extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Welcome to Black Box')
-                    ->action('Discover your Account', url('/'))
-                    ->line('Thank you for using our application!');
+            ->greeting('Good News !')
+                    ->line('Everything is working just fine.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for Trust in You !');
     }
-
 
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
-    public function toDatabase(object $notifiable): array
+    public function toArray(object $notifiable): array
     {
         return [
-            'message' => 'Welcome to Our app , Hope you enjoy it ;)',
-                  'from' => config('app.name'),
-//            'title'=>  $this->data['title'] ?? null,
-            'url' =>  '/',
+            //
         ];
     }
 }

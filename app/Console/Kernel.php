@@ -17,8 +17,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         $schedule->command('backup:run')->daily()->at('01:00');
         $schedule->command(DeleteTempUploadedFiles::class)->hourly();
-
-//        $schedule->job(new CheckProductExpiry)->daily();
+        $schedule->job(new CheckProductExpiry)->everyFiveMinutes();
     }
 
     /**

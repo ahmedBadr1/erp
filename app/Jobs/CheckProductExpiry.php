@@ -27,11 +27,14 @@ class CheckProductExpiry implements ShouldQueue
      */
     public function handle(): void
     {
-        $expiredProducts = Product::where('expiry_date', '<', now())->get();
+//        $expiredProducts = Product::where('expiry_date', '<', now())->get();
+//
+//        foreach ($expiredProducts as $product) {
+//            // Perform actions for expired products
+//            // For example, you can send notifications, update the status, etc.
+//        }
+        $data['email'] = 'ahmedbauomy30@gmail.com';
+        dispatch(new SendEmailJob($data,'checkMail'));
 
-        foreach ($expiredProducts as $product) {
-            // Perform actions for expired products
-            // For example, you can send notifications, update the status, etc.
-        }
     }
 }
