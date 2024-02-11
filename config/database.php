@@ -62,7 +62,8 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
             'dump' => [
-                'add_extra_option' => '--password=[backfeed]',
+                'dump_binary_path' => '/usr/bin',
+                'add_extra_option' => '--password='. env('DB_PASSWORD', ''),
             ]
         ],
 
