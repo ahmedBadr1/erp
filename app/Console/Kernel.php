@@ -20,7 +20,7 @@ class Kernel extends ConsoleKernel
 //        $schedule->command('backup:run')->daily()->at('01:00');
 //        $schedule->command(DeleteTempUploadedFiles::class)->hourly();
 //        $schedule->job(new CheckProductExpiry)->everyMinute();
-        $schedule->command(Check::class)->everyMinute();
+        $schedule->command(Check::class)->daily()->at('01:30')->timezone('Africa/Cairo');
     }
 
     /**
