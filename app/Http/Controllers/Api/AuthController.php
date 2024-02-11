@@ -63,8 +63,8 @@ class AuthController extends ApiController
 //        return 'goo' ;
 
         $user = \App\Models\User::create([
-            'username' => ['first' => $data['first_name'],'last' => $data['last_name']],
-            'name' => $data['name'],
+            'username' => $data['username'],
+            'name' => ['first' => $data['first_name'],'last' => $data['last_name']],
             'email' => $data['email'],
             'password' => Hash::make($data['password'])
         ]);
