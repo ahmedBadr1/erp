@@ -79,14 +79,14 @@ class BillService extends MainService
                 'tax_exclusive' => 0,
                 'tax_inclusive' => 0,
             ]);
-if ($type === 'SO' ){
-    $items = collect($data['items']);
-    $total_cost = $items->sum(function ($item) {
-            return $item['quantity'];
-        }) * $items->avg(function ($item) {
-            return $item['avg_cost'] ?? Product::whereId($item['product_id'])->value('avg_cost') ??  throw new \RuntimeException('Avg Cost Zero');
-        });
-}
+            if ($type === 'SO') {
+                $items = collect($data['items']);
+                $total_cost = $items->sum(function ($item) {
+                        return $item['quantity'];
+                    }) * $items->avg(function ($item) {
+                        return $item['avg_cost'] ?? Product::whereId($item['product_id'])->value('avg_cost') ?? throw new \RuntimeException('Avg Cost Zero');
+                    });
+            }
 
 
             $transType = match ($type) {
@@ -94,7 +94,7 @@ if ($type === 'SO' ){
                 'SO' => 'IO',
                 default => throw new \RuntimeException('No Type Matches'),
             };
-            $transaction = (new InvTransactionService())->createType(type: $transType, groupId: $group->id, items: $data['items'], amount: $bill->sub_total, warehouse_id: $data['warehouse_id'], second_party_id: $data['second_party_id'], bill_id: $bill->id, second_party_type: $data['second_party_type'], due: $data['date'], note: $data['note'], user_id: $data['responsible_id'] ?? null, paper_ref: $data['paper_ref'], discount_rate: $data['discount_rate'], system: 1);
+            $transaction = (new InvTransactionService())->createType(type: $transType, groupId: $group->id, items: $data['items'], amount: $bill->gross_total, warehouse_id: $data['warehouse_id'], second_party_id: $data['second_party_id'], bill_id: $bill->id, second_party_type: $data['second_party_type'], due: $data['date'], note: $data['note'], user_id: $data['responsible_id'] ?? null, paper_ref: $data['paper_ref'], discount_rate: $data['discount_rate'], system: 1);
 
             foreach ($data['items'] as $item) {
                 $cost = $item['price'] - ($item['price'] * $data['discount_rate'] / 100);

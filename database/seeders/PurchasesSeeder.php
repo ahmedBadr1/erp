@@ -68,7 +68,7 @@ class PurchasesSeeder extends Seeder
             $transaction = InvTransaction::factory()->create([
                 'bill_id' => $bill->id,
                 'type' => 'RS',
-                'amount' => $sub_total,
+                'amount' => $gross_total,
                 'warehouse_id' => $warehouse->id,
                 'second_party_type' => 'supplier',
                 'second_party_id' => $supplier->id,
@@ -78,11 +78,11 @@ class PurchasesSeeder extends Seeder
 
 
             foreach ($items as $item) {
-                $cost = $item->price - ($item->price * $discountRate / 100);
+//                $cost = $item->price - ($item->price * $discountRate / 100);
                 $item->update([
                     'bill_id' => $bill->id,
                     'inv_transaction_id' => $transaction->id,
-                    'cost' => $cost,
+                    'cost' => $item->price,
                 ]);
 //                ItemHistory::factory()->create([
 //                    'quantity' => $item->quantity,
