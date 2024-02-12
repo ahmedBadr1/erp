@@ -229,11 +229,11 @@ class AccountingSeeder extends Seeder
 
 
         $nodes = [
-            ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0,],
-            ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1],
-            ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1],
-            ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 1],
-            ['code' => 5, 'name' => 'المصروفات', 'parent_id' => null, 'credit' => 0],
+            ['code' => 1, 'name' => 'اﻷصول', 'parent_id' => null, 'credit' => 0,'select_cost_center' => 0,],
+            ['code' => 2, 'name' => 'الخصوم', 'parent_id' => null, 'credit' => 1,'select_cost_center' => 0,],
+            ['code' => 3, 'name' => 'حقوق الملكية', 'parent_id' => null, 'credit' => 1,'select_cost_center' => 0,],
+            ['code' => 4, 'name' => 'الإيرادات', 'parent_id' => null, 'credit' => 1,'select_cost_center' => 1,],
+            ['code' => 5, 'name' => 'المصروفات', 'parent_id' => null, 'credit' => 0,'select_cost_center' => 1,],
 
             ['name' => 'اﻷصول المتداولة', 'parent_id' => 1], // 6
             ['name' => 'اﻷصول الثابتة', 'parent_id' => 1], // 7
@@ -319,13 +319,16 @@ class AccountingSeeder extends Seeder
 
         ];
         foreach ($nodes as $key => $node) {
+
+//            dd($node['select_cost_center']);
             Node::factory()->create([
                 'code' => $node['code'] ?? null,
                 'name' => $node['name'],
                 'slug' => Str::slug($node['name']),
                 'credit' => $node['credit'] ?? null,
                 'parent_id' => $node['parent_id'],
-                'account_type_id' => $node['account_type_id'] ?? null
+                'account_type_id' => $node['account_type_id'] ?? null,
+                'select_cost_center' =>  $node['select_cost_center'] ?? null,
             ]);
         }
         return true;

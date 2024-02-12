@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('slug');//->nullable()->index();
             $table->string('code')->unique()->index();//->nullable()->index();
             $table->boolean('credit');
-            $table->boolean('accept_cost_center')->default(0);
+            $table->boolean('select_cost_center')->default(0);
             $table->foreignId('parent_id')
                 ->nullable()
                 ->references('id')

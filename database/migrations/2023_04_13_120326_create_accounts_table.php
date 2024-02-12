@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('credit');
             $table->text('description')->nullable();
-            $table->boolean('accept_cost_center')->default(0);
+            $table->boolean('select_cost_center');
             $table->float('credit_limit')->nullable();
             $table->float('debit_limit')->nullable();
             $table->float('c_opening')->nullable();

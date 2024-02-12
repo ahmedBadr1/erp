@@ -11,7 +11,9 @@ class Node extends MainModelSoft
 {
     use  HasRecursiveRelationships;
 
-    protected $fillable = ['name', 'slug', 'accept_cost_center', 'parent_id', "account_type_id", 'active', 'usable', 'system'];
+    protected $fillable = ['name', 'slug', 'parent_id', "account_type_id",'select_cost_center', 'active', 'usable', 'system'];
+
+//    protected $casts =[ 'select_cost_center' => 'boolean'];
 
     public function type()
     {
@@ -64,12 +66,13 @@ class Node extends MainModelSoft
                 $model->code = $parent->code . str_pad(((int)($parent->children_count ?? 0) + $parent->accounts_count + 1), 2, '0', STR_PAD_LEFT);
                 $model->credit = $parent->credit;
                 $model->usable = 1;
-            }
-            if (!$model->account_type_id) {
-                if (!isset($parent)) {
-                    $parent = Node::find($model->parent_id);
+
+                if (!$model->select_cost_center) {
+                    $model->select_cost_center = $parent->select_cost_center ?? null;
                 }
-                $model->account_type_id = $parent->account_type_id ?? null;
+                if (!$model->account_type_id) {
+                    $model->account_type_id = $parent->account_type_id ?? null;
+                }
             }
         });
     }

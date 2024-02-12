@@ -16,7 +16,7 @@ class Account extends MainModelSoft
 //    use LogsActivity;
 
     protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id',
-        'accept_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
+        'select_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
         'opening_date','usable', 'system', 'active', 'node_id', 'currency_id','account_group_id', 'status_id'];
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
@@ -114,6 +114,9 @@ class Account extends MainModelSoft
             $node = Node::withCount('children', 'accounts', 'ancestors')->find($model->node_id);
             $model->code = $node->code . str_pad(((int)$node->children_count + $node->accounts_count + 1), 4, '0', STR_PAD_LEFT);
             $model->credit = $node->credit;
+            if (!$model->select_cost_center) {
+                $model->select_cost_center = $node->select_cost_center ;
+            }
             if (!$model->account_type_id) {
                 if (isset($node->account_type_id)){
                     $model->account_type_id = $node->account_type_id ;

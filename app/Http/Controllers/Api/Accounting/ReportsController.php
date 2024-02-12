@@ -106,29 +106,19 @@ class ReportsController extends ApiController
         return $this->successResponse($data);
     }
 
-    public function accountLedger(AccountLedgerRequest $request)//
+    public function accountLedger(AccountLedgerRequest $request): \Illuminate\Http\JsonResponse
     {
-//        $account = Account::find(7);
-//        $entries = $account->entriesWithCumulativeBalance();
-//        return $this->successResponse($entries) ;
         [$rows , $dataset , $accounts] = (new EntryService())->accounts($request->validated()) ;
-//        return $this->successResponse($accounts) ;
         $rows =  EntryResource::collection($rows) ;
-//        $credit_sum = $rows->collection->when(true, function ($collection) {
-//                return $collection->where('credit', true);
-//            })->sum('amount');
-//        $debit_sum = $rows->collection->when(true, function ($collection) {
-//        return $collection->where('credit', false);
-//    })->sum('amount');
         return $this->successResponse(['rows'=> $rows,'dataset'=> $dataset,'accounts'=> AccountResource::collection($accounts)]);
     }
 
-    public function cash(CashReportRequest $request)//
+    public function cash(CashReportRequest $request): \Illuminate\Http\JsonResponse
     {
         return $this->successResponse(TransactionResource::collection((new TransactionService())->cash($request->validated())),);
     }
 
-    public function posting(ShowPostingRequest $request)
+    public function posting(ShowPostingRequest $request): \Illuminate\Http\JsonResponse
     {
         $result = (new LedgerService())->posting($request->validated());
         return $this->successResponse(['rows'=> LedgerResource::collection($result['rows']),'dataset'=>$result['dataset']]);
