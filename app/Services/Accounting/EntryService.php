@@ -10,6 +10,7 @@ use App\Models\Accounting\Node;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class EntryService extends MainService
@@ -148,10 +149,12 @@ class EntryService extends MainService
 
 
         $accounts = Account::whereIn('id',$accounts) ->withSum(['entries as credit_sum' => function ($query) {
-            $query->where('credit', true);
+            $query->select(DB::raw('SUM(amount)'))
+                ->where('credit', true);
         }], 'amount')
             ->withSum(['entries as debit_sum' => function ($query) {
-                $query->where('credit', false);
+                $query->select(DB::raw('SUM(amount)'))
+                    ->where('credit', false);
             }], 'amount')
             ->get();
 
@@ -181,6 +184,16 @@ class EntryService extends MainService
 //                $query->where('credit', false);
 //            }], 'amount')
 //            ->orderBy($data->get('OrderBy') ?? $this->orderBy, $data->get('OrderBy') ?? $this->orderDesc ? 'desc' : 'asc');
+//        $query->select(DB::raw('SUM(CASE WHEN credit THEN amount ELSE -amount END)'))
+        $query->select('entries.*')
+            ->selectSub(function ($query) {
+                $query->select(DB::raw("SUM(CASE WHEN sub_entries.credit THEN sub_entries.amount ELSE -sub_entries.amount END)"))
+                    ->from('entries as sub_entries')
+                    ->whereColumn('sub_entries.account_id', '=', 'entries.account_id')
+                    ->where('sub_entries.created_at', '<=', DB::raw('entries.created_at'))
+                    ->orderBy('sub_entries.created_at');
+            }, 'balance');
+
         $query->orderBy('created_at');
 //        $query->orderBy('account_id');
         return [ $query->get(), $dataset,$accounts ];

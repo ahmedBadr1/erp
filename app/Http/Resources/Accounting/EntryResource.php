@@ -18,11 +18,14 @@ class EntryResource extends JsonResource
             'id' => $this->whenNotNull($this->id),
             'amount' => $this->whenNotNull($this->amount),
             'credit' => $this->whenNotNull($this->credit),
+
             'comment' => $this->whenNotNull($this->comment),
             'posted' => $this->whenNotNull($this->posted),
             'locked' => $this->whenNotNull($this->locked),
 
             'created_at' => $this->created_at->format('d-m-Y h:i a'),
+            'balance' => $this->whenNotNull($this->account?->credit ? $this->balance :  - $this->balance),
+
 
             'account' =>  new AccountChartResource($this->whenLoaded('account')),
             'ledger' =>  new LedgerResource($this->whenLoaded('ledger')),

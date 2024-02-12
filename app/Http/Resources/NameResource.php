@@ -17,6 +17,7 @@ class NameResource extends JsonResource
         return [
             'id' => $this->whenNotNull($this->id),
             'name' =>  $this->whenNotNull($this->name),
+            'username' =>  $this->whenNotNull($this->username),
             'code' => $this->whenNotNull($this->code),
             'tax_id' => $this->whenNotNull($this->tax_id),
         ];

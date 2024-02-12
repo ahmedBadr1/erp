@@ -8,6 +8,7 @@ use App\Models\Purchases\Supplier;
 use App\Models\Sales\Client;
 use App\Models\System\Status;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 
 class Account extends MainModelSoft

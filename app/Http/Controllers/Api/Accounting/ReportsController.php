@@ -108,7 +108,11 @@ class ReportsController extends ApiController
 
     public function accountLedger(AccountLedgerRequest $request)//
     {
+//        $account = Account::find(7);
+//        $entries = $account->entriesWithCumulativeBalance();
+//        return $this->successResponse($entries) ;
         [$rows , $dataset , $accounts] = (new EntryService())->accounts($request->validated()) ;
+//        return $this->successResponse($accounts) ;
         $rows =  EntryResource::collection($rows) ;
 //        $credit_sum = $rows->collection->when(true, function ($collection) {
 //                return $collection->where('credit', true);

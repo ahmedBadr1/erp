@@ -36,8 +36,8 @@ class AccountResource extends JsonResource
             'active' => $this->system,
             'system' => $this->system,
 
-            'credit_sum' => (int)$this->credit_sum ?? 0,
-            'debit_sum' => (int)$this->debit_sum ?? 0,
+            'credit_sum' => (float)$this->credit_sum ?? 0,
+            'debit_sum' => (float)$this->debit_sum ?? 0,
 //            'node_id' => $this->'node_id',
 //            'currency_id' => $this->currency_id,
 //            'status_id' => $this->status_id,

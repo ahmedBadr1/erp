@@ -89,17 +89,18 @@ class SalesSeeder extends Seeder
                 $total_cost += $avg_cost ;
                 $item->update([
                     'bill_id' => $bill->id,
+                    'inv_transaction_id' => $transaction->id,
                     'cost' => $cost,
                     'avg_cost' =>$avg_cost
                 ]);
-                Item::factory()->create([
-                    'quantity' => $item->quantity,
-                    'price' => $cost ,
-                    'product_id' => $item->product_id,
-//                    'warehouse_id' => $warehouse->id,
-                    'inv_transaction_id' => $transaction->id,
-                    'accepted' => (bool) $transaction->accepted_at,
-                ]);
+//                Item::factory()->create([
+//                    'quantity' => $item->quantity,
+//                    'price' => $cost ,
+//                    'product_id' => $item->product_id,
+////                    'warehouse_id' => $warehouse->id,
+//                    'inv_transaction_id' => $transaction->id,
+//                    'accepted' => (bool) $transaction->accepted_at,
+//                ]);
             }
 
             AccountingSeeder::seedType('CI', $group->id, $treasury, $client->account, $bill->total);

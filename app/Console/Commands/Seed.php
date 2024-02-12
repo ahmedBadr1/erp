@@ -67,8 +67,8 @@ class Seed extends Command
 
     protected function insert($i,$treasury , $warehouse,$supplier,$client)
     {
-        AccountingSeeder::seedType('CI',null,$treasury,$client->account);
-        AccountingSeeder::seedType('CO',null,$treasury,$supplier->account);
+//        AccountingSeeder::seedType('CI',null,$treasury,$client->account);
+//        AccountingSeeder::seedType('CO',null,$treasury,$supplier->account);
         PurchasesSeeder::seedType(type: 'PO', warehouse: $warehouse,supplier: $supplier,treasury:  $treasury);
         if($i > 100){
             SalesSeeder::seedType(type: 'SO', warehouse: $warehouse,client: $client,treasury:  $treasury);

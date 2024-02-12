@@ -81,16 +81,17 @@ class PurchasesSeeder extends Seeder
                 $cost = $item->price - ($item->price * $discountRate / 100);
                 $item->update([
                     'bill_id' => $bill->id,
+                    'inv_transaction_id' => $transaction->id,
                     'cost' => $cost,
                 ]);
-                Item::factory()->create([
-                    'quantity' => $item->quantity,
-                    'price' => $cost,
-                    'product_id' => $item->product_id,
-//                    'warehouse_id' => $warehouse->id,
-                    'inv_transaction_id' => $transaction->id,
-                    'accepted' => (bool)$transaction->accepted_at,
-                ]);
+//                ItemHistory::factory()->create([
+//                    'quantity' => $item->quantity,
+//                    'price' => $cost,
+//                    'product_id' => $item->product_id,
+////                    'warehouse_id' => $warehouse->id,
+//                    'inv_transaction_id' => $transaction->id,
+//                    'accepted' => (bool)$transaction->accepted_at,
+//                ]);
             }
 
             AccountingSeeder::seedType('CO', $group->id, $treasury, $supplier->account, $bill->total);
