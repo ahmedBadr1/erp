@@ -52,9 +52,9 @@ class InvTransactionService extends MainService
                 'product_id' => $item->product_id,
                 'warehouse_id' => $transaction->warehouse_id,
             ]);
-//                    $product = Product::with(["stock" => fn($q) => $q->where('warehouse_id', $transaction->warehouse_id)])->find($item->product_id);
+
+            $product = Product::withSum(['stocks as stocks_balance'=>fn($q)=>$q->where('balance','!=',0)], 'balance')->find($item->product_id);
             if ($in) {
-                $product = Product::withSum('stocks as stocks_balance', 'balance')->find($item->product_id);
                 if ($stock->balance) {
                     $balance = $stock->balance + $item->quantity;
                 } else {
@@ -62,16 +62,19 @@ class InvTransactionService extends MainService
                 }
 
                 $avg_cost = ($product->avg_cost * $product->stocks_balance + $item->quantity * $item->price) / ($product->stocks_balance + $item->quantity);
-                $product->update(['avg_cost' => $avg_cost]);
+
             } else {
                 if ($stock->balance <  $item->quantity){
                     throw new Exception('Not Balance Enough');
+                }elseif($stock->balance == $item->quantity){
+                    $avg_cost = 0 ;
                 }
                 $balance = $stock->balance - $item->quantity;
             }
             $stock->update([
                 'balance' => $balance
             ]);
+            $product->update(['avg_cost' => $avg_cost]);
 
 
             (new ItemHistoryService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,

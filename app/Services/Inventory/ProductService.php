@@ -25,12 +25,15 @@ class ProductService extends MainService
     }
 
 
-    public function search($search)
+    public function search($search,$query=null)
     {
         $search = trim($search);
-        return empty($search) ? Product::query()
-            : Product::query()->where('name', 'like', '%' . $search . '%')
-                ->orWhere('short_name', 'like', '%' . $search . '%')
+        if (!$query){
+            $query = Product::query() ;
+        }
+        return empty($search) ? $query
+            : $query->where('name', 'like', '%' . $search . '%')
+//                ->orWhere('short_name', 'like', '%' . $search . '%')
                 ->orWhere('part_number', 'like', '%' . $search . '%')
                 ->orWhere('origin_number', 'like', '%' . $search . '%')
                 ->orWhere('barcode', 'like', '%' . $search . '%')
@@ -88,7 +91,7 @@ class ProductService extends MainService
 
         $query->withSum('stocks as global_balance','balance' );
 
-        if (isset($data['has_balance']) && $data['has_balance']){
+        if (isset($data['has_balance']) && $data['has_balance'] == 1){
             $query->whereHas('stocks',fn($q)=>$q->where('balance','>',0));
         }
 
@@ -158,7 +161,7 @@ class ProductService extends MainService
 
         $query->withSum('stocks as global_balance','balance' );
 
-        if (isset($data['has_balance']) && $data['has_balance']){
+        if (isset($data['has_balance']) && $data['has_balance'] == 1){
             $query->whereHas('stocks',fn($q)=>$q->where('balance','>',0));
         }
 
