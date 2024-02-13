@@ -8,7 +8,7 @@ return [
          * The name of this application. You can use this name to monitor
          * the backups.
          */
-        'name' => '',//env('GOOGLE_DRIVE_FOLDER', 'erp-backup'),
+        'name' => env('GOOGLE_DRIVE_FOLDER_ID', 'erp-backup'),
 
         'source' => [
 
@@ -18,7 +18,7 @@ return [
                  * The list of directories and files that will be included in the backup.
                  */
                 'include' => [
-                    base_path('storage/app/public/'),
+                    base_path('storage/app/public/uploads/'),
                 ],
 
                 /*
@@ -221,7 +221,7 @@ return [
         ],
 
         [
-            'name' =>env('GOOGLE_DRIVE_FOLDER_ID', 'laravel-backup'),
+            'name' => env('GOOGLE_DRIVE_FOLDER_ID', 'laravel-backup'),
             'disks' => ['backup', 'google'],
             'health_checks' => [
                 \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumAgeInDays::class => 1,
