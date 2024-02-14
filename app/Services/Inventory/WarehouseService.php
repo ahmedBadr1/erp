@@ -44,8 +44,10 @@ class WarehouseService extends MainService
             'description' => $data['description'],
             'node_id' => $nodeId,
         ]);
-        $data['account_id'] = $account->id ;
-        $warehouse = Warehouse::create($data);
+//        $data['account_id'] = $account->id ;
+        //        $warehouse = Warehouse::create($data); // already Warehouse Created IN Account
+        $warehouse = Warehouse::where('account_id', $account->id)->first();
+        $warehouse->update($data);
 
         if (isset($data['contact'])) {
             (new ContactService())->store($data['contact'], $warehouse->id, 'warehouse');
