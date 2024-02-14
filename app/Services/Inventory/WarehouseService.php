@@ -9,6 +9,7 @@ use App\Services\ClientsExport;
 use App\Services\MainService;
 use App\Services\System\AddressService;
 use App\Services\System\ContactService;
+use App\Services\System\ContractService;
 use App\Services\System\TagService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
@@ -55,6 +56,10 @@ class WarehouseService extends MainService
         }
         if (isset($data['tags'])) {
             (new TagService())->sync($data['tags'], $warehouse, 'warehouse');
+        }
+
+        if (isset($data['contract'])) {
+            (new ContractService())->store($data['contract'], $warehouse->id, 'warehouse');
         }
 
         return true ;
