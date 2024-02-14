@@ -119,12 +119,9 @@ class TransactionService extends MainService
     {
         $search = trim($search);
         return empty($search) ? Transaction::query()
-            : Transaction::query()->where('amount', 'like', '%' . $search . '%')
-                ->orWhere('note', 'like', '%' . $search . '%')
-                ->orWhere('type', 'like', '%' . $search . '%')
-//                ->orWhereHas('entries', fn($q) => $q->where('description', 'like', '%' . $search . '%'))
-//                ->orWhereHas('transaction', fn($q) => $q->where('type', 'like', '%' . $search . '%'))
-                ->orWhereHas('entries.account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
+            : Transaction::query()->where('code', 'like', '%' . $search . '%')
+                ->orWhere('paper_ref', 'like', '%' . $search . '%');
+
     }
 
     public function createTransaction(string $type, int $groupId, float $amount,

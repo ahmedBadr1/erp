@@ -307,7 +307,7 @@ class AccountingSeeder extends Seeder
 //            ['name' => 'استثمارات فى أوراق مالية', 'parent_id' => 10], //
 //            ['name' => 'مشاركـات أخرى', 'parent_id' => 10], //
 //
-//            ['name' => 'الدائنون', 'parent_id' => 12,], // مصحلة الضرائب
+//            ['name' => 'الدائنون', 'parent_id' => 12,], //
 //            ['name' => 'مصروفات مستحقة', 'parent_id' => 12,], //
 //            ['name' => 'رواتب مستحقة', 'parent_id' => 12,], //
 //            ['name' => 'ضرائب مستحقة', 'parent_id' => 12,], //
@@ -319,8 +319,6 @@ class AccountingSeeder extends Seeder
 
         ];
         foreach ($nodes as $key => $node) {
-
-//            dd($node['select_cost_center']);
             Node::factory()->create([
                 'code' => $node['code'] ?? null,
                 'name' => $node['name'],

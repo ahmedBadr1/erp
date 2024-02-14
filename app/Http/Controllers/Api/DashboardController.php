@@ -8,6 +8,9 @@ use App\Http\Resources\Dashboard\NotificationCollection;
 use App\Http\Resources\Dashboard\NotificationResource;
 use App\Http\Resources\System\UserProfileResource;
 use App\Notifications\MainNotification;
+use App\Services\Accounting\TransactionService;
+use App\Services\Inventory\InvTransactionService;
+use App\Services\Purchases\BillService;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -170,6 +173,20 @@ class DashboardController extends ApiController
             //   Activity::log('user\logout', $user);
         }
         return $this->successResponse(['message' => 'logged out !']);
+    }
+
+    public function search(ListRequest $request)
+    {
+        $search = $request->get('keywords') ;
+        $transactions = (new TransactionService())->search($search)->limit(2)->get();
+        $bills = (new BillService())->search($search)->limit(2)->get();
+        $invTransactions = (new InvTransactionService())->search($search)->limit(2)->get();
+
+        return $this->successResponse([
+            'transactions'=>$transactions,
+            'bills' => $bills,
+            'invTransactions' => $invTransactions,
+        ]);
     }
 
 }

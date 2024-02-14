@@ -33,7 +33,7 @@ class BillService extends MainService
         $search = trim($search);
         return empty($search) ? Bill::query()
             : Bill::query()->where('code', 'like', '%' . $search . '%')
-                ->orWhere('number', 'like', '%' . $search . '%');
+                ->orWhere('paper_ref', 'like', '%' . $search . '%');
 //                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 

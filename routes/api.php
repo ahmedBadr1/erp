@@ -41,6 +41,9 @@ Route::group(['middleware' => ['json.response']], function () {
         Route::post('profile/', [\App\Http\Controllers\Api\DashboardController::class, 'profile'])->name('profile');
         Route::post('profile/update', [\App\Http\Controllers\Api\DashboardController::class, 'profileUpdate'])->name('profile-update');
 
+        Route::post('search/', [\App\Http\Controllers\Api\DashboardController::class, 'search'])->name('search');
+
+
         Route::group(['prefix' => 'notifications'], function () {
             Route::post('/', [\App\Http\Controllers\Api\DashboardController::class, 'notifications']);
             Route::post('read', [\App\Http\Controllers\Api\DashboardController::class, 'markAllAsRead']);
