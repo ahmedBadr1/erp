@@ -50,6 +50,22 @@ class ProductService extends MainService
             if (isset($data['tags'])) {
                 (new TagService())->sync($data['tags'], $product, 'product');
             }
+
+            if (isset($data['suppliers'])) {
+               $product->suppliers()->sync($data['suppliers']);
+            }
+
+            if (isset($data['taxes'])) {
+                $product->taxes()->sync($data['taxes']);
+            }
+
+            if (isset($data['discounts'])) {
+                foreach($data['discounts'] as $key => $discount){
+                    if ($discount['amount']){
+                        (new DiscountService())->store( discountable_type:  'product',discountable_id:  $product->id,type: $key,amount: $discount['amount'] , is_value:  $discount['is_value'],limited: $discount['limited'],from: $discount['from'] ?? null ,to:  $discount['to'] ?? null);
+                    }
+                }
+            }
             return true;
         } catch (Exception $e) {
             return $e->getMessage();

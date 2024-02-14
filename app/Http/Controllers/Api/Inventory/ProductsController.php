@@ -119,7 +119,7 @@ class ProductsController extends ApiController
 //        $suppliers = (new SupplierService())->all(['id','name']);
         $suppliers = (new AccountService())->all(['id', 'name'], 'AP');
 
-        $tags = (new TagService())->all(['name', 'id'], 'account');
+        $tags = (new TagService())->all(['name', 'id'], 'product');
         $users = (new UserService())->all(['id', 'username'], 'employee');
 
         return $this->successResponse([
@@ -138,11 +138,14 @@ class ProductsController extends ApiController
 
     public function store(StoreProductRequest $request)
     {
-        $res = $this->service->store($request->validated());
-        if ($res !== true) {
-            return $this->errorResponse($res, 409);
+        DB::beginTransaction();
+        try {
+            $this->service->store($request->validated());
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
         }
-
+        DB::commit();
         return $this->successResponse(null, __('message.created', ['model' => __('Product')]));
     }
 

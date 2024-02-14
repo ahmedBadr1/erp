@@ -67,8 +67,7 @@ class AccountService extends MainService
 
     public function store(array $data, $code = null)
     {
-        try {
-            DB::transaction(function () use ($data, $code) {
+
                 $inputs = [
                     'name' => $data['name'],
                     'description' => $data['description'],
@@ -87,12 +86,12 @@ class AccountService extends MainService
                     $node = Node::isLeaf()->withCount('accounts')->whereId($data['node_id'])->first();
                     $account = Account::create([
                         ...$inputs,
-                        'currency_id' => $data['currency_id'],
+                        'currency_id' => $data['currency_id'] ?? 1,
                         'node_id' => $node->id,
                         'accept_cost_center' => $node->accept_cost_center,
                         'credit' => $node->credit,
                     ]);
-                    $accountType = AccountType::find($account->account_type_id);
+//                    $accountType = AccountType::find($account->account_type_id);
 //                    $new = ['name'=>$account->name,'account_id'=>$account->id];
 //                    $transType = match ($node->id) {
 //                        19 =>  (new WarehouseService())->store($new),
@@ -120,13 +119,7 @@ class AccountService extends MainService
                     (new AccessService())->sync($data['users'], 'user', $account, 'account',);
                 }
 
-
-
-            });
-            return true;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+            return $account;
     }
 
     public function update($code, array $data)

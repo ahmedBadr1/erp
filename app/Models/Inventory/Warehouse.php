@@ -17,11 +17,8 @@ class Warehouse extends MainModelSoft
 {
     use LogsActivity;
 
-    protected $fillable = [
-        'name',
-        'type',
-        'address',
-        'account_id',
+    protected $fillable = ['name', 'description','type', 'space','height','is_rma','is_rented','has_security','warehouse_category_id',
+        'account_id', 'client_id','price_list_id','manager_id','active',
     ];
 
     public function account()

@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('discounts', function (Blueprint $table) {
+        Schema::create('fieldable', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->nullable();
-            $table->string('amount');
-            $table->boolean('is_value');
-            $table->dateTime('from')->nullable();
-            $table->dateTime('to')->nullable();
-            $table->boolean('limited');
-            $table->morphs('discountable');
+            $table->foreignIdFor(\App\Models\System\Field::class);
+            $table->morphs('has_field');
+            $table->string('value');
             $table->timestamps();
         });
     }
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('discounts');
+        Schema::dropIfExists('fieldable');
     }
 };

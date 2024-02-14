@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('discounts', function (Blueprint $table) {
+        Schema::create('price_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->nullable();
-            $table->string('amount');
-            $table->boolean('is_value');
-            $table->dateTime('from')->nullable();
-            $table->dateTime('to')->nullable();
-            $table->boolean('limited');
-            $table->morphs('discountable');
+            $table->string('name');
+            $table->string('type')->default('default');
+            $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('discounts');
+        Schema::dropIfExists('price_lists');
     }
 };

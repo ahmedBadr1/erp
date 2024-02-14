@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Inventory;
 
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Inventory\StoreProductRequest;
+use App\Http\Requests\Inventory\StoreWarehouseRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Inventory\WarehouseCollection;
 use App\Http\Resources\Inventory\WarehouseResource;
@@ -15,7 +16,10 @@ use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
 use App\Models\User;
-use App\Services\Inventory\GroupService;
+use App\Services\Inventory\ProductCategoryService;
+use App\Services\Inventory\WarehouseService;
+use App\Services\Sales\PriceListService;
+use App\Services\System\TagService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -33,7 +37,7 @@ class WarehousesController extends ApiController
         $this->middleware('permission:inventory.warehouses.edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:inventory.warehouses.delete', ['only' => ['destroy']]);
 
-        $this->service = new GroupService();
+        $this->service = new WarehouseService();
     }
 
 
@@ -66,36 +70,25 @@ class WarehousesController extends ApiController
 
     public function create()
     {
-        $categories = ProductCategory::pluck('name', 'id')->toArray();
-        $warehouses = Warehouse::pluck('name', 'id')->toArray();
-        $units = Unit::pluck('name', 'id')->toArray();
-        $brands = Brand::pluck('name', 'id')->toArray();
-        $taxes = Tax::select('id', 'name', 'rate')->get();
-        $suppliers = Supplier::pluck('name', 'id')->toArray();
-        $users = User::whereHas('roles', fn($q) => $q->where('name', 'employee'))->pluck('name', 'id')->toArray();
+        $categories = (new ProductCategoryService())->all(['name', 'id']);
+        $priceLists = (new PriceListService())->all(['name', 'id']);
 
-        return $this->successResponse(['categories' => $categories, 'warehouses' => $warehouses, 'units' => $units, 'brands' => $brands, 'taxes' => $taxes, 'suppliers' => $suppliers, 'users' => $users]);
+        $tags = (new TagService())->all(['name', 'id'], 'warehouse');
+
+        return $this->successResponse(['categories' => $categories, 'priceLists' => $priceLists, 'tags' => $tags]);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(StoreWarehouseRequest $request)
     {
-
-        $data = $request->all();
-
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
-            $product = Product::create($data);
-
-
-            DB::commit();
-
-            return $this->successResponse(null ,  __("message.created",['model' => __('Warehouse')]) ,201);
+            $this->service->store($request->validated());
         } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json(['message' => 'Failed to create Product', 'error' => $e], 500);
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
         }
+        DB::commit();
+        return $this->successResponse(null, __('message.created', ['model' => __('Warehouse')]));
     }
 
     public function show(Request $request, $id)

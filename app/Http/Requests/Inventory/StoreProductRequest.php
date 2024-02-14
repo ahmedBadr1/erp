@@ -30,10 +30,34 @@ class StoreProductRequest extends FormRequest
             'part_number'  => 'nullable|string',
             'sku'  => 'nullable|string',
 
+            'e_code' => 'nullable|string',
+            'e_code_type' => 'nullable|string',
+
 
             'origin_number'  => 'nullable|string',
             'location'  => 'nullable|string',
             'oe_number'  => 'nullable|string',
+
+            'discounts' => 'nullable|array',
+            'discounts.s_price.amount' => 'nullable|numeric',
+            'discounts.s_price.is_value' => 'nullable|boolean',
+            'discounts.s_price.limited' => 'nullable|boolean',
+            'discounts.s_price.from' => 'nullable|date',
+            'discounts.s_price.to' => 'nullable|date',
+
+            'discounts.d_price.amount' => 'nullable|numeric',
+            'discounts.d_price.is_value' => 'nullable|boolean',
+            'discounts.d_price.limited' => 'nullable|boolean',
+            'discounts.d_price.from' => 'nullable|date',
+            'discounts.d_price.to' => 'nullable|date',
+
+            'discounts.sd_price.amount' => 'nullable|numeric',
+            'discounts.sd_price.is_value' => 'nullable|boolean',
+            'discounts.sd_price.limited' => 'nullable|boolean',
+            'discounts.sd_price.from' => 'nullable|date',
+            'discounts.sd_price.to' => 'nullable|date',
+
+
 
             's_price'  =>'required|numeric|gt:0',
             'd_price'  => 'nullable|numeric|gt:0',

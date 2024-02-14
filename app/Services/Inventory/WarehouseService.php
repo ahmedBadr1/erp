@@ -4,8 +4,12 @@ namespace App\Services\Inventory;
 
 use App\Exports\UsersExport;
 use App\Models\Inventory\Warehouse;
+use App\Services\Accounting\AccountService;
 use App\Services\ClientsExport;
 use App\Services\MainService;
+use App\Services\System\AddressService;
+use App\Services\System\ContactService;
+use App\Services\System\TagService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -33,7 +37,27 @@ class WarehouseService extends MainService
 
     public function store(array $data)
     {
-            return Warehouse::create($data);
+        $nodeId = 19 ; // المخزون
+        $account = (new AccountService())->store([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'node_id' => $nodeId,
+        ]);
+        $data['account_id'] = $account->id ;
+        $warehouse = Warehouse::create($data);
+
+        if (isset($data['contact'])) {
+            (new ContactService())->store($data['contact'], $warehouse->id, 'warehouse');
+        }
+
+        if (isset($data['address'])) {
+            (new AddressService())->store($data['address'], $warehouse->id, 'warehouse');
+        }
+        if (isset($data['tags'])) {
+            (new TagService())->sync($data['tags'], $warehouse, 'warehouse');
+        }
+
+        return true ;
     }
 
     public function update($warehouse, array $data)

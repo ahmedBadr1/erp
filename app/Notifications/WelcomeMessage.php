@@ -28,7 +28,7 @@ class WelcomeMessage extends Notification
     {
         return [
            'database',
-            'mail'
+//            'mail'
         ];
     }
 
@@ -38,7 +38,7 @@ class WelcomeMessage extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Welcome to Black Box')
+                    ->line('Welcome to Our app')
                     ->action('Discover your Account', url('/'))
                     ->line('Thank you for using our application!');
     }

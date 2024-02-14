@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('whatsapp')->nullable();
             $table->string('fax')->nullable();
             $table->string('email')->nullable();
+            $table->string('national_id')->nullable();
             $table->morphs('contactable');
             $table->foreignIdFor(\App\Models\System\Status::class)->nullable();
             $table->foreignIdFor(\App\Models\User::class)->nullable();

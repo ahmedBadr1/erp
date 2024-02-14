@@ -67,7 +67,12 @@ class Product extends MainModelSoft
 
     public function taxes()
     {
-        return $this->belongsToMany(Tax::class, 'product_tax');
+        return $this->belongsToMany(Tax::class, 'product_tax')->withTimestamps();
+    }
+
+    public function suppliers()
+    {
+        return $this->belongsToMany(Supplier::class, 'product_supplier');
     }
 
     public function unit()
