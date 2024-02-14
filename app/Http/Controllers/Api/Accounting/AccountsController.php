@@ -17,8 +17,6 @@ use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\Currency;
 use App\Models\Accounting\Node;
-use App\Models\System\Group;
-use App\Models\System\Tag;
 use App\Models\User;
 use App\Services\Accounting\AccountService;
 use App\Services\Accounting\CurrencyService;
@@ -27,7 +25,6 @@ use App\Services\System\GroupService;
 use App\Services\System\TagService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AccountsController extends ApiController
@@ -55,7 +52,7 @@ class AccountsController extends ApiController
         $input = $request->validated();
         $query = Account::active();
         if (isset($input['node_id'])) {
-            $nodeAccounts =$this->service->all(['code','name','description','credit_limit','debit_limit','account_type_id','active'] , $input['account_type_id'] ?? null,$input['node_id']?? null);
+            $nodeAccounts = $this->service->all(['code', 'name', 'description', 'credit_limit', 'debit_limit', 'account_type_id', 'active'], $input['account_type_id'] ?? null, $input['node_id'] ?? null);
             return $this->successResponse(['accounts' => $nodeAccounts]);
         }
         $accounts = $query->get(['name', 'code', 'credit', 'system', 'active']);
@@ -175,26 +172,18 @@ class AccountsController extends ApiController
 
     public function store(AccountRequest $request)
     {
-
         try {
-            $res = (new AccountService())->store($request->validated());
-            if ($res !== true){
-                return $this->errorResponse($res, 409);
-            }
+            (new AccountService())->store($request->validated());
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 409);
         }
-
         return $this->successResponse(null, __('message.created', ['model' => __('names.account')]));
     }
 
     public function update(UpdateAccountRequest $request, $code)
     {
         try {
-            $res = (new AccountService())->store($request->validated(),$code);
-            if ($res !== true){
-                return $this->errorResponse($res, 409);
-            }
+            (new AccountService())->store($request->validated(), $code);
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 409);
         }
