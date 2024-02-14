@@ -191,16 +191,15 @@ class AccountsController extends ApiController
     public function update(UpdateAccountRequest $request, $code)
     {
         try {
-            $res = (new AccountService())->store($request->validated(), $code);
+            $res = (new AccountService())->store($request->validated());
             if ($res !== true){
                 return $this->errorResponse($res, 409);
             }
         } catch (Exception $e) {
             return $this->errorResponse($e->getMessage(), 409);
         }
-//        return $res ;
 
-        return $this->successResponse(null, __('message.updated', ['model' => __('names.account')]));
+        return $this->successResponse(null, __('message.updated', ['model' => __('Account')]));
     }
 
     public function duplicate(DuplicateRequest $request)
