@@ -191,7 +191,7 @@ class AccountsController extends ApiController
     public function update(UpdateAccountRequest $request, $code)
     {
         try {
-            $res = (new AccountService())->store($request->validated());
+            $res = (new AccountService())->store($request->validated(),$code);
             if ($res !== true){
                 return $this->errorResponse($res, 409);
             }
