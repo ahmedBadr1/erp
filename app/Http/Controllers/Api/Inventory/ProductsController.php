@@ -110,7 +110,7 @@ class ProductsController extends ApiController
 
     public function create(Request $request )
     {
-        if ( $request->get('id')){
+        if ( $request->has('id')){
             $product = Product::with('category', 'unit', 'tags', 'taxes', 'suppliers','discounts')->where('id', $request->get('id'))->firstorFail();
         }
 
@@ -127,7 +127,7 @@ class ProductsController extends ApiController
         $users = (new UserService())->all(['id', 'username'], 'employee');
 
         return $this->successResponse([
-            'product' => new ProductResource($product ?? null)  ,
+            'product' => isset($product) ? new ProductResource($product )  :null,
             'tags' => $tags,
             'categories' => $categories,
             'warehouses' => $warehouses,
