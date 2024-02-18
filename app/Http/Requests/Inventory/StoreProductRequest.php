@@ -81,6 +81,8 @@ class StoreProductRequest extends FormRequest
             'max_limit'  => 'nullable|numeric|min:0',
             'min_limit'  =>  'nullable|numeric|gt:0',
             'reorder_limit'  =>  'nullable|numeric|gt:0',
+
+            'track_stock'  => 'nullable|boolean',
             'require_serial'  => 'nullable|boolean',
             'repeat_serial' => 'nullable|boolean',
             'negative_stock' => 'required|boolean',
