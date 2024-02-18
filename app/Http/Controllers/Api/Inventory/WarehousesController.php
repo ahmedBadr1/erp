@@ -8,6 +8,7 @@ use App\Http\Requests\Inventory\StoreWarehouseRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Inventory\WarehouseCollection;
 use App\Http\Resources\Inventory\WarehouseResource;
+use App\Http\Resources\NameResource;
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
 use App\Models\Inventory\ProductCategory;
@@ -47,7 +48,8 @@ class WarehousesController extends ApiController
             return $this->deniedResponse(null, null, 403);
         }
         $warehouses = $this->service->search($request->get('keywords'))
-            ->withCount('items', 'manager')
+            ->withCount('products')
+            ->withSum('stocks as balance','balance' )
             ->when($request->get('start_date'), function ($query) use ($request) {
                 $query->where('created_at', '>=', $request->get('start_date'));
             })
@@ -61,11 +63,11 @@ class WarehousesController extends ApiController
 
     public function list(Request $request)
     {
-        if (auth('api')->user()->cannot('inventory.products.index')) {
+        if (auth('api')->user()->cannot('inventory.warehouses.index')) {
             return $this->deniedResponse();
         }
-        $products = Product::active()->pluck('name', 'id')->toArray();
-        return $this->successResponse(['products' => $products]);
+        $warehouses = $this->service->all(['id','name']);
+        return $this->successResponse(['warehouses' => NameResource::collection($warehouses)]);
     }
 
     public function create()

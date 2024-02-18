@@ -31,6 +31,11 @@ class Warehouse extends MainModelSoft
     {
         return $this->hasMany(Stock::class);
     }
+
+    public function products()
+    {
+        return $this->belongsToMany(Product::class,'stocks',);
+    }
     public function items()
     {
         return $this->hasMany(ItemHistory::class);

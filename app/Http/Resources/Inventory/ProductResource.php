@@ -14,25 +14,33 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        if($this->items_quantity){
-            $total =  formatMoney( ((int)$this->items_quantity ?? 0) *  ((int)$this->items_price ?? 0)) ;
-        }
+
         return [
             'id' =>  $this->whenNotNull($this->id),
             'name' => $this->whenNotNull($this->name),
             'short_name' => $this->whenNotNull($this->short_name),
             'part_number' => $this->whenNotNull($this->part_number),
             'sku' => $this->whenNotNull($this->sku),
-            'origin_number' =>$this->whenNotNull($this->origin_number),
+            'location' =>$this->whenNotNull($this->location),
+            'oe_number' =>$this->whenNotNull($this->oe_number),
             's_price' => $this->whenNotNull($this->s_price),
             'd_price' => $this->whenNotNull($this->d_price),
             'sd_price' =>$this->whenNotNull($this->sd_price),
             'min_price' =>$this->whenNotNull($this->min_price),
             'ref_price' =>$this->whenNotNull($this->ref_price),
+            'pur_price' =>$this->whenNotNull($this->pur_price),
+            'last_cost' =>$this->whenNotNull($this->last_cost),
             'avg_cost' =>$this->whenNotNull($this->avg_cost),
+            'fifo' =>$this->whenNotNull($this->fifo),
+            'lifo' =>$this->whenNotNull($this->lifo),
             'profit_margin' => $this->whenNotNull($this->profit_margin),
             'warranty' => $this->whenNotNull($this->warranty),
-            'expire_date' => $this->whenNotNull($this->expire_date),
+            'valid_to' => $this->whenNotNull($this->valid_to),
+            'product_category_id' => $this->whenNotNull($this->product_category_id),
+
+            'e_code' => $this->whenNotNull($this->e_code),
+            'e_code_type' => $this->whenNotNull($this->e_code_type),
+
             'barcode' =>$this->whenNotNull($this->barcode),
             'hs_code' => $this->whenNotNull($this->hs_code),
             'weight' => $this->whenNotNull($this->weight),
@@ -41,8 +49,13 @@ class ProductResource extends JsonResource
             'height' => $this->whenNotNull($this->height),
             'max_limit' => $this->whenNotNull($this->max_limit),
             'min_limit' => $this->whenNotNull($this->min_limit),
-            'require_barcode' =>$this->whenNotNull($this->require_barcode),
-            'repeat_barcode' => $this->whenNotNull($this->repeat_barcode),
+            'reorder_limit' => $this->whenNotNull($this->reorder_limit),
+            'track_stock' => $this->whenNotNull($this->track_stock),
+
+                        'use_batch_number' =>$this->whenNotNull($this->use_batch_number),
+
+            'require_serial' =>$this->whenNotNull($this->require_serial),
+            'repeat_serial' => $this->whenNotNull($this->repeat_serial),
             'negative_stock' => $this->whenNotNull($this->negative_stock),
             'can_be_sold' => $this->whenNotNull($this->can_be_sold),
             'can_be_purchased' => $this->whenNotNull($this->can_be_purchased),
@@ -56,9 +69,12 @@ class ProductResource extends JsonResource
             'taxes' => $this->whenLoaded('taxes'),
             'supplier' => $this->whenLoaded('supplier'),
             'responsible' => $this->whenLoaded('responsible'),
+            'discounts' => $this->whenLoaded('discounts'),
+
 
             'category' => $this->whenLoaded('category'),
-            'items_value' => $total ?? 0,
+            'balance' => (int) $this->balance ,
+            'total_value' =>  formatMoney( (int)$this->balance  *  (int)$this->avg_cost )  ,
 //            'items_quantity' =>( (int)$this->items_quantity ?? 0),
 //            'items_price' => ((int)$this->items_price ?? 0),
 //            'expired_items_quantity' => (int)$this->expired_items_quantity ?? 0,

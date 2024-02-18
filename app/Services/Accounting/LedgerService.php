@@ -120,7 +120,7 @@ class LedgerService extends MainService
         $dataset[] = $data['posted'] ? 'Posted' : 'Un Posted';
 
 
-        $query->with(['firstTransaction', 'firstWhTransaction']);
+        $query->with(['firstTransaction']);
 
 //        if (isset($columns['responsible']) && $columns['responsible']) {
         $query->with('responsible');

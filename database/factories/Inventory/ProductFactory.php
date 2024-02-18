@@ -25,7 +25,7 @@ class ProductFactory extends Factory
         $d_price = $price - $this->faker->numberBetween(1, $price);
         return [
             'name' => $this->faker->name(),
-            'short_name' => $this->faker->name(),
+            'short_name' => $this->faker->firstName(),
             'part_number' => $this->faker->unique()->randomNumber(6),
             'origin_number' => $this->faker->numerify(),
             'batch_number' => $this->faker->numerify(),

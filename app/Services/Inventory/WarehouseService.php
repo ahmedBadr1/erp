@@ -24,12 +24,15 @@ class WarehouseService extends MainService
         return Warehouse::active($active)->get($data);
     }
 
-
+    public function query( )
+    {
+        return Warehouse::query() ;
+    }
     public function search($search)
     {
         $search = trim($search);
-        return empty($search) ? Warehouse::query()
-            : Warehouse::query()->where('name', 'like', '%' . $search . '%')
+        return empty($search) ? $this->query()
+            : $this->query()->where('name', 'like', '%' . $search . '%')
                 ->orWhere('type', 'like', '%' . $search . '%')
                 ->orWhere('address', 'like', '%' . $search . '%');
 //                ->orWhereHas('currency', fn($q) => $q->where('name', 'like', '%' . $search . '%'))

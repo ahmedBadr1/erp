@@ -19,10 +19,10 @@ class Product extends MainModelSoft
       'warehouse_shelf_id',  'part_number', 'sku', 'location', 'oe_number','e_code' ,'e_code_type',
         's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost','last_cost', 'fifo', 'lifo',
         'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit','reorder_limit',
-        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'active',
+        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable','use_batch_number', 'active',
          'brand_id', 'vendor_id', 'user_id', 'inv_category_id'];
 
-    protected $casts = ['expire_date' => 'date', 'require_barcode' => 'boolean', 'repeat_barcode' => 'boolean', 'negative_stock' => 'boolean',
+    protected $casts = ['expire_date' => 'date', 'require_serial' => 'boolean', 'repeat_serial' => 'boolean', 'negative_stock' => 'boolean',
         'can_be_sold' => 'boolean', 'can_be_purchased' => 'boolean', 'returnable' => 'boolean', 'active' => 'boolean'];
 
     public function category()

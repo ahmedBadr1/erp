@@ -11,6 +11,7 @@ use App\Http\Resources\Inventory\ProductCategoryResource;
 use App\Http\Resources\Inventory\ProductCollection;
 use App\Http\Resources\Inventory\ProductResource;
 use App\Http\Resources\Inventory\ProductSearchResource;
+use App\Models\Accounting\Account;
 use App\Models\Inventory\Product;
 use App\Services\Accounting\AccountService;
 use App\Services\Inventory\BrandService;
@@ -53,15 +54,10 @@ class ProductsController extends ApiController
             return $this->deniedResponse(null, null, 403);
         }
 //        return $this->successResponse(Carbon::parse($request->get('end_date')))  ;
+
         $query = $this->service->search($request->get('keywords'))
             ->with('unit')
-            ->withCount('items')
-            ->withSum('items as items_quantity', 'quantity')
-            ->withSum('items as items_price', 'price')
-//            ->withSum(['items as expired_items_quantity' => function ($query) {
-//                $query->where('expire_at','>=', now());}],'quantity')
-//            ->withSum(['items as expired_items_price' => function ($query) {
-//                $query->where('expire_at','>=', now());}],'price')
+            ->withSum('stocks as balance', 'balance')
             ->when($request->get('start_date'), function ($query) use ($request) {
                 $query->where('created_at', '>=', Carbon::parse($request->get('start_date')));
             })
@@ -69,6 +65,10 @@ class ProductsController extends ApiController
                 $query->where('created_at', '<=', Carbon::parse($request->get('end_date')));
             })
             ->orderBy($request->get('orderBy') ?? $this->orderBy, $request->get('orderDesc') ?? $this->orderDesc);
+        if (!$request->has('keywords')){
+            $products = $query->get();
+            return $this->resourceResponse(new ProductCollection($products));
+        }
         if ($request->get("export") == 'excel') {
             $products = $query->get();
             return $this->service->export($products);
@@ -108,8 +108,12 @@ class ProductsController extends ApiController
         return $this->successResponse(ProductCategoryResource::collection($tree));
     }
 
-    public function create()
+    public function create(Request $request )
     {
+        if ( $request->get('id')){
+            $product = Product::with('category', 'unit', 'tags', 'taxes', 'suppliers','discounts')->where('id', $request->get('id'))->firstorFail();
+        }
+
         $categories = (new ProductCategoryService())->all(['name', 'id']);
         $warehouses = (new WarehouseService())->all(['name', 'id']);
         $singleUnits = (new UnitService())->all(['name', 'id'], true);
@@ -123,6 +127,7 @@ class ProductsController extends ApiController
         $users = (new UserService())->all(['id', 'username'], 'employee');
 
         return $this->successResponse([
+            'product' => new ProductResource($product ?? null)  ,
             'tags' => $tags,
             'categories' => $categories,
             'warehouses' => $warehouses,
@@ -168,22 +173,15 @@ class ProductsController extends ApiController
     public function update(StoreProductRequest $request, $id)
     {
 
-        $data = $request->all();
-//        return $data ;
-        $product = Product::findOrFail($id);
+        DB::beginTransaction();
         try {
-            DB::beginTransaction();
-
-            $product->update($data);
-
-            DB::commit();
-
-            return $this->successResponse(null, __("message.updated", ['model' => __('Product')]), 201);
+            $this->service->store($request->validated(),$id);
         } catch (\Exception $e) {
-            DB::rollback();
-
-            return response()->json(['message' => 'Failed to Update Product', 'error' => $e], 422);
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
         }
+        DB::commit();
+        return $this->successResponse(null, __('message.updated', ['model' => __('Product')]));
     }
 
     public function destroy(Request $request, Product $product)

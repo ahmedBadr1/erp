@@ -136,12 +136,12 @@ class Account extends MainModelSoft
 
         static::created(function ($model) {
             switch ($model->type?->code){
-                case 'I' :
-                    Warehouse::create([
-                            'name' => $model->name,
-                        'account_id' => $model->id
-                        ]);
-                    break;
+//                case 'I' :
+//                    Warehouse::create([
+//                            'name' => $model->name,
+//                        'account_id' => $model->id
+//                        ]);
+//                    break;
                 case 'AP' :
                     Supplier::create([
                         'name' => $model->name,
@@ -156,8 +156,6 @@ class Account extends MainModelSoft
                     break;
                 default:
             }
-
-
         });
 
     }

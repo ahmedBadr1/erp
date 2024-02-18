@@ -21,7 +21,7 @@ class ProductService extends MainService
     {
         $data = $fields ?? (new Product())->getFillable();
 
-        return Product::active($active)->get($data);
+        return Product::active($active)->latest()->get($data);
     }
 
 
@@ -42,10 +42,15 @@ class ProductService extends MainService
 //                ->orWhereHas('category', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function store(array $data)
+    public function store(array $data,$id = null)
     {
-        try {
-            $product = Product::create($data);
+            if ($id){
+                $product = Product::find($id);
+                $product->update($data);
+            }else{
+                $product = Product::create($data);
+            }
+
 
             if (isset($data['tags'])) {
                 (new TagService())->sync($data['tags'], $product, 'product');
@@ -67,9 +72,7 @@ class ProductService extends MainService
                 }
             }
             return true;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+
     }
 
     public function update($product, array $data)

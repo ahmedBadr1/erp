@@ -49,7 +49,6 @@ class AddressService extends MainService
                 'longitude' => $data['longitude'] ?? null,
                 'latitude' => $data['latitude'] ?? null,
                 'postal_code' => $data['postal_code'] ?? null,
-
             ];
             $address = Address::where('addressable_id', $id)->where('addressable_type', $type)->first();
 

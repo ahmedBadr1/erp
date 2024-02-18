@@ -18,7 +18,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        $user->notify(new WelcomeMessage());
+//        $user->notify(new WelcomeMessage());
 
 //        if (!$user->HasAnyRole(Role::all())){
 //            $role = Role::findByName('admin','api');

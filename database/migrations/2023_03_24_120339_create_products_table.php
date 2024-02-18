@@ -67,10 +67,13 @@ return new class extends Migration
 //            $table->boolean('available_online')->default(false);
 //            $table->boolean('featured')->default(false);
 
+
+
             $table->boolean('track_stock')->default(false)->comment('send notifications on min - max limits');
             $table->boolean('require_serial')->default(false)->comment('enforce serial entry');
             $table->boolean('repeat_serial')->default(false)->comment('allow serial repeat');
             $table->boolean('negative_stock')->default(false);
+            $table->boolean('use_batch_number')->default(false);
             $table->boolean('can_be_sold')->default(true);
             $table->boolean('can_be_purchased')->default(true);
             $table->boolean('returnable')->default(true);

@@ -28,7 +28,7 @@ class InventorySeeder extends Seeder
 
         $this->seedUnits();
 
-        Product::factory(100)->create();
+        Product::factory(1)->create();
 
     }
 

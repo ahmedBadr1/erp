@@ -15,14 +15,18 @@ class WarehouseResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id ,
-            'name' => $this->name ,
-            'type' => $this->type ,
-            'active' => $this->active ,
-            'items_count' => $this->whenCounted('items') ,
+            'id' =>  $this->whenNotNull($this->id),
+            'name' => $this->whenNotNull($this->name),
+            'type' => $this->whenNotNull($this->type),
+            'description' => $this->whenNotNull($this->description),
+            'is_rma' => $this->whenNotNull($this->is_rma),
+            'is_rented' => $this->whenNotNull($this->is_rented),
+            'has_security' => $this->whenNotNull($this->has_security),
+            'active' => $this->whenNotNull($this->active),
+            'balance' => $this->balance ?? 0,
+
+            'products_count' => $this->whenCounted('products') ,
             'manager' => $this->whenLoaded('manager'),
-            'items_sum' =>(int)  $this->items_sum ?? 0 ,
-            'expired_items_sum' => (int) $this->expired_items_sum ?? 0,
 
         ];
     }
