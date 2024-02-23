@@ -379,7 +379,7 @@ class LedgerService extends MainService
         }
 
         $salesAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'S'))->value('id');
-        $EntryService->createCreditEntry(amount: $grossTotal, account_id: $salesAccountId, ledger_id: $ledger->id,);
+        $EntryService->createCreditEntry(amount: $grossTotal, account_id: $salesAccountId, ledger_id: $ledger->id,cost_center_id:  $warehouseAcc->cost_center_id);
         $AccountService->updateBalance(account_id: $salesAccountId);
 
         if ($tax) {

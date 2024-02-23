@@ -22,19 +22,20 @@ class InvTransactionFactory extends Factory
     {
         $types = Transaction::$TYPES;
         $amount = $this->faker->numberBetween(10,1000);
+        $date = $this->faker->dateTimeThisYear();
         return [
             'amount' =>$amount,
             'type' => Arr::random($types),
             'note'=> $this->faker->text(),
-            'due'=> $this->faker->dateTimeThisYear(),
-            'accepted_at'=> $this->faker->boolean(30) ? $this->faker->dateTimeThisYear() : null,
+            'due'=> $date,
+            'accepted_at'=>  $date , // $this->faker->boolean(30) ? $this->faker->dateTimeThisYear() : null,
 
             'paper_ref' => $this->faker->randomLetter . '-' .$this->faker->randomNumber(7),
             'responsible_id' => 1,//User::all()->random()->id,
             'created_by' => 1,
 //            'edited_by' => 1,
 //            'supplier_id'=> Supplier::all()->random()->id,
-            'warehouse_id'=>  Warehouse::all()->random()->id,
+//            'warehouse_id'=>  Warehouse::all()->random()->id,
 //            'to_id'=>  Warehouse::all()->random()->id,
         ];
     }

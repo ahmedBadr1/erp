@@ -15,6 +15,8 @@ class CostCenter extends MainModelSoft
 
     protected $fillable = ['name','description', 'cost_center_node_id', 'active',  'system'];
 
+    protected $fields = [ 'name','description'];
+
     public function node()
     {
         return $this->belongsTo(CostCenterNode::class,'cost_center_node_id');

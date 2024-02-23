@@ -4,30 +4,32 @@ namespace App\Services\Inventory;
 
 use App\Exports\UsersExport;
 use App\Models\Inventory\Warehouse;
-use App\Services\Accounting\AccountService;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use App\Services\System\AddressService;
 use App\Services\System\ContactService;
 use App\Services\System\ContractService;
 use App\Services\System\TagService;
-use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
 class WarehouseService extends MainService
 {
 
-    public function all($fields = null,$active = 1)
+    public function all($fields = null, $active = 1)
     {
         $data = $fields ?? (new Warehouse())->getFillable();
-
-        return Warehouse::active($active)->get($data);
+        $query = Warehouse::query();
+        if (is_int($active)) {
+            $query->active($active);
+        }
+        return $query->get($data);
     }
 
-    public function query( )
+    public function query()
     {
-        return Warehouse::query() ;
+        return Warehouse::query();
     }
+
     public function search($search)
     {
         $search = trim($search);
@@ -41,15 +43,16 @@ class WarehouseService extends MainService
 
     public function store(array $data)
     {
-        $nodeId = 19 ; // المخزون
-        $account = (new AccountService())->store([
-            'name' => $data['name'],
-            'description' => $data['description'],
-            'node_id' => $nodeId,
-        ]);
+        $nodeId = 19; // المخزون
+//        $account = (new AccountService())->store([
+//            'name' => $data['name'],
+//            'description' => $data['description'],
+//            'node_id' => $nodeId,
+//        ]);
 //        $data['account_id'] = $account->id ;
-        //        $warehouse = Warehouse::create($data); // already Warehouse Created IN Account
-        $warehouse = Warehouse::where('account_id', $account->id)->first();
+        //        $warehouse = Warehouse::where('account_id', $account->id)->first();
+
+        $warehouse = Warehouse::create($data); // already Warehouse Created IN Account
         $warehouse->update($data);
 
         if (isset($data['contact'])) {
@@ -67,17 +70,13 @@ class WarehouseService extends MainService
             (new ContractService())->store($data['contract'], $warehouse->id, 'warehouse');
         }
 
-        return true ;
+        return true;
     }
 
-    public function update($warehouse, array $data)
+    public function update($warehouseId, array $data)
     {
-        try {
-            $warehouse->update($data);
-            return $warehouse;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+        $warehouse = Warehouse::find($warehouseId);
+        return $warehouse->update($data);
     }
 
     public function destroy($warehouse)
@@ -89,8 +88,19 @@ class WarehouseService extends MainService
         }
     }
 
+    public function check(Warehouse $warehouse)
+    {
+        if ($warehouse->active) {
+            if (empty($warehouse->account_id) || empty($warehouse->cog_account_id) || empty($warehouse->s_account_id)) {
+                $warehouse->updateQuietly(['active' => false]);
+            }
+        } else if (isset($warehouse->account_id, $warehouse->cog_account_id, $warehouse->s_account_id)) {
+            $warehouse->updateQuietly(['active' => true]);
+        }
+    }
+
     public function export()
     {
-        return Excel::download(new WarehouseExport, 'warehouse_'.date('d-m-Y').'.xlsx');
+        return Excel::download(new WarehouseExport, 'warehouse_' . date('d-m-Y') . '.xlsx');
     }
 }

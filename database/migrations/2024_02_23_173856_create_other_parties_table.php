@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('brands', function (Blueprint $table) {
+        Schema::create('other_parties', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type')->nullable();
-            $table->string('group')->nullable();
-            $table->string('logo')->nullable();
-            $table->string('manager')->nullable();
-
-            $table->boolean('active')->default(true);
+            $table->string('type');
+            $table->string('description')->nullable();
+            $table->foreignIdFor(\App\Models\Accounting\Account::class)->nullable();
+            $table->boolean('active')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('other_parties');
     }
 };

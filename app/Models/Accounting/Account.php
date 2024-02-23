@@ -21,6 +21,9 @@ class Account extends MainModelSoft
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
 
+
+    protected $fields = [ 'name','description', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit'];
+
     public function type()
     {
         return $this->belongsTo(AccountType::class, 'account_type_id');

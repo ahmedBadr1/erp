@@ -26,6 +26,7 @@ use App\Services\Hr\BranchService;
 use App\Services\Inventory\BrandService;
 use App\Services\Inventory\InvTransactionService;
 use App\Services\Inventory\ItemHistoryService;
+use App\Services\Inventory\OtherPartyService;
 use App\Services\Inventory\ProductCategoryService;
 use App\Services\Inventory\ProductService;
 use App\Services\Inventory\StockService;
@@ -100,15 +101,16 @@ class ReportsController extends ApiController
         }
 
         if ($request->get('productCategories')) { // && auth('api')->user()->can('accounting.accounts.index')
-            $data['productCategories'] = (new ProductCategoryService())->all(['id', 'name']);
+            $data['productCategories'] = (new ProductCategoryService())->all(['id', 'name','parent_id']);
         }
 
         if ($request->get('inOther')) { // && auth('api')->user()->can('accounting.accounts.index')
-            $data['inOther'] = InvTransaction::$inOther;
+            $data['inOther'] =  (new OtherPartyService())->all(['id', 'name'], 'in');
+
         }
 
         if ($request->get('outOther')) { // && auth('api')->user()->can('accounting.accounts.index')
-            $data['outOther'] = InvTransaction::$outOther;
+            $data['outOther'] = (new OtherPartyService())->all(['id', 'name'], 'out');
         }
 
         return $this->successResponse($data);

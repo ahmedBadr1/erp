@@ -12,7 +12,7 @@ use App\Traits\NotifiTrait;
 class ApiController extends Controller
 {
     use ApiTrait,AdminHelperTrait,NotifiTrait;
-    protected  $service, $class, $table, $limit = 10,$orderBy = 'created_at',$orderDesc = true ;
+    protected  $service, $class, $table, $limit = 10,$orderBy = 'created_at',$orderDesc = 'desc' ;
 
     public function __construct()
     {

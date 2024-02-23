@@ -39,6 +39,11 @@ class MainModel extends Model implements HasMedia
         return with(new static)->getTable();
     }
 
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
     protected function asJson($value)
     {
         return json_encode($value, JSON_UNESCAPED_UNICODE);

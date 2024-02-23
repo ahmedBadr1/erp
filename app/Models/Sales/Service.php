@@ -1,7 +1,10 @@
 <?php
 
-namespace App\Models\CMS;
+namespace App\Models\Sales;
 
+use App\Models\CMS\Category;
+use App\Models\CMS\CompanyProject;
+use App\Models\CMS\ServiceRequest;
 use App\Models\MainModelSoft;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Casts\Attribute;

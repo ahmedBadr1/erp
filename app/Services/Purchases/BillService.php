@@ -121,6 +121,7 @@ class BillService extends MainService
 
         }
 
+        (new InvTransactionService())->accept($transaction->code);
         return false;
     }
 

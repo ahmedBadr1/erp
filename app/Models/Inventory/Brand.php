@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class Brand extends MainModelSoft
 {
 
-    protected $fillable = ['name' ];
+    protected $fillable = ['name' ,'manager','type','group', 'logo', ];
+    protected $fields = ['name' ,'manager'];
 
     public function products()
     {

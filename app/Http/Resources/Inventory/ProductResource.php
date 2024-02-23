@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Inventory;
 
+use App\Http\Resources\NameResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -63,16 +64,16 @@ class ProductResource extends JsonResource
             'active' =>$this->whenNotNull($this->active),
             'stocks_balance' =>$this->whenNotNull($this->stocks_balance),
 
-            'warehouse' => $this->whenLoaded('warehouse'),
-            'unit' => $this->whenLoaded('unit'),
-            'brand' => $this->whenLoaded('brand'),
-            'taxes' => $this->whenLoaded('taxes'),
-            'supplier' => $this->whenLoaded('supplier'),
-            'responsible' => $this->whenLoaded('responsible'),
+            'warehouse' => new NameResource( $this->whenLoaded('warehouse')),
+            'unit' => new NameResource($this->whenLoaded('unit')),
+            'brand' =>new NameResource( $this->whenLoaded('brand')),
+            'taxes' => new NameResource($this->whenLoaded('taxes')),
+            'supplier' => new NameResource($this->whenLoaded('supplier')),
+            'responsible' => new NameResource($this->whenLoaded('responsible')),
             'discounts' => $this->whenLoaded('discounts'),
 
 
-            'category' => $this->whenLoaded('category'),
+            'category' => new NameResource($this->whenLoaded('category')),
             'balance' => (int) $this->balance ,
             'total_value' =>  formatMoney( (int)$this->balance  *  (int)$this->avg_cost )  ,
 //            'items_quantity' =>( (int)$this->items_quantity ?? 0),

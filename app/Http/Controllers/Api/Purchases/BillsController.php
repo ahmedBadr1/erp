@@ -45,7 +45,7 @@ class BillsController extends ApiController
         }
 
 
-        $warehouses = (new WarehouseService())->all(['name', 'id']);
+        $warehouses = (new WarehouseService())->all(['name', 'id'],1);
         $branches = (new BranchService())->all(['name', 'id']);
 
         $treasuries = (new AccountService())->all(['name', 'id'], 'TR');

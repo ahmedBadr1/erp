@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Inventory;
 
 use App\Http\Controllers\Api\Accounting\TransactionsResourses;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\Accounting\PostingRequest;
 use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
 use App\Http\Requests\Inventory\StoreInvTransactionRequest;
 use App\Http\Requests\ListRequest;
@@ -13,10 +12,10 @@ use App\Http\Resources\Inventory\InvTransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\CostCenter;
 use App\Models\Inventory\InvTransaction;
-use App\Models\Purchases\Bill;
 use App\Models\System\ModelGroup;
 use App\Services\Accounting\LedgerService;
 use App\Services\Inventory\InvTransactionService;
+use App\Services\Inventory\OtherPartyService;
 use App\Services\Inventory\WarehouseService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -55,10 +54,10 @@ class InvTransactionController extends ApiController
 
     public function getPending(TypeRequest $request)
     {
-        return $this->successResponse(['orders'=>InvTransactionResource::collection($this->service->getPending($request->get('type')))]);
+        return $this->successResponse(['orders' => InvTransactionResource::collection($this->service->getPending($request->get('type')))]);
     }
 
-    public function accept(Request $request,$code)
+    public function accept(Request $request, $code)
     {
         DB::beginTransaction();
         try {
@@ -76,15 +75,15 @@ class InvTransactionController extends ApiController
         if (auth('api')->user()->cannot('inventory.transactions.create')) {
             return $this->deniedResponse(null, null, 403);
         }
-        $warehouses = (new WarehouseService())->all(['name', 'id']);
+        $warehouses = (new WarehouseService())->all(['name', 'id'],1);
         $users = (new UserService())->all(['username', 'id']);
-        if (in_array($request->type,['RS','IR'])){
-         $others = InvTransaction::$inOther;
-        }else{
-            $others = InvTransaction::$outOther;
+        if (in_array($request->type, ['RS', 'IR'])) {
+            $others = (new OtherPartyService())->all(['id', 'name'], 'in');
+        } else {
+            $others = (new OtherPartyService())->all(['id', 'name'], 'out',);
         }
 
-        $TransactionCode = InvTransaction::where('type',$request->get('type'))->latest()->value('code')  ;
+        $TransactionCode = InvTransaction::where('type', $request->get('type'))->latest()->value('code');
 
         if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $TransactionCode, $matches)) {
             $count = $matches[1] + 1;
@@ -100,8 +99,8 @@ class InvTransactionController extends ApiController
 
     public function show(Request $request, $code)
     {
-            $transaction = InvTransaction::with('warehouse','group.ledgers', 'group.transactions','group.invTransactions', 'group.po','group.so', 'items.product', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
-            return $this->successResponse(new  InvTransactionResource($transaction));
+        $transaction = InvTransaction::with('warehouse', 'group.ledgers', 'group.transactions', 'group.invTransactions', 'group.po', 'group.so', 'items.product', 'secondParty', 'responsible')->where('code', $code)->firstOrFail();
+        return $this->successResponse(new  InvTransactionResource($transaction));
     }
 
     public function store(StoreInvTransactionRequest $request)
@@ -111,7 +110,7 @@ class InvTransactionController extends ApiController
         DB::beginTransaction();
         try {
             $groupId = ModelGroup::create()->id;
-                $this->service->createType(type: $data['type'], groupId: $groupId,items: $data['items'], amount: $data['total'], warehouse_id: $data['warehouse_id'], second_party_id: $data['second_party_id'] ,second_party_type: $data['second_party_type'] , due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
+            $this->service->createType(type: $data['type'], groupId: $groupId, items: $data['items'], amount: $data['total'], warehouse_id: $data['warehouse_id'], second_party_id: $data['second_party_id'], second_party_type: $data['second_party_type'], due: $data['date'], note: $data['note'] ?? null, user_id: $data['responsible'] ?? null, paper_ref: $data['paper_ref'] ?? null, system: 0);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 409);

@@ -3,7 +3,6 @@
 namespace App\Models\Inventory;
 
 use App\Models\Accounting\Tax;
-use App\Models\Accounting\Transaction;
 use App\Models\MainModelSoft;
 use App\Models\Purchases\Supplier;
 use App\Models\User;
@@ -15,19 +14,28 @@ class Product extends MainModelSoft
     use LogsActivity;
 
     protected $fillable = [
-        'name', 'short_name','balance', 'warehouse_id', 'origin_number', 'type','barcode', 'hs_code', 'batch_number',
-      'warehouse_shelf_id',  'part_number', 'sku', 'location', 'oe_number','e_code' ,'e_code_type',
-        's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost','last_cost', 'fifo', 'lifo',
-        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit','reorder_limit',
-        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable','use_batch_number', 'active',
-         'brand_id', 'vendor_id', 'user_id', 'inv_category_id'];
+        'name', 'short_name', 'balance', 'warehouse_id', 'origin_number', 'type', 'barcode', 'hs_code', 'batch_number',
+        'warehouse_shelf_id', 'part_number', 'sku', 'location', 'oe_number', 'e_code', 'e_code_type',
+        's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost', 'last_cost', 'fifo', 'lifo',
+        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit', 'reorder_limit',
+        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'use_batch_number', 'active',
+        'brand_id', 'supplier_id', 'user_id', 'inv_category_id'];
 
     protected $casts = ['expire_date' => 'date', 'require_serial' => 'boolean', 'repeat_serial' => 'boolean', 'negative_stock' => 'boolean',
         'can_be_sold' => 'boolean', 'can_be_purchased' => 'boolean', 'returnable' => 'boolean', 'active' => 'boolean'];
 
+    protected $fields = [
+        'name', 'short_name', 'origin_number', 'type', 'barcode', 'hs_code', 'batch_number',
+        'part_number', 'sku', 'location', 'oe_number', 'e_code', 'e_code_type',
+        's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost', 'last_cost', 'fifo', 'lifo',
+        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit', 'reorder_limit',
+//        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'use_batch_number', 'active',
+        'brand',];
+
+
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class,'product_category_id');
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
     }
 
     public function warehouse()
@@ -50,7 +58,7 @@ class Product extends MainModelSoft
         return $this->hasMany(ItemHistory::class);
     }
 
-    public function lastItem ()
+    public function lastItem()
     {
         return $this->hasOne(ItemHistory::class)->latestOfMany()->withDefault();
     }
@@ -89,7 +97,6 @@ class Product extends MainModelSoft
     {
         return $this->hasOne(Stock::class)->latestOfMany();
     }
-
 
 
     public function getActivitylogOptions(): LogOptions

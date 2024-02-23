@@ -11,7 +11,7 @@ class ServiceRequest extends MainModelSoft
 
     public function service()
     {
-        return $this->belongsTo(\App\Models\CMS\Service::class);
+        return $this->belongsTo(\App\Models\Sales\Service::class);
     }
 
     public function status()

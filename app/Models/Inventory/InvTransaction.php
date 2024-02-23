@@ -29,29 +29,6 @@ class InvTransaction extends MainModelSoft
         'RT',  // Receive Transfer from another warehouse
     ];
 
-    public static array $inOther = [
-            [
-                'id' => 1,
-                'name' => 'إستبدالات',
-            ],
-            [
-                'id' => 2,
-                'name' => 'تسوية زيادة الجرد',
-            ],
-        ];
-
-    public static array $outOther = [
-        [
-            'id' => 3,
-            'name' => 'أصول ثابتة',
-        ],
-        [
-            'id' => 4,
-            'name' => 'تسوية عجز الجرد',
-        ],
-    ];
-
-
     public function group()
     {
         return $this->belongsTo(ModelGroup::class, 'group_id');

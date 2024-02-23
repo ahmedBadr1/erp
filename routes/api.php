@@ -199,213 +199,246 @@ Route::group(['middleware' => ['json.response']], function () {
             'as' => 'purchases.',
         ], function () {
 
-                Route::group([
-                    'prefix' => 'bills',
-                    'as' => 'bills.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'index']);
-                    Route::post('/create', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'create']);
-                    Route::post('/store', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'store']);
-                    Route::post('/{code}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'show']);
+            Route::group([
+                'prefix' => 'bills',
+                'as' => 'bills.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'index']);
+                Route::post('/create', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'create']);
+                Route::post('/store', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'store']);
+                Route::post('/{code}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'show']);
 
-                    Route::patch('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'update']);
-                    Route::delete('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'destroy']);
-                });
-
-                Route::group([
-                    'prefix' => 'suppliers',
-                    'as' => 'suppliers.',
-                ], function () {
-
-                    Route::post('/', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'list']);
-                    Route::post('/create', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'create']);
-                    Route::post('/store', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'store']);
-                    Route::patch('/{id}', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'update']);
-                    Route::delete('/{id}', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'destroy']);
-
-                });
-
-
-                Route::group([
-                    'prefix' => 'reports',
-                    'as' => 'reports.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'index'])->name('index');
-
-                    Route::post('/orders', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'orders'])->name('orders');
-                    Route::post('/purchases', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'purchases'])->name('purchases');
-                });
-
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'update']);
+                Route::delete('/{id}', [\App\Http\Controllers\Api\Purchases\BillsController::class, 'destroy']);
             });
 
-            /*
-        |--------------------------------------------------------------------------
-        | Inventory API
-        |--------------------------------------------------------------------------
-        */
+            Route::group([
+                'prefix' => 'suppliers',
+                'as' => 'suppliers.',
+            ], function () {
+
+                Route::post('/', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'list']);
+                Route::post('/create', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'create']);
+                Route::post('/store', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'store']);
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'update']);
+                Route::delete('/{id}', [\App\Http\Controllers\Api\Purchases\SuppliersController::class, 'destroy']);
+
+            });
 
 
             Route::group([
-                'prefix' => 'inventory',
-                'as' => 'inventory.',
+                'prefix' => 'reports',
+                'as' => 'reports.',
             ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'index'])->name('index');
 
-                Route::group([
-                    'prefix' => 'products',
-                    'as' => 'products.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'index'])->name('index');
-                    Route::post('/list', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'list'])->name('list');
-                    Route::get('/download', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'download'])->name('download');
-                    Route::post('/tree', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'tree'])->name('tree');
-
-                    Route::post('/create', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'create'])->name('create');
-                    Route::post('/store', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'store'])->name('store');
-                    Route::post('/{id}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'show'])->name('show');
-                    Route::patch('/{id}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'update'])->name('update');
-                    Route::delete('/{product}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'destroy'])->name('destroy');
-
-                });
-
-                Route::group([
-                    'prefix' => 'warehouses',
-                    'as' => 'warehouses.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'index'])->name('index');
-                    Route::post('/list', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'list'])->name('list');
-                    Route::post('/create', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'create'])->name('create');
-                    Route::post('/store', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'store'])->name('store');
-                    Route::post('/{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'show'])->name('show');
-                    Route::patch('{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'update'])->name('update');
-                    Route::delete('/{warehouse}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'destroy'])->name('destroy');
-                });
-
-                Route::group([
-                    'prefix' => 'transactions',
-                    'as' => 'transactions.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'index'])->name('index');
-                    Route::post('/list', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'list'])->name('list');
-                    Route::post('/pending', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'getPending'])->name('getPending');
-                    Route::post('/accept/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'accept'])->name('accept');
-
-                    Route::post('/create', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'create'])->name('create');
-                    Route::post('/store', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'store'])->name('store');
-                    Route::post('/store/type', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'storeType'])->name('storeType');
-                    Route::post('/edit/{id}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'edit'])->name('edit');
-                    Route::post('/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'show'])->name('show');
-                });
-
-
-
-                Route::group([
-                    'prefix' => 'reports',
-                    'as' => 'reports.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'index'])->name('index');
-                    Route::post('/warehouses', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'warehouses'])->name('warehouses');
-                    Route::post('/cost', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cost'])->name('cost');
-                    Route::post('/cards', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cards'])->name('cards');
-                    Route::post('/orders', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'orders'])->name('orders');
-                });
+                Route::post('/orders', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'orders'])->name('orders');
+                Route::post('/purchases', [\App\Http\Controllers\Api\Purchases\ReportsController::class, 'purchases'])->name('purchases');
             });
 
+        });
 
-            /*
+        /*
     |--------------------------------------------------------------------------
     | Inventory API
     |--------------------------------------------------------------------------
     */
 
 
+        Route::group([
+            'prefix' => 'inventory',
+            'as' => 'inventory.',
+        ], function () {
+
             Route::group([
-                'prefix' => 'sales',
-                'as' => 'sales.',
+                'prefix' => 'products',
+                'as' => 'products.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'list'])->name('list');
+                Route::get('/download', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'download'])->name('download');
+                Route::post('/tree', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'tree'])->name('tree');
+
+                Route::post('/create', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'store'])->name('store');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'show'])->name('show');
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'update'])->name('update');
+                Route::delete('/{product}', [\App\Http\Controllers\Api\Inventory\ProductsController::class, 'destroy'])->name('destroy');
+
+            });
+
+            Route::group([
+                'prefix' => 'warehouses',
+                'as' => 'warehouses.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'store'])->name('store');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'show'])->name('show');
+                Route::patch('{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'update'])->name('update');
+                Route::delete('/{warehouse}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::group([
+                'prefix' => 'transactions',
+                'as' => 'transactions.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'list'])->name('list');
+                Route::post('/pending', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'getPending'])->name('getPending');
+                Route::post('/accept/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'accept'])->name('accept');
+
+                Route::post('/create', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'store'])->name('store');
+                Route::post('/store/type', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'storeType'])->name('storeType');
+                Route::post('/edit/{id}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'edit'])->name('edit');
+                Route::post('/{code}', [\App\Http\Controllers\Api\Inventory\InvTransactionController::class, 'show'])->name('show');
+            });
+
+
+            Route::group([
+                'prefix' => 'reports',
+                'as' => 'reports.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'index'])->name('index');
+                Route::post('/warehouses', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'warehouses'])->name('warehouses');
+                Route::post('/cost', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cost'])->name('cost');
+                Route::post('/cards', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'cards'])->name('cards');
+                Route::post('/orders', [\App\Http\Controllers\Api\Inventory\ReportsController::class, 'orders'])->name('orders');
+            });
+        });
+
+
+        /*
+|--------------------------------------------------------------------------
+| Inventory API
+|--------------------------------------------------------------------------
+*/
+
+
+        Route::group([
+            'prefix' => 'sales',
+            'as' => 'sales.',
+        ], function () {
+
+            Route::group([
+                'prefix' => 'invoices',
+                'as' => 'invoices.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'index']);
+                Route::post('/create', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'create']);
+                Route::post('/store', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'store']);
+                Route::post('/{code}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'show']);
+
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'update']);
+                Route::delete('/{id}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'destroy']);
+            });
+
+            Route::group([
+                'prefix' => 'clients',
+                'as' => 'clients.',
             ], function () {
 
-                Route::group([
-                    'prefix' => 'invoices',
-                    'as' => 'invoices.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'index']);
-                    Route::post('/create', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'create']);
-                    Route::post('/store', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'store']);
-                    Route::post('/{code}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'show']);
-
-                    Route::patch('/{id}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'update']);
-                    Route::delete('/{id}', [\App\Http\Controllers\Api\Sales\InvoicesController::class, 'destroy']);
-                });
-
-                Route::group([
-                    'prefix' => 'clients',
-                    'as' => 'clients.',
-                ], function () {
-
-                    Route::post('/', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'list']);
-                    Route::post('/create', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'create']);
-                    Route::post('/store', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'store']);
-                    Route::patch('/{id}', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'update']);
-                    Route::delete('/{id}', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'destroy']);
-
-                });
-
-
-                Route::group([
-                    'prefix' => 'reports',
-                    'as' => 'reports.',
-                ], function () {
-                    Route::post('/', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'index'])->name('index');
-
-                    Route::post('/orders', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'orders'])->name('orders');
-                    Route::post('/purchases', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'purchases'])->name('purchases');
-                });
-            });
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | System API
-            |--------------------------------------------------------------------------
-            */
-
-            Route::group(['prefix' => 'system'], function () {
-
-
-                Route::post('countries', [\App\Http\Controllers\Api\SystemController::class, 'countries']);
-                Route::post('countries/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCountry']);
-
-                Route::post('states', [\App\Http\Controllers\Api\SystemController::class, 'states']);
-                Route::post('states/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getState']);
-
-                Route::post('cities', [\App\Http\Controllers\Api\SystemController::class, 'cities']);
-                Route::post('cities/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCity']);
-
-
-                Route::post('statuses/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getStatus']);
-                Route::post('addresses/{address}', [\App\Http\Controllers\Api\SystemController::class, 'getAddress']);
-                Route::post('attachments/{attachment}', [\App\Http\Controllers\Api\SystemController::class, 'getAttachment']);
-                Route::post('tags/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getTag']);
-                Route::post('contacts/{contact}', [\App\Http\Controllers\Api\SystemController::class, 'getContact']);
-                Route::post('tickets/{ticket}', [\App\Http\Controllers\Api\SystemController::class, 'getTicket']);
-
-                Route::post('bookmarks', [\App\Http\Controllers\Api\SystemController::class, 'bookmarks']);
-                Route::post('bookmarks/toggle', [\App\Http\Controllers\Api\SystemController::class, 'toggleBookmark']);
+                Route::post('/', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'list']);
+                Route::post('/create', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'create']);
+                Route::post('/store', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'store']);
+                Route::patch('/{id}', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'update']);
+                Route::delete('/{id}', [\App\Http\Controllers\Api\Sales\ClientsController::class, 'destroy']);
 
             });
 
-            /*
-            |--------------------------------------------------------------------------
-            | Settings API
-            |--------------------------------------------------------------------------
-            */
 
-            Route::group(['prefix' => 'settings'], function () {
-                Route::post('/', [\App\Http\Controllers\Api\System\SettingController::class, 'index']);
-                Route::post('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'show']);
-                Route::patch('{id?}', [\App\Http\Controllers\Api\System\SettingController::class, 'update']);
-                Route::delete('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'destroy']);
+            Route::group([
+                'prefix' => 'reports',
+                'as' => 'reports.',
+            ], function () {
+                Route::post('/', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'index'])->name('index');
+
+                Route::post('/orders', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'orders'])->name('orders');
+                Route::post('/purchases', [\App\Http\Controllers\Api\Sales\ReportsController::class, 'purchases'])->name('purchases');
             });
+        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | System API
+        |--------------------------------------------------------------------------
+        */
+
+        Route::group(['prefix' => 'system'], function () {
+
+
+            Route::post('countries', [\App\Http\Controllers\Api\SystemController::class, 'countries']);
+            Route::post('countries/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCountry']);
+
+            Route::post('states', [\App\Http\Controllers\Api\SystemController::class, 'states']);
+            Route::post('states/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getState']);
+
+            Route::post('cities', [\App\Http\Controllers\Api\SystemController::class, 'cities']);
+            Route::post('cities/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getCity']);
+
+
+            Route::post('statuses/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getStatus']);
+            Route::post('addresses/{address}', [\App\Http\Controllers\Api\SystemController::class, 'getAddress']);
+            Route::post('attachments/{attachment}', [\App\Http\Controllers\Api\SystemController::class, 'getAttachment']);
+            Route::post('tags/{id}', [\App\Http\Controllers\Api\SystemController::class, 'getTag']);
+            Route::post('contacts/{contact}', [\App\Http\Controllers\Api\SystemController::class, 'getContact']);
+            Route::post('tickets/{ticket}', [\App\Http\Controllers\Api\SystemController::class, 'getTicket']);
+
+            Route::post('bookmarks', [\App\Http\Controllers\Api\SystemController::class, 'bookmarks']);
+            Route::post('bookmarks/toggle', [\App\Http\Controllers\Api\SystemController::class, 'toggleBookmark']);
 
         });
 
+        /*
+   |--------------------------------------------------------------------------
+   | Data API
+   |--------------------------------------------------------------------------
+   */
+
+        Route::group(['prefix' => 'data'], function () {
+            Route::group(['prefix' => 'import'], function () {
+                Route::post('/', [\App\Http\Controllers\Api\System\ImportController::class, 'index']);
+                Route::post('/download-template', [\App\Http\Controllers\Api\System\ImportController::class, 'template']);
+            });
+
+            Route::group(['prefix' => 'interface'], function () {
+                Route::post('/', [\App\Http\Controllers\Api\System\DataInterfaceController::class, 'index']);
+                Route::post('/warehouse', [\App\Http\Controllers\Api\System\DataInterfaceController::class, 'warehouse']);
+                Route::post('/others', [\App\Http\Controllers\Api\System\DataInterfaceController::class, 'others']);
+
+            });
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Help API
+        |--------------------------------------------------------------------------
+        */
+
+//        Route::group(['prefix' => 'help'], function () {
+//            Route::post('/', [\App\Http\Controllers\Api\System\SettingController::class, 'index']);
+//            Route::post('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'show']);
+//            Route::patch('{id?}', [\App\Http\Controllers\Api\System\SettingController::class, 'update']);
+//            Route::delete('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'destroy']);
+//        });
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Settings API
+        |--------------------------------------------------------------------------
+        */
+
+        Route::group(['prefix' => 'settings'], function () {
+            Route::post('/', [\App\Http\Controllers\Api\System\SettingController::class, 'index']);
+            Route::post('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'show']);
+            Route::patch('{id?}', [\App\Http\Controllers\Api\System\SettingController::class, 'update']);
+            Route::delete('{id}', [\App\Http\Controllers\Api\System\SettingController::class, 'destroy']);
+        });
+
     });
+
+});

@@ -15,11 +15,28 @@ class Cors
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $request->expectsJson() ?  $next($request)
-//            ->header('Referrer-Policy','strict-origin-when-cross-origin')
-        ->header('Access-Control-Allow-Origin',config('cors.allowed_origins'))
-        ->header('Access-Control-Allow-Methods',config('cors.allowed_methods'))
-        ->header('Access-Control-Allow-Headers', config('cors.allowed_headers'))
-            : $next($request);
+        if (!$request->expectsJson() ){
+            return  $next($request) ;
+        }
+
+        $headers = [
+            'Access-Control-Allow-Origin'      => config('cors.allowed_origins'),
+            'Access-Control-Allow-Methods'     => config('cors.allowed_methods'),
+            'Access-Control-Allow-Credentials' => 'true',
+            'Access-Control-Max-Age'           => '86400',
+            'Access-Control-Allow-Headers'     => config('cors.allowed_headers')
+        ];
+
+        if ($request->isMethod('OPTIONS')) {
+            return response()->json('{"method":"OPTIONS"}', 200, $headers);
+        }
+
+        $response = $next($request);
+        foreach($headers as $key => $value) {
+            $response->headers->set($key, $value);
+        }
+
+        return $response;
+
     }
 }

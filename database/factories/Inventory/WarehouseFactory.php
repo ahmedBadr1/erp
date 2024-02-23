@@ -29,7 +29,7 @@ class WarehouseFactory extends Factory
             'has_security' => $this->faker->boolean(),
 //            'address' => $this->faker->address(),
 //            'manager_id' => Employee::all()->random()->value('id') ?? null,
-            'account_id' => Account::whereHas('type',fn($q)=>$q->where('code','I'))->get()->random()->id
+            'account_id' => Account::whereHas('type',fn($q)=>$q->where('code','I'))->value('id'),//->random()->id
 
         ];
     }

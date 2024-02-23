@@ -33,7 +33,8 @@ class Seed extends Command
     protected $description = 'hyper Seed Data';
 
     protected $aliases = [
-        'seed:data'
+        'seed:data',
+        'seed'
     ];
 
     /**

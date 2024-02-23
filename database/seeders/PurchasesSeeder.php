@@ -73,7 +73,7 @@ class PurchasesSeeder extends Seeder
                 'second_party_type' => 'supplier',
                 'second_party_id' => $supplier->id,
                 'group_id' => $group->id,
-                'accepted_at' => fake()->boolean(80) ? now() : null
+//                'accepted_at' => fake()->boolean(80) ? now() : null
             ]);
 
 
@@ -99,7 +99,7 @@ class PurchasesSeeder extends Seeder
                 total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount);
 
 
-            if (isset($transaction->accepted_at)) {
+//            if (isset($transaction->accepted_at)) {
                 foreach ($transaction->items()->get() as $item) {
                     $stock  = Stock::firstOrCreate([
                         'product_id' => $item->product_id,
@@ -137,7 +137,7 @@ class PurchasesSeeder extends Seeder
 
 
                 }
-            }
+//            }
 
         }
     }

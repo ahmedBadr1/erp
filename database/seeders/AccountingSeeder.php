@@ -214,18 +214,25 @@ class AccountingSeeder extends Seeder
      */
     public function seedNodes()
     {
-        $tr = AccountType::where('code', 'TR')->value('id');
-        $b = AccountType::where('code', 'B')->value('id');
-        $sales = AccountType::where('code', 'S')->value('id');
-        $ss = AccountType::where('code', 'SS')->value('id');
-        $inventory = AccountType::where('code', 'I')->value('id');
-        $ap = AccountType::where('code', 'AP')->value('id');
-        $ar = AccountType::where('code', 'AR')->value('id');
-        $cog = AccountType::where('code', 'COG')->value('id');
-        $sd = AccountType::where('code', 'SD')->value('id');
-        $pd = AccountType::where('code', 'PD')->value('id');
+        $tr = AccountType::where('code', 'TR')->value('id'); // treasury
+        $b = AccountType::where('code', 'B')->value('id'); // Bank
+        $inventory = AccountType::where('code', 'I')->value('id'); // Inventory
 
-        $tax = AccountType::where('code', 'T')->value('id');
+        $ap = AccountType::where('code', 'AP')->value('id'); // accounts Payable Suppliers
+        $ar = AccountType::where('code', 'AR')->value('id'); // accounts receivable Clients
+
+        $p = AccountType::where('code', 'P')->value('id'); // Purchase
+        $pr = AccountType::where('code', 'PR')->value('id'); // Purchase Return
+        $pd = AccountType::where('code', 'PD')->value('id'); // Purchase Discount
+
+        $s = AccountType::where('code', 'S')->value('id'); // Sales
+        $sr = AccountType::where('code', 'SR')->value('id'); // Sales Return
+        $sd = AccountType::where('code', 'SD')->value('id'); // Sales Discount
+        $ss = AccountType::where('code', 'SS')->value('id'); // Service Sales
+
+        $cog = AccountType::where('code', 'COG')->value('id'); // Cost OF Goods
+        $or = AccountType::where('code', 'OR')->value('id');  // Other Revenue
+        $tax = AccountType::where('code', 'T')->value('id');  // Tax
 
 
         $nodes = [
@@ -261,14 +268,15 @@ class AccountingSeeder extends Seeder
             ['name' => 'تشطبيات ومستلزمات', 'parent_id' => 23,], // 28
             ['name' => 'الموردين', 'parent_id' => 8, 'account_type_id' => $ap], // 29
             ['name' => 'أرصدة دائنة أخري', 'parent_id' => 8], // 30
-            ['name' => 'إيراد المبيعات', 'parent_id' => 12, 'account_type_id' => $sales], //  31
-            ['name' => 'مردودات المبيعات', 'parent_id' => 12, 'account_type_id' => $ss], // 32
+            ['name' => 'إيراد المبيعات', 'parent_id' => 12, 'account_type_id' => $s], //  31
+            ['name' => 'مردودات المبيعات', 'parent_id' => 12, 'account_type_id' => $sr], // 32
             ['name' => 'تكلفة البضاعة المباعة', 'parent_id' => 14, 'account_type_id' => $cog], // 33
             ['name' => 'خصم مكتسب', 'parent_id' => 13, 'account_type_id' => $pd], //
 
             ['name' => 'خصم مسموح به', 'parent_id' => 14, 'account_type_id' => $sd], //
 
             ['name' => 'مصلحة الضرائب', 'parent_id' => 30, 'account_type_id' => $tax], //
+            ['name' => 'أصناف خدمية', 'parent_id' => 12, 'account_type_id' => $ss], //
 
             ['name' => 'مرتبات', 'parent_id' => 15], //
             ['name' => 'مصروف كهرباء - مياه - غاز', 'parent_id' => 15], //

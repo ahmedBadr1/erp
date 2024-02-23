@@ -2,8 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Inventory\OtherParty;
+use App\Models\Inventory\Warehouse;
 use App\Models\System\Attachment;
 use App\Models\User;
+use App\Observers\Inventory\OtherPartyObserver;
+use App\Observers\Inventory\WarehouseObserver;
 use App\Observers\System\AttachmentObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Registered;
@@ -26,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
 
     protected $observers = [
         User::class => [UserObserver::class],
+        Warehouse::class => [WarehouseObserver::class],
+        OtherParty::class => [OtherPartyObserver::class],
+
         Attachment::class => [AttachmentObserver::class],
     ];
 

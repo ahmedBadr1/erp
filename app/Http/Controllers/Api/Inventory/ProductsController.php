@@ -115,7 +115,7 @@ class ProductsController extends ApiController
         }
 
         $categories = (new ProductCategoryService())->all(['name', 'id']);
-        $warehouses = (new WarehouseService())->all(['name', 'id']);
+        $warehouses = (new WarehouseService())->all(['name', 'id'],1);
         $singleUnits = (new UnitService())->all(['name', 'id'], true);
         $unitGroups = (new UnitGroupService())->all(['name', 'id']);
         $taxes = (new TaxService())->all(['id', 'name', 'rate']);

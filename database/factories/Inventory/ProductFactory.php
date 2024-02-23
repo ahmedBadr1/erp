@@ -40,15 +40,15 @@ class ProductFactory extends Factory
             'd_price' => $d_price,
             'sd_price' => $d_price - $this->faker->numberBetween(1, $d_price),
             'min_price' => $d_price - $this->faker->numberBetween(1, $d_price),
-            'product_category_id' => ProductCategory::all()->random()->id,
-            'warehouse_id' => Warehouse::all()->random()?->id,
+//            'product_category_id' => ProductCategory::all()->random()->id,
+//            'warehouse_id' => Warehouse::all()->random()?->id,
 //            'warehouse_shelf_id' => WarehouseShelf::all()?->random()?->id,
             'unit_id' => Unit::all()?->random()?->id,
             'tax_id' => Tax::all()?->random()?->id ,
 //            'withholding_tax_id' => Tax::all()?->random()?->id ,
 
 //            'brand_id' => Brand::all()?->random()?->id ,
-            'supplier_id' => Supplier::all()->random()?->id,
+//            'supplier_id' => Supplier::all()->random()?->id,
             'user_id' => User::all()->random()?->id,
 
         ];

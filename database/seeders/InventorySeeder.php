@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Inventory\ProductCategory;
-use App\Models\Inventory\ItemHistory;
+use App\Enums\OtherPartyType;
+use App\Models\Inventory\OtherParty;
 use App\Models\Inventory\Product;
+use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
-use App\Models\Purchases\Bill;
-use App\Models\Purchases\Supplier;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class InventorySeeder extends Seeder
@@ -20,13 +18,17 @@ class InventorySeeder extends Seeder
     public function run(): void
     {
 
-//        Warehouse::factory()->create(); // ACCOUNT WILL CREATE IT
+        Warehouse::factory()->create([
+            'name'=> 'مخزن 1'
+        ]); // ACCOUNT WILL not CREATE IT
 
         ProductCategory::factory()->create([
             'name' => 'main'
         ]);
 
         $this->seedUnits();
+
+        $this->seedOtherParties();
 
         Product::factory(1)->create();
 
@@ -134,6 +136,33 @@ class InventorySeeder extends Seeder
                 'name' => $key,
                 'conversion_factor' => $unit,
                 'type' => 'volume'
+            ]);
+        }
+    }
+
+    public function seedOtherParties()
+    {
+        $inOthers = [
+            'إستبدالات',
+            'تسوية زيادة الجرد',
+        ];
+
+        $outOthers = [
+            'أصول ثابتة',
+            'تسوية عجز الجرد',
+        ];
+
+        foreach ($inOthers as $inOther) {
+            OtherParty::create([
+                'name' => $inOther,
+                'type' =>  OtherPartyType::IN
+            ]);
+        }
+
+        foreach ($outOthers as $inOther) {
+            OtherParty::create([
+                'name' => $inOther,
+                'type' => OtherPartyType::OUT
             ]);
         }
     }
