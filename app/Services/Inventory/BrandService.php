@@ -30,14 +30,9 @@ class BrandService extends MainService
 
     }
 
-    public function store(array $data)
+    public function store(array $check , array $data = [] )
     {
-        try {
-            $Brand = Brand::create($data);
-            return $Brand;
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
+            return  Brand::updateOrCreate($check,$data);
     }
 
     public function update($product, array $data)

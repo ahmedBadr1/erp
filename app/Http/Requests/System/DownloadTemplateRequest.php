@@ -22,7 +22,7 @@ class DownloadTemplateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $templates = ['products','warehouses','brands','accounts','costCenters','suppliers','clients','services','groups','users'];
+        $templates = ['products','warehouses','brands','accounts','costCenters','suppliers','clients','groups','users'];
         $types = ['csv','xlsx'];
 
         return [

@@ -4,13 +4,14 @@ namespace App\Imports\Inventory;
 
 use App\Models\Inventory\Brand;
 use App\Models\Inventory\Product;
+use App\Models\Inventory\Warehouse;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ProductsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
+class WarehouseImporter implements ToModel, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
     use Importable;
 
@@ -24,7 +25,7 @@ class ProductsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithC
 //        dd($row);
 //        throw new \RuntimeException($row['short_name']);
 
-//        $fields = (new Product())->getFields();
+//        $fields = (new Warehouse())->getFields();
 //        $data = [];
 //        foreach ($fields as $field) {
 ////            if (!empty($row[$field])) {
@@ -37,19 +38,13 @@ class ProductsImport implements ToModel, WithHeadingRow, WithBatchInserts, WithC
 //            unset($data['brand']);
 //        }
 
-        return new Product(
+        return new Warehouse(
             [
                 'name' => $row['name'],
-                's_price' => $row['s_price'] ?? 0.0000,
-                'd_price' => $row['d_price'] ?? 0.0000,
-                'sd_price' => $row['sd_price'] ?? 0.0000,
-                'min_price' => $row['min_price'] ?? 0.0000,
-                'ref_price' => $row['ref_price'] ?? 0.0000,
-                'avg_cost' => $row['avg_cost'] ?? 0.0000,
-                'last_cost' => $row['last_cost'] ?? 0.0000,
-                'fifo' => $row['fifo'] ?? 0.0000,
-                'lifo' => $row['lifo'] ?? 0.0000,
-                'brand_id' => isset($row['brand']) ? Brand::firstOrCreate(['name' => $row['brand']])->id : null,
+                'description' => $row['description'] ?? null,
+                'type' => $row['type'] ?? null,
+                'space' => $row['space'] ?? null,
+                'height' => $row['height'] ?? null,
             ]
         );
     }

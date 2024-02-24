@@ -23,7 +23,7 @@ class Warehouse extends MainModelSoft
         'client_id','price_list_id','manager_id','active',
     ];
 
-    protected $fields = ['name', 'description','type', 'space','height','active',];
+    protected $fields = ['name', 'description','type', 'space','height'];
 
     public function account()
     {

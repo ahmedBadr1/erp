@@ -22,6 +22,9 @@ return [
     "still-has" => "لا يمكن حذف :Model له :Relation",
     "still-active" => "لا يمكن حذف :Model نشط فى :Relation",
 
+    "imported" => "تم إضافة :model بنجاح",
+
+
     "create" => "إضافة :Model",
     "edit" => "تعديل :Model ",
     "delete" => "حذف :Model ",

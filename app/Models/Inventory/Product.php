@@ -25,10 +25,11 @@ class Product extends MainModelSoft
         'can_be_sold' => 'boolean', 'can_be_purchased' => 'boolean', 'returnable' => 'boolean', 'active' => 'boolean'];
 
     protected $fields = [
-        'name', 'short_name', 'origin_number', 'type', 'barcode', 'hs_code', 'batch_number',
-        'part_number', 'sku', 'location', 'oe_number', 'e_code', 'e_code_type',
+        'name',
+//        'short_name', 'origin_number', 'type', 'barcode', 'hs_code', 'batch_number',
+//        'part_number', 'sku', 'location', 'oe_number', 'e_code', 'e_code_type',
         's_price', 'd_price', 'sd_price', 'min_price', 'ref_price', 'avg_cost', 'last_cost', 'fifo', 'lifo',
-        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit', 'reorder_limit',
+//        'opening_balance', 'profit_margin', 'warranty', 'valid_to', 'max_limit', 'min_limit', 'reorder_limit',
 //        'track_stock', 'require_serial', 'repeat_serial', 'negative_stock', 'can_be_sold', 'can_be_purchased', 'returnable', 'use_batch_number', 'active',
         'brand',];
 

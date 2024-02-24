@@ -114,6 +114,7 @@ class Account extends MainModelSoft
     {
         parent::boot();
         static::creating(function ($model) {
+
             $node = Node::withCount('children', 'accounts', 'ancestors')->find($model->node_id);
             $model->code = $node->code . str_pad(((int)$node->children_count + $node->accounts_count + 1), 4, '0', STR_PAD_LEFT);
             $model->credit = $node->credit;

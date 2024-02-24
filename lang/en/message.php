@@ -16,6 +16,9 @@ return [
     "send" => ":Model Send successfully",
     "still-has" => "Can't Delete :Model Still Has :Relation",
 
+    "imported" =>  ":Model Imported successfully",
+
+
     "create" => "create :Model",
     "edit" => "edit :Model",
     "delete" => "delete :Model",

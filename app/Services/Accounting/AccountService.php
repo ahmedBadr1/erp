@@ -83,7 +83,7 @@ class AccountService extends MainService
                     $inputs['active'] = $data['active'] ?? $account->active;
                     $account->update($inputs);
                 } else {
-                    $node = Node::isLeaf()->withCount('accounts')->whereId($data['node_id'])->first();
+                    $node = Node::withCount('accounts')->whereId($data['node_id'])->first();
                     $account = Account::create([
                         ...$inputs,
                         'currency_id' => $data['currency_id'] ?? 1,

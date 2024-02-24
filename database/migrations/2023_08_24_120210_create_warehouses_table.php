@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type')->default('material');
+            $table->string('type')->nullable()->default('material');
             $table->text('description')->nullable();
 
             $table->foreignIdFor(\App\Models\User::class,'manager_id')->nullable();

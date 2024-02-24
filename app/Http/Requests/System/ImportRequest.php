@@ -22,12 +22,14 @@ class ImportRequest extends FormRequest
      */
     public function rules(): array
     {
-        $templates = ['products','warehouses','accounts','costCenters','suppliers','clients','services','groups','users'];
+        $templates = ['products','warehouses','brands','accounts','costCenters','suppliers','clients','services','groups','users'];
         $types = ['csv','xlsx'];
 
         return [
             'name' => ['required',Rule::in($templates)],
             'type' =>['required',Rule::in($types)],
+            'node_code' =>['nullable','numeric'],
+
             'file' => ['required',Rule::file() //->types($types)
         ->max(12 * 1024),],
         ];

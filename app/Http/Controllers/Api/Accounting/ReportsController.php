@@ -21,6 +21,7 @@ use App\Models\Accounting\AccountType;
 use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Ledger;
 use App\Services\Accounting\AccountService;
+use App\Services\Accounting\CostCenterNodeService;
 use App\Services\Accounting\CostCenterService;
 use App\Services\Accounting\CurrencyService;
 use App\Services\Accounting\EntryService;
@@ -89,6 +90,11 @@ class ReportsController extends ApiController
         if ($request->get('costCenters')) { // && auth('api')->user()->can('accounting.nodes.index')
             $data['costCenters'] = (new CostCenterService())->all(['code', 'name']);
         }
+
+        if ($request->get('costCenterNodes')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['costCenterNodes'] = (new CostCenterNodeService())->all(['code', 'name']);
+        }
+
         if ($request->get('currencies')) { // && auth('api')->user()->can('accounting.nodes.index')
             $data['currencies'] = (new CurrencyService())->all(['code', 'id']);
         }
