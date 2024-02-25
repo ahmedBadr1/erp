@@ -74,7 +74,10 @@ class InvTransactionService extends MainService
             $stock->update([
                 'balance' => $balance
             ]);
-            $product->update(['avg_cost' => $avg_cost]);
+            if (isset($avg_cost)){
+                $product->update(['avg_cost' => $avg_cost]);
+
+            }
 
 
             (new ItemHistoryService())->store(warehouseId: $transaction->warehouse_id, invTransactionId: $transaction->id, productId: $item->product_id,

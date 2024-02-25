@@ -24,11 +24,11 @@ class EntryResource extends JsonResource
             'locked' => $this->whenNotNull($this->locked),
 
             'created_at' => $this->created_at->format('d-m-Y h:i a'),
-            'balance' => $this->whenNotNull($this->account?->credit ? $this->balance :  - $this->balance),
+            'balance' => $this->balance ?? 0,
             'credit_balance' =>  $this->whenNotNull($this->credit_balance),
             'debit_balance' =>  $this->whenNotNull($this->debit_balance),
 
-            'period_balance' =>  $this->period_balance,
+            'period_balance' =>  $this->period_balance ?? 0,
 
 
             'account' =>  new AccountChartResource($this->whenLoaded('account')),
