@@ -79,7 +79,8 @@ class SalesSeeder extends Seeder
                 'second_party_type' => 'client',
                 'second_party_id' => $client->id,
                 'group_id' => $group->id,
-                'accepted_at' => fake()->boolean(80) ? now() : null
+                'created_at' => $bill->created_at,
+                'accepted_at' => $bill->created_at //fake()->boolean(80) ? now() : null
             ]);
 
              $total_cost = 0 ;
@@ -103,10 +104,10 @@ class SalesSeeder extends Seeder
 //                ]);
             }
 
-            AccountingSeeder::seedType('CI', $group->id, $treasury, $client->account, $bill->total);
+            AccountingSeeder::seedType('CI', $group->id, $treasury, $client->account, $bill->total, $bill->created_at);
             AccountingSeeder::seedSI(type: 'SI', groupId: $group->id, clientAccId: $client->account->id,
-                total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount);
-            AccountingSeeder::seedCOGS('COGS', $group->id, $warehouse->account, $total_cost);
+                total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount ,created_at: $bill->created_at);
+            AccountingSeeder::seedCOGS('COGS', $group->id, $warehouse->account, $total_cost , $bill->created_at);
 
 
 
@@ -115,6 +116,8 @@ class SalesSeeder extends Seeder
                     $stock  = Stock::firstOrCreate([
                         'product_id' => $item->product_id,
                         'warehouse_id' => $transaction->warehouse_id,
+                    ],[
+                        'created_at' =>$bill->created_at
                     ]);
                     if ($stock->balance >= $item->quantity ) {
                         $balance = $stock->balance - $item->quantity;
@@ -135,6 +138,7 @@ class SalesSeeder extends Seeder
                         'second_party_type' => 'client',
                         'second_party_id' => $client->id,
                         'in' => false ,
+                        'created_at' =>$bill->created_at
                     ]);
 
                 }

@@ -118,7 +118,6 @@ class Bill extends MainModelSoft
 //                $warehouse_code = Account::whereHas('warehouse',fn($q)=>$q->whereid($model->warehouse_id))->value('type_code');
                 if (!$billCode) {
                     $model->code = $model->type . '-'. $model->warehouse_id . '-' . 1;
-                    return;
                 }else{
                     if (preg_match('/^[A-Z]*-[1-9]*-(\d+)/', $billCode, $matches)) {
                         $count = $matches[1] + 1;

@@ -73,6 +73,7 @@ class PurchasesSeeder extends Seeder
                 'second_party_type' => 'supplier',
                 'second_party_id' => $supplier->id,
                 'group_id' => $group->id,
+                'created_at' => $bill->created_at,
 //                'accepted_at' => fake()->boolean(80) ? now() : null
             ]);
 
@@ -94,9 +95,9 @@ class PurchasesSeeder extends Seeder
 //                ]);
             }
 
-            AccountingSeeder::seedType('CO', $group->id, $treasury, $supplier->account, $bill->total);
+            AccountingSeeder::seedType('CO', $group->id, $treasury, $supplier->account, $bill->total, $bill->created_at);
             AccountingSeeder::seedPI(type: 'PI', groupId: $group->id, warehouseId: $warehouse->account->id, supplierId: $supplier->account->id,
-                total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount);
+                total: $bill->total, subTotal: $bill->sub_total, grossTotal: $bill->gross_total, tax: $bill->tax_total, discount: $bill->discount , created_at:  $bill->created_at);
 
 
 //            if (isset($transaction->accepted_at)) {
@@ -104,6 +105,8 @@ class PurchasesSeeder extends Seeder
                     $stock  = Stock::firstOrCreate([
                         'product_id' => $item->product_id,
                         'warehouse_id' => $transaction->warehouse_id,
+                    ],[
+                        'created_at' =>  $bill->created_at,
                     ]);
 //                    $product = Product::with(["stock" => fn($q) => $q->where('warehouse_id', $transaction->warehouse_id)])->find($item->product_id);
                     $product = Product::withSum('stocks as stocks_balance','balance')->find($item->product_id);
@@ -133,6 +136,7 @@ class PurchasesSeeder extends Seeder
                         'second_party_type' => 'supplier',
                         'second_party_id' => $supplier->id,
                         'in' => true,
+                        'created_at' =>  $bill->created_at,
                     ]);
 
 

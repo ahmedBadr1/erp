@@ -197,14 +197,14 @@ class EntryService extends MainService
 //        $query->select(DB::raw('SUM(CASE WHEN credit THEN amount ELSE -amount END)'))
         $query->select('entries.*')
             ->selectSub(function ($query) {
-                $query->select(DB::raw("SUM(CASE WHEN sub_entries.credit THEN sub_entries.amount ELSE -sub_entries.amount END)"))
-                    ->from('entries as sub_entries')
+                $query->select(DB::raw("SUM(CASE WHEN  sub_entries.credit = (SELECT credit FROM accounts WHERE accounts.id = entries.account_id) THEN sub_entries.amount ELSE -sub_entries.amount END)"))
+                    ->from('entries as sub_entries','accounts')
                     ->whereColumn('sub_entries.account_id', '=', 'entries.account_id')
                     ->where('sub_entries.created_at', '<=', DB::raw('entries.created_at'))
                     ->orderBy('sub_entries.created_at');
             }, 'balance')
             ->selectSub(function ($query) use ($data) {
-                $query->select(DB::raw("SUM(CASE WHEN per_entries.credit THEN -per_entries.amount ELSE per_entries.amount END)"))
+                $query->select(DB::raw("SUM(CASE WHEN per_entries.credit = (SELECT credit FROM accounts WHERE accounts.id = per_entries.account_id) THEN per_entries.amount ELSE -per_entries.amount END)"))
                     ->from('entries as per_entries')
                     ->whereColumn('per_entries.account_id', '=', 'entries.account_id')
                     ->where('per_entries.created_at', '>=', $data['start_date'])

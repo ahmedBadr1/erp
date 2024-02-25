@@ -80,7 +80,7 @@ class AccountingSeeder extends Seeder
 
     }
 
-    public static function seedType($type, $groupId, $treasury, $secondParty = null, $amount = null)
+    public static function seedType($type, $groupId, $treasury, $secondParty = null, $amount = null , $created_at)
     {
         if (!$groupId) {
             $groupId = ModelGroup::create()->id;
@@ -89,13 +89,13 @@ class AccountingSeeder extends Seeder
             $amount = rand(100, 1000);
         }
 
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $amount]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $amount,'created_at'=>$created_at]);
         if ($type == 'CI') {
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $treasury->id,'cost_center_id'=>$treasury->costCenter?->id ?? null, 'credit' => 0]);
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $secondParty->id, 'cost_center_id'=>$secondParty->costCenter?->id ?? null,'credit' => 1]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $treasury->id,'cost_center_id'=>$treasury->costCenter?->id ?? null, 'credit' => 0,'created_at'=>$created_at]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $secondParty->id, 'cost_center_id'=>$secondParty->costCenter?->id ?? null,'credit' => 1,'created_at'=>$created_at]);
         } elseif ($type == 'CO') {
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $secondParty->id, 'cost_center_id'=>$secondParty->costCenter?->id ?? null, 'credit' => 0]);
-            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $treasury->id,'cost_center_id'=>$treasury->costCenter?->id ?? null, 'credit' => 1]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $secondParty->id, 'cost_center_id'=>$secondParty->costCenter?->id ?? null, 'credit' => 0,'created_at'=>$created_at]);
+            Entry::factory()->create(['amount' => $ledger->amount, 'ledger_id' => $ledger->id, 'account_id' => $treasury->id,'cost_center_id'=>$treasury->costCenter?->id ?? null, 'credit' => 1,'created_at'=>$created_at]);
         }
         Transaction::factory()->create([
             'type' => $type,
@@ -104,28 +104,29 @@ class AccountingSeeder extends Seeder
             'ledger_id' => $ledger->id,
             'second_party_id' => $secondParty->id,
             'group_id' => $groupId,
+            'created_at'=>$created_at
         ]);
     }
 
-    public static function seedPI($type, $groupId, $warehouseId, $supplierId ,$total, $subTotal,$grossTotal, $tax = 0 ,$discount = 0)
+    public static function seedPI($type, $groupId, $warehouseId, $supplierId ,$total, $subTotal,$grossTotal, $tax = 0 ,$discount = 0 , $created_at)
     {
         if (!$type) {
             $type = 'PI';
         }
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $grossTotal + $tax]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $grossTotal + $tax, 'created_at' => $created_at]);
 
-        Entry::factory()->create(['amount' => $grossTotal, 'ledger_id' => $ledger->id, 'account_id' => $warehouseId, 'credit' => 0]);
+        Entry::factory()->create(['amount' => $grossTotal, 'ledger_id' => $ledger->id, 'account_id' => $warehouseId, 'credit' => 0,         'created_at'=>$created_at]);
         if ($tax) {
             $taxAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'T'))->value('id');
-            Entry::factory()->create(['amount' => $tax, 'ledger_id' => $ledger->id, 'account_id' => $taxAccountId, 'credit' => 0]);
+            Entry::factory()->create(['amount' => $tax, 'ledger_id' => $ledger->id, 'account_id' => $taxAccountId, 'credit' => 0,         'created_at'=>$created_at]);
         }
 
         if ($discount) {
             $discountAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'PD'))->value('id');
-            Entry::factory()->create(['amount' => $discount, 'ledger_id' => $ledger->id, 'account_id' => $discountAccountId, 'credit' => 1]);
+            Entry::factory()->create(['amount' => $discount, 'ledger_id' => $ledger->id, 'account_id' => $discountAccountId, 'credit' => 1,         'created_at'=>$created_at]);
         }
 
-        Entry::factory()->create(['amount' => $total, 'ledger_id' => $ledger->id, 'account_id' => $supplierId, 'credit' => 1]);
+        Entry::factory()->create(['amount' => $total, 'ledger_id' => $ledger->id, 'account_id' => $supplierId, 'credit' => 1,         'created_at'=>$created_at]);
         Transaction::factory()->create([
             'type' => $type,
             'first_party_id' => $warehouseId,
@@ -133,30 +134,31 @@ class AccountingSeeder extends Seeder
             'ledger_id' => $ledger->id,
             'second_party_id' => $supplierId,
             'group_id' => $groupId,
+            'created_at'=>$created_at
         ]);
     }
 
 
-    public static function seedSI($type, $groupId,$clientAccId ,$total, $subTotal,$grossTotal, $tax = 0 ,$discount = 0)
+    public static function seedSI($type, $groupId,$clientAccId ,$total, $subTotal,$grossTotal, $tax = 0 ,$discount = 0 , $created_at)
     {
         if (!$type) {
             $type = 'SI';
         }
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $total + $discount]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' => $total + $discount, 'created_at'=>$created_at]);
 
-        Entry::factory()->create(['amount' => $total, 'ledger_id' => $ledger->id, 'account_id' => $clientAccId, 'credit' => 0]);
+        Entry::factory()->create(['amount' => $total, 'ledger_id' => $ledger->id, 'account_id' => $clientAccId, 'credit' => 0, 'created_at'=>$created_at]);
 
         if ($discount) {
             $discountAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'SD'))->value('id');
-            Entry::factory()->create(['amount' => $discount, 'ledger_id' => $ledger->id, 'account_id' => $discountAccountId, 'credit' => 0]);
+            Entry::factory()->create(['amount' => $discount, 'ledger_id' => $ledger->id, 'account_id' => $discountAccountId, 'credit' => 0, 'created_at'=>$created_at]);
         }
 
         $salesAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'S'))->value('id');
-        Entry::factory()->create(['amount' => $grossTotal, 'ledger_id' => $ledger->id, 'account_id' => $salesAccountId, 'credit' => 1]);
+        Entry::factory()->create(['amount' => $grossTotal, 'ledger_id' => $ledger->id, 'account_id' => $salesAccountId, 'credit' => 1, 'created_at'=>$created_at]);
 
         if ($tax) {
             $taxAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'T'))->value('id');
-            Entry::factory()->create(['amount' => $tax, 'ledger_id' => $ledger->id, 'account_id' => $taxAccountId, 'credit' => 1]);
+            Entry::factory()->create(['amount' => $tax, 'ledger_id' => $ledger->id, 'account_id' => $taxAccountId, 'credit' => 1, 'created_at'=>$created_at]);
         }
 
 
@@ -167,20 +169,21 @@ class AccountingSeeder extends Seeder
             'ledger_id' => $ledger->id,
             'second_party_id' => $salesAccountId,
             'group_id' => $groupId,
+            'created_at'=>$created_at
         ]);
     }
 
-    public static function seedCOGS($type, $groupId,$warehouseAccId ,$amount)
+    public static function seedCOGS($type, $groupId,$warehouseAccId ,$amount, $created_at)
     {
         if (!$type) {
             $type = 'COGS';
         }
-        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' =>$amount]);
+        $ledger = Ledger::factory()->create(['group_id' => $groupId, 'amount' =>$amount, 'created_at'=>$created_at]);
         $cogsAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'COG'))->value('id');
 
-        Entry::factory()->create(['amount' => $amount, 'ledger_id' => $ledger->id, 'account_id' => $cogsAccountId, 'credit' => 0]);
+        Entry::factory()->create(['amount' => $amount, 'ledger_id' => $ledger->id, 'account_id' => $cogsAccountId, 'credit' => 0, 'created_at'=>$created_at]);
 
-        Entry::factory()->create(['amount' => $amount, 'ledger_id' => $ledger->id, 'account_id' => $warehouseAccId, 'credit' => 1]);
+        Entry::factory()->create(['amount' => $amount, 'ledger_id' => $ledger->id, 'account_id' => $warehouseAccId, 'credit' => 1, 'created_at'=>$created_at]);
 
         Transaction::factory()->create([
             'type' => $type,
@@ -189,6 +192,7 @@ class AccountingSeeder extends Seeder
             'ledger_id' => $ledger->id,
             'second_party_id' => $warehouseAccId,
             'group_id' => $groupId,
+            'created_at'=>$created_at
         ]);
     }
 

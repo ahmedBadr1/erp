@@ -53,6 +53,8 @@ class BillFactory extends Factory
 //            'total' => $subtotal - $tax,
             'note' => $this->faker->sentence,
             'cost_allocation' => 0,
+            'created_at' => $this->faker->dateTimeThisYear(),
+
         ];
     }
 }
