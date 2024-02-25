@@ -5,8 +5,6 @@ namespace App\Services\Accounting;
 use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\Entry;
-use App\Models\Accounting\Ledger;
-use App\Models\Accounting\Node;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
@@ -32,29 +30,28 @@ class EntryService extends MainService
                 ->orWhereHas('account', fn($q) => $q->where('name', 'like', '%' . $search . '%'));
     }
 
-    public function createEntry(int $credit, float $amount, int $account_id, int $ledger_id, int $cost_center_id = null,string $comment = null)
+    public function createEntry(int $credit, float $amount, int $account_id, int $ledger_id, int $cost_center_id = null, string $comment = null)
     {
         return Entry::create([
             'credit' => $credit,
             'amount' => $amount,
             'account_id' => $account_id,
             'ledger_id' => $ledger_id,
-            'cost_center_id' => $cost_center_id ,
+            'cost_center_id' => $cost_center_id,
             'comment' => $comment ?? null,
 
         ]);
     }
 
-    public function createCreditEntry(float $amount, int $account_id, int $ledger_id, int $cost_center_id = null,string $comment = null)
+    public function createCreditEntry(float $amount, int $account_id, int $ledger_id, int $cost_center_id = null, string $comment = null)
     {
-        return $this->createEntry(1, $amount, $account_id, $ledger_id, $cost_center_id,$comment);
+        return $this->createEntry(1, $amount, $account_id, $ledger_id, $cost_center_id, $comment);
     }
 
-    public function createDebitEntry(float $amount,  $account_id,int  $ledger_id,  $cost_center_id = null,string $comment = null)
+    public function createDebitEntry(float $amount, $account_id, int $ledger_id, $cost_center_id = null, string $comment = null)
     {
-        return $this->createEntry(0, $amount, $account_id, $ledger_id, $cost_center_id,$comment);
+        return $this->createEntry(0, $amount, $account_id, $ledger_id, $cost_center_id, $comment);
     }
-
 
 
     public function update($client, array $data)
@@ -112,7 +109,7 @@ class EntryService extends MainService
         } elseif ($data['posting'] === 'unposted') {
             $query->posted(0);
         }
-        $query->with('account','costCenter');
+        $query->with('account', 'costCenter');
 
 
         if (isset($data['with_transactions']) && $data['with_transactions']) {
@@ -148,7 +145,8 @@ class EntryService extends MainService
         $query->whereIn('account_id', $accounts);
 
 
-        $accounts = Account::whereIn('id',$accounts) ->withSum(['entries as credit_sum' => function ($query) {
+        $accounts = Account::whereIn('id', $accounts)
+            ->withSum(['entries as credit_sum' => function ($query) {
             $query->select(DB::raw('SUM(amount)'))
                 ->where('credit', true);
         }], 'amount')
@@ -156,10 +154,22 @@ class EntryService extends MainService
                 $query->select(DB::raw('SUM(amount)'))
                     ->where('credit', false);
             }], 'amount')
+            ->withSum(['entries as period_credit_sum' => function ($query) use($data) {
+                $query->select(DB::raw('SUM(amount)'))
+                    ->where('credit', true)
+                    ->where('created_at', '>=', $data['start_date'])
+                    ->where('created_at', '<=', $data['end_date']);
+            }], 'amount')
+            ->withSum(['entries as period_debit_sum' => function ($query)  use($data) {
+                $query->select(DB::raw('SUM(amount)'))
+                    ->where('credit', false)
+                    ->where('created_at', '>=', $data['start_date'])
+                    ->where('created_at', '<=', $data['end_date']);
+            }], 'amount')
             ->get();
 
-        foreach ($accounts as $acc){
-            $dataset[] = "Account " . $acc->name . ' (' .$acc->code.')';
+        foreach ($accounts as $acc) {
+            $dataset[] = "Account " . $acc->name . ' (' . $acc->code . ')';
         }
 
 
@@ -171,12 +181,12 @@ class EntryService extends MainService
 //            $query->where('ledger.firstTransaction.currency_id', $data['currency']);
         }
 
-//        $query->when($data->get('start_date'), function ($query) use ($data) {
-//            $query->where('created_at', '>=', $data->get('start_date'));
-//        })
-//            ->when($data->get('end_date'), function ($query) use ($data) {
-//                $query->where('created_at', '<=', $data->get('start_date'));
-//            });
+        $query->when(isset($data['start_date']), function ($query) use ($data) {
+            $query->where('created_at', '>=', $data['start_date']);
+        })
+            ->when(isset($data['end_date']), function ($query) use ($data) {
+                $query->where('created_at', '<=', $data['end_date']);
+            });
 //        $query->withSum(['entries as credit_sum' => function ($query) {
 //                $query->where('credit', true);
 //            }], 'amount')
@@ -192,11 +202,20 @@ class EntryService extends MainService
                     ->whereColumn('sub_entries.account_id', '=', 'entries.account_id')
                     ->where('sub_entries.created_at', '<=', DB::raw('entries.created_at'))
                     ->orderBy('sub_entries.created_at');
-            }, 'balance');
+            }, 'balance')
+            ->selectSub(function ($query) use ($data) {
+                $query->select(DB::raw("SUM(CASE WHEN per_entries.credit THEN -per_entries.amount ELSE per_entries.amount END)"))
+                    ->from('entries as per_entries')
+                    ->whereColumn('per_entries.account_id', '=', 'entries.account_id')
+                    ->where('per_entries.created_at', '>=', $data['start_date'])
+                    ->where('per_entries.created_at', '<=', DB::raw('entries.created_at'))
+                    ->where('per_entries.created_at', '<=', $data['end_date'])
+                    ->orderBy('per_entries.created_at');
+            }, 'period_balance');
 
         $query->orderBy('created_at');
 //        $query->orderBy('account_id');
-        return [ $query->get(), $dataset,$accounts ];
+        return [$query->get(), $dataset, $accounts];
     }
 
     public function export()

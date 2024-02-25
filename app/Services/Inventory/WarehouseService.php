@@ -91,10 +91,10 @@ class WarehouseService extends MainService
     public function check(Warehouse $warehouse)
     {
         if ($warehouse->active) {
-            if (empty($warehouse->account_id) || empty($warehouse->cog_account_id) || empty($warehouse->s_account_id)) {
+            if (empty($warehouse->account_id)) { //  || empty($warehouse->cog_account_id) || empty($warehouse->s_account_id)
                 $warehouse->updateQuietly(['active' => false]);
             }
-        } else if (isset($warehouse->account_id, $warehouse->cog_account_id, $warehouse->s_account_id)) {
+        } else if (isset($warehouse->account_id)) { // $warehouse->cog_account_id, $warehouse->s_account_id
             $warehouse->updateQuietly(['active' => true]);
         }
     }

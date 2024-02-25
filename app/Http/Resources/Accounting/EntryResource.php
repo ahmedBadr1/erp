@@ -26,6 +26,8 @@ class EntryResource extends JsonResource
             'created_at' => $this->created_at->format('d-m-Y h:i a'),
             'balance' => $this->whenNotNull($this->account?->credit ? $this->balance :  - $this->balance),
 
+            'period_balance' =>  $this->period_balance,
+
 
             'account' =>  new AccountChartResource($this->whenLoaded('account')),
             'ledger' =>  new LedgerResource($this->whenLoaded('ledger')),

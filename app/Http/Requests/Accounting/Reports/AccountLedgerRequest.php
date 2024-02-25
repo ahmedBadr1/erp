@@ -31,7 +31,9 @@ class AccountLedgerRequest extends FormRequest
             'costCenters' => 'nullable|array',
             'costCenters.*' => 'nullable|exists:cost_centers,id',
             'currency' => 'nullable|exists:currencies,id',
-            'date' => 'nullable|date',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+
             'clients' => 'nullable|array',
             'clients.*' => 'nullable|exists:clients,id',
             'sellers' => 'nullable|array',
