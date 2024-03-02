@@ -3,17 +3,20 @@
 namespace App\Models\Accounting;
 
 use App\Models\MainModelSoft;
+//use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 use Illuminate\Support\Str;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 
+
 class Node extends MainModelSoft
 {
-    use  HasRecursiveRelationships;
+    use HasRecursiveRelationships;
 
     protected $fillable = ['name', 'slug', 'parent_id', "account_type_id",'select_cost_center', 'active', 'usable', 'system'];
 
 //    protected $casts =[ 'select_cost_center' => 'boolean'];
+
 
     public function type()
     {

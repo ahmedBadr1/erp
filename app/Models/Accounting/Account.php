@@ -8,7 +8,7 @@ use App\Models\Purchases\Supplier;
 use App\Models\Sales\Client;
 use App\Models\System\Status;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Activitylog\LogOptions;
 
 class Account extends MainModelSoft
@@ -17,12 +17,31 @@ class Account extends MainModelSoft
 
     protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id',
         'select_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
-        'opening_date','usable', 'system', 'active', 'node_id', 'currency_id','account_group_id', 'status_id'];
+        'c_balance', 'd_balance',
+        'opening_date', 'usable', 'system', 'active', 'node_id', 'currency_id', 'account_group_id', 'status_id'];
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
 
 
-    protected $fields = [ 'name','description', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit'];
+    protected $fields = ['name', 'description', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit'];
+
+//    protected $appends = ['balance'];
+
+    protected function getBalanceAttribute()
+    {
+        return    $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
+        if (!isset($this->credit ,$this->c_balance,$this->d_balance)){
+           return 0 ;
+        }
+        if (isset($this->credit ,$this->c_balance,$this->d_balance)){
+            $balance = $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
+            if (!isset($this->c_opening,$this->d_opening)){
+                (float) $totalOpening = $this->credit ? $this->c_opening - $this->d_opening : $this->d_opening -$this->c_opening ;
+                $balance += $totalOpening;
+            }
+        }
+        return $balance ;
+    }
 
     public function type()
     {
@@ -46,14 +65,13 @@ class Account extends MainModelSoft
 
     public function relatedAccounts()
     {
-        return $this->hasManyThrough(Account::class,'group_accounts', 'group_account_id');
+        return $this->hasManyThrough(Account::class, 'group_accounts', 'group_account_id');
     }
 
     public function currency()
     {
         return $this->belongsTo(Currency::class);
     }
-
 
 
     public function status()
@@ -119,19 +137,19 @@ class Account extends MainModelSoft
             $model->code = $node->code . str_pad(((int)$node->children_count + $node->accounts_count + 1), 4, '0', STR_PAD_LEFT);
             $model->credit = $node->credit;
             if (!$model->select_cost_center) {
-                $model->select_cost_center = $node->select_cost_center ;
+                $model->select_cost_center = $node->select_cost_center;
             }
             if (!$model->account_type_id) {
-                if (isset($node->account_type_id)){
-                    $model->account_type_id = $node->account_type_id ;
+                if (isset($node->account_type_id)) {
+                    $model->account_type_id = $node->account_type_id;
 
                 }
                 $type = AccountType::withCount('accounts')->whereId($model->account_type_id)->first();
-                if ($type){
-                    if (isset($type->code) && $type->code == 'TR'){
+                if ($type) {
+                    if (isset($type->code) && $type->code == 'TR') {
                         $model->type_code = $type->code . ((int)$type->accounts_count + 1);
-                    }else{
-                        $model->type_code = ((int)$type->accounts_count + 1) ;
+                    } else {
+                        $model->type_code = ((int)$type->accounts_count + 1);
                     }
                 }
             }
@@ -139,7 +157,7 @@ class Account extends MainModelSoft
         });
 
         static::created(function ($model) {
-            switch ($model->type?->code){
+            switch ($model->type?->code) {
 //                case 'I' :
 //                    Warehouse::create([
 //                            'name' => $model->name,

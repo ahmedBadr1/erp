@@ -133,27 +133,23 @@ class AccountService extends MainService
 
     public function updateBalance($account_id)
     {
-        try {
-            if (is_array($account_id)) {
-                foreach ($account_id as $id) {
-                    $accounts = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($id)->get();
-                    $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
-                    $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
-                    $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
-                    $account->save();
-                }
-            } else {
-                $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
-                $totalCredit = (int)$account->entries->where('credit', 1)->sum('amount') + $account->c_opening;
-                $totalDebit = (int)$account->entries->where('credit', 0)->sum('amount') + $account->d_opening;
-                $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
-                $account->save();
-            }
+        $accountIds = is_array($account_id) ? $account_id : [$account_id];
 
-        } catch (Exception $e) {
-            return $e->getMessage();
+        foreach ($accountIds as $id) {
+            $this->updateAccountBalance($id);
         }
+
         return true;
+    }
+
+    private function updateAccountBalance($account_id)
+    {
+        $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
+        $account->c_balance = (float)$account->entries->where('credit', 1)->sum('amount') ;
+        $account->d_balance = (float)$account->entries->where('credit', 0)->sum('amount') ;
+//        $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+        $account->save();
+
     }
 
     public function destroy($account)

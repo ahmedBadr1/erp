@@ -26,6 +26,7 @@ class AccountingReportRequest extends FormRequest
             'nodes' => "nullable|boolean",
             'currencies' => "nullable|boolean",
             'clients' => "nullable|boolean",
+            'costCenterNodes' => "nullable|boolean",
             'costCenters' => "nullable|boolean",
             'sellers' => "nullable|boolean",
             'taxes' => "nullable|boolean",
@@ -33,6 +34,7 @@ class AccountingReportRequest extends FormRequest
             'tree'=> "nullable|boolean",
             'accountTypes'=> "nullable|boolean",
             'nodeRoots' => "nullable|boolean",
+            'nodeLevels' => "nullable|boolean",
 
 
         ];

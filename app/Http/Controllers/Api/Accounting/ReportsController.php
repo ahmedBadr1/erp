@@ -14,12 +14,14 @@ use App\Http\Resources\Accounting\AccountChartResource;
 use App\Http\Resources\Accounting\AccountResource;
 use App\Http\Resources\Accounting\EntryResource;
 use App\Http\Resources\Accounting\LedgerResource;
+use App\Http\Resources\Accounting\NodeLedgerResource;
 use App\Http\Resources\Accounting\NodeResource;
 use App\Http\Resources\Accounting\TransactionResource;
 use App\Models\Accounting\Account;
 use App\Models\Accounting\AccountType;
 use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Ledger;
+use App\Models\Accounting\Node;
 use App\Services\Accounting\AccountService;
 use App\Services\Accounting\CostCenterNodeService;
 use App\Services\Accounting\CostCenterService;
@@ -32,6 +34,7 @@ use App\Services\Accounting\TransactionService;
 use App\Services\ClientService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends ApiController
 {
@@ -87,6 +90,11 @@ class ReportsController extends ApiController
         if ($request->get('nodes')) { // && auth('api')->user()->can('accounting.nodes.index')
             $data['nodes'] = (new NodeService())->all(['code', 'name']);
         }
+
+        if ($request->get('nodeLevels')) { // && auth('api')->user()->can('accounting.nodes.index')
+            $data['nodeLevels'] = (new NodeService())->levels();
+        }
+
         if ($request->get('costCenters')) { // && auth('api')->user()->can('accounting.nodes.index')
             $data['costCenters'] = (new CostCenterService())->all(['code', 'name']);
         }
@@ -128,5 +136,13 @@ class ReportsController extends ApiController
     {
         $result = (new LedgerService())->posting($request->validated());
         return $this->successResponse(['rows'=> LedgerResource::collection($result['rows']),'dataset'=>$result['dataset']]);
+    }
+
+
+    public function generalLedger(AccountLedgerRequest $request)
+    {
+        [$rows , $dataset ,$total] = (new NodeService())->gl($request->validated()) ;
+
+        return $this->successResponse(['rows'=> NodeLedgerResource::collection( $rows),'dataset'=> $dataset,'total' => $total]);
     }
 }

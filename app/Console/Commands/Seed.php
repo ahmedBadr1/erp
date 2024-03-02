@@ -9,11 +9,13 @@ use App\Models\Accounting\Transaction;
 use App\Models\Inventory\Warehouse;
 use App\Models\Purchases\Supplier;
 use App\Models\Sales\Client;
+use App\Services\Accounting\AccountService;
 use Database\Seeders\AccountingSeeder;
 use Database\Seeders\PurchasesSeeder;
 use Database\Seeders\SalesSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Process\Pool;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 
 class Seed extends Command
@@ -57,6 +59,7 @@ class Seed extends Command
                 echo ".";
             }
 //            try {
+
             $this->insert($i ,$treasuries->random(),$warehouses->random(),$suppliers->random(),$clients->random());
 //            } catch (\Throwable $e){
 //                // nothing
@@ -68,13 +71,16 @@ class Seed extends Command
 
     protected function insert($i,$treasury , $warehouse,$supplier,$client)
     {
-//        AccountingSeeder::seedType('CI',null,$treasury,$client->account);
-//        AccountingSeeder::seedType('CO',null,$treasury,$supplier->account);
-        PurchasesSeeder::seedType(type: 'PO', warehouse: $warehouse,supplier: $supplier,treasury:  $treasury);
-        if($i > 100){
-            SalesSeeder::seedType(type: 'SO', warehouse: $warehouse,client: $client,treasury:  $treasury);
-        }
-
+        DB::transaction(function() use ($i,$treasury , $warehouse,$supplier,$client) {
+            PurchasesSeeder::seedType(type: 'PO', warehouse: $warehouse,supplier: $supplier,treasury:  $treasury , i: $i+1);
+            if($i > 100){
+                SalesSeeder::seedType(type: 'SO', warehouse: $warehouse,client: $client,treasury:  $treasury , i: $i+1);
+            }
+            (new AccountService())->updateBalance($warehouse->account_id);
+            (new AccountService())->updateBalance($supplier->account_id);
+            (new AccountService())->updateBalance($client->account_id);
+            (new AccountService())->updateBalance($treasury->id);
+        });
     }
 
     public function spawn($processes)

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
-            $table->string('code');//->unique();
+            $table->string('code')->unique();
             $table->string('type');
             $table->foreignIdFor(\App\Models\Accounting\Account::class,'treasury_id')->nullable(); // 1
             $table->foreignIdFor(\App\Models\System\ModelGroup::class,'group_id')->nullable();

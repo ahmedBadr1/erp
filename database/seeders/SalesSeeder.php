@@ -25,9 +25,13 @@ class SalesSeeder extends Seeder
     }
 
 
-    public static function seedType($type, $warehouse, $client, $treasury)
+    public static function seedType($type, $warehouse, $client, $treasury ,$i)
     {
         if ($type === 'SO') {
+            if (Bill::where('code' ,              'SO-' . $warehouse->id . '-' . $i)->exists()){
+                return ;
+            }
+
             $group = ModelGroup::create();
 //            $items = collect([]);
 //            for ($i=1 ;$i <= random_int(2, 5) ; $i ++){
@@ -57,6 +61,7 @@ class SalesSeeder extends Seeder
             $total = $sub_total + $tax_total;
 
             $bill = Bill::factory()->create([
+                'code' => 'SO-' . $warehouse->id . '-' . $i,
                 'type' => $type ,
                 'gross_total' => $gross_total,
                 'discount' => $discount,

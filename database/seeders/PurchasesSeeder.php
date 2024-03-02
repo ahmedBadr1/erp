@@ -28,9 +28,12 @@ class PurchasesSeeder extends Seeder
     /**
      * @throws RandomException
      */
-    public static function seedType($type, $warehouse, $supplier, $treasury)
+    public static function seedType($type, $warehouse, $supplier, $treasury , $i)
     {
         if ($type === 'PO') {
+            if (Bill::where('code' ,              'PO-' . $warehouse->id . '-' . $i)->exists()){
+                return ;
+            }
             $group = ModelGroup::create();
 
             $items = BillItem::factory(random_int(2, 5))->create();
@@ -50,6 +53,7 @@ class PurchasesSeeder extends Seeder
             $total = $sub_total + $tax_total;
 
             $bill = Bill::factory()->create([
+                'code' => 'PO-' . $warehouse->id . '-' . $i,
                 'type' => $type,
                 'gross_total' => $gross_total,
                 'discount' => $discount,
