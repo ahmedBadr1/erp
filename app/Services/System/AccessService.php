@@ -16,7 +16,7 @@ class AccessService extends MainService
 
     public function all($fields = null)
     {
-        $data = $fields ?? (new Address())->getFillable();
+        $data = $fields ?? (new Access())->getFillable();
 
         return Access::active()->get($data);
     }

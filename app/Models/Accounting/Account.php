@@ -17,7 +17,7 @@ class Account extends MainModelSoft
 
     protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id',
         'select_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
-        'c_balance', 'd_balance',
+        'total_debit', 'total_credit','balance',
         'opening_date', 'usable', 'system', 'active', 'node_id', 'currency_id', 'account_group_id', 'status_id'];
     protected array $TYPES = ['credit', 'debit'];
     protected $casts = ['opening_date' => 'date'];
@@ -27,21 +27,21 @@ class Account extends MainModelSoft
 
 //    protected $appends = ['balance'];
 
-    protected function getBalanceAttribute()
-    {
-        return    $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
-        if (!isset($this->credit ,$this->c_balance,$this->d_balance)){
-           return 0 ;
-        }
-        if (isset($this->credit ,$this->c_balance,$this->d_balance)){
-            $balance = $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
-            if (!isset($this->c_opening,$this->d_opening)){
-                (float) $totalOpening = $this->credit ? $this->c_opening - $this->d_opening : $this->d_opening -$this->c_opening ;
-                $balance += $totalOpening;
-            }
-        }
-        return $balance ;
-    }
+//    protected function getBalanceAttribute()
+//    {
+//        return    $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
+//        if (!isset($this->credit ,$this->c_balance,$this->d_balance)){
+//           return 0 ;
+//        }
+//        if (isset($this->credit ,$this->c_balance,$this->d_balance)){
+//            $balance = $this->credit ? $this->c_balance - $this->d_balance : $this->d_balance - $this->c_balance;
+//            if (!isset($this->c_opening,$this->d_opening)){
+//                (float) $totalOpening = $this->credit ? $this->c_opening - $this->d_opening : $this->d_opening -$this->c_opening ;
+//                $balance += $totalOpening;
+//            }
+//        }
+//        return $balance ;
+//    }
 
     public function type()
     {
@@ -51,6 +51,11 @@ class Account extends MainModelSoft
     public function costCenter()
     {
         return $this->belongsTo(CostCenter::class);
+    }
+
+    public function costCenters()
+    {
+        return $this->hasManyThrough(CostCenter::class,Entry::class);
     }
 
     public function node()

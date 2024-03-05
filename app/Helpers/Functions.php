@@ -2836,3 +2836,18 @@ function formatMoney($value)
 
     return $formattedValue;
 }
+
+
+if (!function_exists('setting')) {
+    function setting($key, $group = null, $default = null)
+    {
+        // Retrieve settings from configuration
+        $settings = \App\Models\System\Setting::getAllSettings();
+
+        $setting = $settings->first(function ($setting) use ($key, $group) {
+            return $setting->key === $key && (!$group || $setting->group === $group);
+        });
+
+        return $setting ? $setting->value : $default;
+    }
+}

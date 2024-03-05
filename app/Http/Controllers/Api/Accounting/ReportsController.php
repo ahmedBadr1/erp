@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Accounting\Reports\AccountingReportRequest;
 use App\Http\Requests\Accounting\Reports\AccountLedgerRequest;
+use App\Http\Requests\Accounting\Reports\GeneralLedgerRequest;
 use App\Http\Requests\Accounting\Reports\WorkOrdersReportRequest;
 use App\Http\Requests\Accounting\Reports\CashReportRequest;
 use App\Http\Requests\Accounting\Reports\InventoryReportRequest;
@@ -139,7 +140,7 @@ class ReportsController extends ApiController
     }
 
 
-    public function generalLedger(AccountLedgerRequest $request)
+    public function generalLedger(GeneralLedgerRequest $request)
     {
         [$rows , $dataset ,$total] = (new NodeService())->gl($request->validated()) ;
 

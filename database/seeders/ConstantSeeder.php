@@ -10,6 +10,7 @@ use App\Models\System\Setting;
 use App\Models\System\State;
 use App\Models\System\Status;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use App\Models\System\Role;
@@ -194,6 +195,12 @@ class ConstantSeeder extends Seeder
                 'type' => 'emails',
                 'key' => 'emails',
                 'value' => 'false',
+                'group' => 'setting',
+            ],
+            [
+                'type' => 'app',
+                'key' => 'opening_date',
+                'value' => Carbon::now()->startOfYear(),
                 'group' => 'setting',
             ],
         ];

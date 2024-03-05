@@ -4,26 +4,24 @@ namespace App\Services\Accounting;
 
 use App\Exports\UsersExport;
 use App\Models\Accounting\Account;
-use App\Models\Accounting\Entry;
 use App\Models\Accounting\Node;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Number;
 use Maatwebsite\Excel\Facades\Excel;
 
 class NodeService extends MainService
 {
 
-    public function all($fields = null,$relations = [], $countRelations = [])
+    public function all($fields = null, $relations = [], $countRelations = [])
     {
         $data = $fields ?? (new Node)->getFillable();
-        $query =Node::active();
-        if (!empty($relations )) {
+        $query = Node::active();
+        if (!empty($relations)) {
             $query->with(...$relations);
         }
-        if (!empty($countRelations )) {
+        if (!empty($countRelations)) {
             $query->withCount(...$countRelations);
         }
         return $query->get($data);
@@ -33,10 +31,10 @@ class NodeService extends MainService
     {
         $data = $fields ?? (new Node)->getFillable();
         $query = Node::tree();
-        if (!empty($relations )) {
+        if (!empty($relations)) {
             $query->with(...$relations);
         }
-        if (!empty($countRelations )) {
+        if (!empty($countRelations)) {
             $query->withCount(...$countRelations);
         }
         return $query->get()->toTree();
@@ -44,7 +42,7 @@ class NodeService extends MainService
 
     public function root($level = null)
     {
-       return Node::whereNull('parent_id')->get(['id','name']);
+        return Node::whereNull('parent_id')->get(['id', 'name']);
     }
 
     public function levels()
@@ -101,7 +99,7 @@ class NodeService extends MainService
     }
 
 
-    public function gl(array $data = null)
+    public function gl(array $data)
     {
         $columns = $data['columns'];
         $dataset = [];
@@ -136,145 +134,95 @@ class NodeService extends MainService
 //            ->withSum('accounts as net_debit' , 'd_balance')
 //        ])->get();
 
+        if ($data['dateType'] === 'period') {
+            $start_date = $data['from_date'];
+            $end_date = $data['to_date'];
+        } else {
+
+            $start_date = setting('opening_date');
+            $end_date = $data['date'];
+        }
 
         $query = Node::tree()
-            ->with(['accounts'=> fn($q) => $q->select('id','code','d_balance','c_balance','d_opening','c_opening','node_id')])
-            ->withSum('accounts as net_credit','c_balance')
-            ->withSum('accounts as net_debit' , 'd_balance');
-        $coll = $query->get();
-
-        $total = collect(['name'=>'Total']);
-        $max = $coll->max('depth') ;
-        for ($i = 0; $i < ($max +1); $i++) {
-            $coll->where('depth',$max - $i)->map(function($node) use ($coll) {
-                $node->net_credit = round( $node->net_credit +  $coll->where('parent_id',$node->id)?->sum('net_credit')  , 4);
-                $node->net_debit = round( $node->net_debit +  $coll->where('parent_id',$node->id)?->sum('net_debit')  , 4);
-            });
-
-        }
-
-        $total['net_credit'] = $coll->whereNull('parent_id')->sum('net_credit');
-        $total['net_debit'] = $coll->whereNull('parent_id')->sum('net_debit');
-
-        return [$coll->toTree(), $dataset,$total];
-
-        $query->locked(0);
-        if ($data['posting'] === 'posted') {
-            $query->posted(1);
-        } elseif ($data['posting'] === 'unposted') {
-            $query->posted(0);
-        }
-        $query->with('account', 'costCenter');
-
-
-        if (isset($data['with_transactions']) && $data['with_transactions']) {
-            $query->with('ledger.transaction');
-        }
-
-        if (isset($columns['second_party']) && $columns['second_party']) {
-            $query->with('ledger.transaction.secondParty');
-        }
-
-        if (isset($data['detailed']) && $data['detailed']) {
-            $query->with('ledger.entries');
-        }
-
-        if (isset($columns['created_by']) && $columns['created_by']) {
-            $query->with('ledger.creator');
-        }
-        if (isset($columns['responsible']) && $columns['responsible']) {
-            $query->with('ledger.responsible');
-        }
-        if (isset($columns['edited_by']) && $columns['edited_by']) {
-            $query->with('ledger.editor');
-        }
-
-        if (isset($columns['document_currency']) && $columns['document_currency']) {
-//            $query->with('ledger.transactions');
-        }
-
-        if (isset($columns['document_currency']) && $columns['document_currency']) {
-//            $query->with('ledger.firstTransaction.currency');
-        }
-
-        $query->whereIn('account_id', $accounts);
-
-
-        $accounts = Account::whereIn('id', $accounts)
-            ->withSum(['entries as credit_sum' => function ($query) {
-                $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', true);
-            }], 'amount')
-            ->withSum(['entries as debit_sum' => function ($query) {
-                $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', false);
-            }], 'amount')
-            ->withSum(['entries as period_credit_sum' => function ($query) use($data) {
-                $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', true)
-                    ->where('created_at', '>=', $data['start_date'])
-                    ->where('created_at', '<=', $data['end_date']);
-            }], 'amount')
-            ->withSum(['entries as period_debit_sum' => function ($query)  use($data) {
-                $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', false)
-                    ->where('created_at', '>=', $data['start_date'])
-                    ->where('created_at', '<=', $data['end_date']);
-            }], 'amount')
-            ->get();
-
-        foreach ($accounts as $acc) {
-            $dataset[] = "Account " . $acc->name . ' (' . $acc->code . ')';
-        }
-
-
-        if (isset($data['costCenters'])) {
-//            $query->whereIn('cost_center_id', $data['costCenters']);
-        }
-
-        if (isset($data['currency']) && $data['currency']) {
-//            $query->where('ledger.firstTransaction.currency_id', $data['currency']);
-        }
-
-        $query->when(isset($data['start_date']), function ($query) use ($data) {
-            $query->where('created_at', '>=', $data['start_date']);
-        })
-            ->when(isset($data['end_date']), function ($query) use ($data) {
-                $query->where('created_at', '<=', $data['end_date']);
-            });
-//        $query->withSum(['entries as credit_sum' => function ($query) {
-//                $query->where('credit', true);
-//            }], 'amount')
-//            ->withSum(['entries as debit_sum' => function ($query) {
-//                $query->where('credit', false);
-//            }], 'amount')
-//            ->orderBy($data->get('OrderBy') ?? $this->orderBy, $data->get('OrderBy') ?? $this->orderDesc ? 'desc' : 'asc');
-//        $query->select(DB::raw('SUM(CASE WHEN credit THEN amount ELSE -amount END)'))
-        $query->select('entries.*')
-            ->selectSub(function ($query) {
-                $query->select(DB::raw("SUM(CASE WHEN sub_entries.credit = (SELECT credit FROM accounts WHERE accounts.id = entries.account_id) THEN sub_entries.amount ELSE -sub_entries.amount END)"))
-                    ->from('entries as sub_entries','accounts')
-                    ->whereColumn('sub_entries.account_id', '=', 'entries.account_id')
-                    ->where('sub_entries.created_at', '<=', DB::raw('entries.created_at'))
-                    ->orderBy('sub_entries.created_at');
-            }, 'balance')
-            ->selectSub(function ($query) use ($data) {
-                $query->select(DB::raw("SUM(CASE WHEN per_entries.credit = (SELECT credit FROM accounts WHERE accounts.id = entries.account_id) THEN per_entries.amount ELSE -per_entries.amount END)"))
-                    ->from('entries as per_entries')
-                    ->whereColumn('per_entries.account_id', '=', 'entries.account_id')
-                    ->where('per_entries.created_at', '>=', $data['start_date'])
-                    ->where('per_entries.created_at', '<=', DB::raw('entries.created_at'))
-                    ->where('per_entries.created_at', '<=', $data['end_date'])
-                    ->orderBy('per_entries.created_at');
-            }, 'period_balance')
-
-
+            ->with(['accounts' => fn($q) => $q->select('id', 'name', 'code', 'total_debit', 'total_debit', 'balance', 'd_opening', 'c_opening', 'node_id')
+                ->withSum(['entries as debit_sum' => function ($query) use ($start_date, $end_date) {
+                    $query->select(DB::raw('SUM(amount)'))
+                        ->where('created_at', '>=', $start_date)
+                        ->where('created_at', '<=', $end_date)
+                        ->where('locked', false)->where('credit', false);
+                }], 'amount')
+                ->withSum(['entries as credit_sum' => function ($query) use ($start_date, $end_date) {
+                    $query->select(DB::raw('SUM(amount)'))
+                        ->where('created_at', '>=', $start_date)
+                        ->where('created_at', '<=', $end_date)
+                        ->where('locked', false)->where('credit', true);
+                }], 'amount')
+            ])
+            ->withSum('accounts as opening_debit', 'c_opening')
+            ->withSum('accounts as opening_credit', 'd_opening')
         ;
+        $coll = $query->get()
+            ->map(function ($node) {
+                if ($node->credit) {
+                    $diff = $node->accounts->sum('credit_sum') - $node->accounts->sum('debit_sum');
+                    $node->net_credit = ($diff > 0) ? abs($diff) : 0.000;
+                    $node->net_debit = ($diff > 0) ? 0.0000 : abs($diff);
+                } else {
+                    $diff = $node->accounts->sum('debit_sum') - $node->accounts->sum('credit_sum');
+                    $node->net_credit = ($diff < 0) ? abs($diff) : 0.000;
+                    $node->net_debit = ($diff < 0) ? 0.0000 : abs($diff);
+                }
 
-        $query->orderBy('created_at');
-//        $query->orderBy('account_id');
-        return [$query->get(), $dataset, $accounts];
+                $node->total_debit = $node->accounts->sum('debit_sum');
+                $node->total_credit = $node->accounts->sum('credit_sum');
+                return $node;
+            });
+
+
+        $total = collect(['name' => 'Total']);
+        $max = $coll->max('depth');
+        for ($i = 0; $i < ($max + 1); $i++) {
+            $coll->where('depth', $max - $i)->map(function ($node) use ($coll) {
+                $net_credit = round($node->net_credit + $coll->where('parent_id', $node->id)?->sum('net_credit'), 4);
+                $net_debit = round($node->net_debit + $coll->where('parent_id', $node->id)?->sum('net_debit'), 4);
+
+                if ($node->credit) {
+                    $diff =  $net_credit - $net_debit;
+                    $node->net_credit = ($diff > 0) ? abs($diff) : 0.000;
+                    $node->net_debit = ($diff > 0) ? 0.0000 : abs($diff);
+                } else {
+                    $diff = $net_debit - $net_credit;
+                    $node->net_credit = ($diff < 0) ? abs($diff) : 0.000;
+                    $node->net_debit = ($diff < 0) ? 0.0000 : abs($diff);
+                }
+
+                $node->opening_debit = round($node->opening_debit + $coll->where('parent_id', $node->id)?->sum('opening_debit'), 4);
+                $node->opening_credit = round($node->opening_credit + $coll->where('parent_id', $node->id)?->sum('opening_credit'), 4);
+
+                $node->total_debit = round($node->total_debit + $coll->where('parent_id', $node->id)?->sum('total_debit'), 4);
+                $node->total_credit = round($node->total_credit + $coll->where('parent_id', $node->id)?->sum('total_credit'), 4);
+
+            });
+        }
+
+        $total['net_debit'] = round($coll->whereNull('parent_id')->sum('net_debit'), 4);
+        $total['net_credit'] = round($coll->whereNull('parent_id')->sum('net_credit'), 4);
+        $total['opening_debit'] = round($coll->whereNull('parent_id')->sum('opening_debit'), 4);
+        $total['opening_credit'] = round($coll->whereNull('parent_id')->sum('opening_credit'), 4);
+        $total['total_debit'] = round($coll->whereNull('parent_id')->sum('total_debit'), 4);
+        $total['total_credit'] = round($coll->whereNull('parent_id')->sum('total_credit'), 4);
+
+        return [$coll->toTree(), $dataset, $total];
+
+
+//        if (isset($data['with_transactions']) && $data['with_transactions']) {
+//            $query->with('ledger.transaction');
+//        }
+
+
     }
+
+
     public function destroy($account)
     {
         if ($account->projects_count > 0) {

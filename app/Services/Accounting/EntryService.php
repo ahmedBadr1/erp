@@ -146,25 +146,26 @@ class EntryService extends MainService
 
 
         $accounts = Account::whereIn('id', $accounts)
-            ->withSum(['entries as credit_sum' => function ($query) {
-            $query->select(DB::raw('SUM(amount)'))
-                ->where('credit', true);
-        }], 'amount')
-            ->withSum(['entries as debit_sum' => function ($query) {
-                $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', false);
-            }], 'amount')
+//            ->withSum(['entries as credit_sum' => function ($query) {
+//            $query->select(DB::raw('SUM(amount)'))
+//                ->where('credit', true);
+//        }], 'amount')
+//            ->withSum(['entries as debit_sum' => function ($query) {
+//                $query->select(DB::raw('SUM(amount)'))
+//                    ->where('credit', false);
+//            }], 'amount')
             ->withSum(['entries as period_credit_sum' => function ($query) use($data) {
                 $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', true)
                     ->where('created_at', '>=', $data['start_date'])
-                    ->where('created_at', '<=', $data['end_date']);
+                    ->where('created_at', '<=', $data['end_date'])
+                    ->where('credit', true);
             }], 'amount')
             ->withSum(['entries as period_debit_sum' => function ($query)  use($data) {
                 $query->select(DB::raw('SUM(amount)'))
-                    ->where('credit', false)
                     ->where('created_at', '>=', $data['start_date'])
-                    ->where('created_at', '<=', $data['end_date']);
+                    ->where('created_at', '<=', $data['end_date'])
+                    ->where('credit', false)
+                ;
             }], 'amount')
             ->get();
 

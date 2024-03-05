@@ -24,8 +24,9 @@ return new class extends Migration
             $table->float('c_opening')->nullable();
             $table->float('d_opening')->nullable();
             $table->dateTime('opening_date')->nullable();
-            $table->float('c_balance',15,4)->default(0);
-            $table->float('d_balance',15,4)->default(0);
+            $table->float('total_debit',15,4)->default(0);
+            $table->float('total_credit',15,4)->default(0);
+            $table->float('balance',15,4)->default(0);
 
             $table->boolean('usable')->default(true)->index();
             $table->boolean('system')->default(false)->index();

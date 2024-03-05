@@ -20,6 +20,13 @@ class AccountResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+         if ($this->credit){
+             $d_balance =  ($this->balance > 0 )  ? 0.0000 :  abs($this->balance);
+             $c_balance =  ($this->balance > 0 )  ? abs($this->balance) : 0.0000  ;
+         }else{
+             $d_balance =  ($this->balance > 0 )  ? abs($this->balance) :  0.0000   ;
+             $c_balance =  ($this->balance > 0 )  ? 0.0000 :  abs($this->balance);
+         }
         return [
             'code' => $this->whenNotNull($this->code),
             'name' => $this->whenNotNull($this->name),
@@ -32,15 +39,18 @@ class AccountResource extends JsonResource
             'd_opening' =>(float) $this->d_opening ,
             'opening_date' => $this->whenNotNull($this->opening_date),
             'currency_id' => $this->whenNotNull($this->currency_id),
+            'total_credit' => (float)$this->total_credit ,
+            'total_debit' => (float) $this->total_debit ,
+            'd_balance' => $d_balance,
+            'c_balance' =>   $c_balance,
+            'balance' =>   $this->balance,
 
-            'c_balance' =>(float)  $this->c_balance ,
-            'd_balance' => (float) $this->d_balance ,
             'active' => $this->whenNotNull($this->active),
             'system' => $this->whenNotNull($this->system),
 
             'credit_sum' => (float)$this->credit_sum ,
             'debit_sum' => (float) $this->debit_sum ,
-            'period_credit_sum' => (float)$this->period_credit_sum ,
+            'period_credit_sum' =>  $this->period_credit_sum ,
             'period_debit_sum' => (float)$this->period_debit_sum ,
 
 //            'node_id' => $this->'node_id',

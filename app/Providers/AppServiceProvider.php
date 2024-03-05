@@ -30,6 +30,8 @@ use App\Models\System\Tag;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -93,5 +95,9 @@ class AppServiceProvider extends ServiceProvider
         View::share('langs', $langs);
 //        JsonResource::withoutWrapping();
 
+
     }
+
+
+
 }

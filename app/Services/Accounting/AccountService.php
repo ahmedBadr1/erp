@@ -145,9 +145,9 @@ class AccountService extends MainService
     private function updateAccountBalance($account_id)
     {
         $account = Account::with(['entries' => fn($q) => $q->locked(0)])->whereId($account_id)->first();
-        $account->c_balance = (float)$account->entries->where('credit', 1)->sum('amount') ;
-        $account->d_balance = (float)$account->entries->where('credit', 0)->sum('amount') ;
-//        $account->balance = $account->credit ? $totalCredit - $totalDebit : $totalDebit - $totalCredit;
+        $account->total_debit = (float)$account->entries->where('credit', 0)->sum('amount') ;
+        $account->total_credit = (float)$account->entries->where('credit', 1)->sum('amount') ;
+        $account->balance = $account->credit ? $account->total_credit -  $account->total_debit : $account->total_debit - $account->total_credit ;
         $account->save();
 
     }
