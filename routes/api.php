@@ -101,6 +101,9 @@ Route::group(['middleware' => ['json.response']], function () {
                 Route::patch('/nodes/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'updateNode'])->name('nodes.update');
 
 
+                Route::get('/related/{code}', [\App\Http\Controllers\Api\Accounting\AccountGroupsController::class, 'index'])->name('getRelated');
+                Route::post('/related', [\App\Http\Controllers\Api\Accounting\AccountGroupsController::class, 'store'])->name('setRelated');
+
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'create'])->name('create');
                 Route::post('/store', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'store'])->name('store');
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\AccountsController::class, 'show'])->name('show');

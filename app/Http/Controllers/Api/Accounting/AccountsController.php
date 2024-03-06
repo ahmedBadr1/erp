@@ -25,6 +25,7 @@ use App\Services\System\GroupService;
 use App\Services\System\TagService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AccountsController extends ApiController
@@ -182,10 +183,15 @@ class AccountsController extends ApiController
 
     public function update(UpdateAccountRequest $request, $code)
     {
+        DB::beginTransaction();
+
         try {
             (new AccountService())->store($request->validated(), $code);
+            DB::commit();
         } catch (Exception $e) {
+            DB::rollBack();
             return $this->errorResponse($e->getMessage(), 409);
+
         }
 
         return $this->successResponse(null, __('message.updated', ['model' => __('Account')]));
@@ -267,5 +273,6 @@ class AccountsController extends ApiController
 
         return $this->successResponse(new AccountResource($account));
     }
+
 
 }

@@ -15,7 +15,7 @@ class Account extends MainModelSoft
 {
 //    use LogsActivity;
 
-    protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id',
+    protected $fillable = ['code', 'name', 'type_code', 'credit', 'description', 'account_type_id', 'account_group_id',
         'select_cost_center', 'cost_center_id', 'c_opening', 'd_opening', 'credit_limit', 'debit_limit',
         'total_debit', 'total_credit','balance',
         'opening_date', 'usable', 'system', 'active', 'node_id', 'currency_id', 'account_group_id', 'status_id'];
@@ -65,7 +65,7 @@ class Account extends MainModelSoft
 
     public function group()
     {
-        return $this->belongsTo(AccountGroup::class, 'group_account_id');
+        return $this->belongsTo(AccountGroup::class, 'account_group_id');
     }
 
     public function relatedAccounts()
