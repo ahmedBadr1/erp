@@ -12,7 +12,6 @@ use App\Models\System\ModelGroup;
 use App\Services\ClientsExport;
 use App\Services\MainService;
 use Exception;
-use http\Exception\RuntimeException;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -82,9 +81,9 @@ class LedgerService extends MainService
         }
 
 
-        $query->whereHas('entries', fn($q) => $q->whereIn('account_id', $accounts));
+        $query->whereHas('entries', fn($q) => $q->whereIntegerInRaw('account_id', $accounts));
         if (isset($data['costCenters'])) {
-            $query->whereHas('entries', fn($q) => $q->whereIn('cost_center_id', $data['costCenters']));
+            $query->whereHas('entries', fn($q) => $q->whereIntegerInRaw('cost_center_id', $data['costCenters']));
         }
 
         if (isset($data['currency']) && $data['currency']) {
@@ -162,14 +161,14 @@ class LedgerService extends MainService
         }
 
         if (!empty($data['sellers'])) {
-            $query->whereIn('responsible_id', $data['sellers']);
+            $query->whereIntegerInRaw('responsible_id', $data['sellers']);
         }
 
 
         if (!empty($data['accounts'])) {
             $query->whereHas('transactions',
-                fn($q) => $q->where(fn($q) => $q->whereIn('first_party_id', $data['accounts'])
-                    ->orWhereIn('second_party_id', $data['accounts']))
+                fn($q) => $q->where(fn($q) => $q->whereIntegerInRaw('first_party_id', $data['accounts'])
+                    ->orWhereIntegerInRaw('second_party_id', $data['accounts']))
             );
         }
 
@@ -190,7 +189,7 @@ class LedgerService extends MainService
 //        }
 
         if (isset($data['sellers']) && $data['sellers']) {
-            $query->whereIn('responsible_id', $data['sellers']);
+            $query->whereIntegerInRaw('responsible_id', $data['sellers']);
         }
 
         $dataset[] = 'start date ' . Carbon::parse($data['start_date'])->format('Y/m/d');
@@ -235,7 +234,7 @@ class LedgerService extends MainService
         Ledger::whereIn('id', $ids)->update(['posted' => $post]);
         Entry::whereIn('ledger_id', $ids)->update(['posted' => $post]);
         Transaction::whereIn('ledger_id', $ids)->update(['posted' => $post]);
-        return false;
+        return true;
     }
 
     public function cashin($groupId, $treasuryId, $accounts, float $amount, $currencyId, $date, $note = null, $paperRef = null, $responsible = null, $system = 1)
@@ -249,7 +248,7 @@ class LedgerService extends MainService
         $treasury = Account::find($treasuryId);
 
 
-        $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+        $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: 1);
         $EntryService->createDebitEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id);
         $AccountService->updateBalance(account_id: $treasury->id);
 
@@ -280,11 +279,11 @@ class LedgerService extends MainService
         $AccountService = new AccountService();
         $treasury = Account::find($treasuryId);
 
-        $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+        $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: 1);
 
         if (is_array($accounts)) {
             foreach ($accounts as $account) {
-                $EntryService->createDebitEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'] ?? null , comment: $account['comment'] ?? null);
+                $EntryService->createDebitEntry(amount: $account['amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'] ?? null, comment: $account['comment'] ?? null);
                 $AccountService->updateBalance(account_id: $account['id']);
             }
         } else { // Account Model
@@ -294,14 +293,14 @@ class LedgerService extends MainService
         }
 //        throw  new \RuntimeException($treasuryId);
 
-        $EntryService->createCreditEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id );
+        $EntryService->createCreditEntry(amount: $amount, account_id: $treasuryId, ledger_id: $ledger->id, cost_center_id: $treasury->cost_center_id);
         $AccountService->updateBalance(account_id: $treasuryId);
         $TransactionService->createCO(groupId: $groupId, amount: $amount, ledger_id: $ledger->id, first_party_id: $treasuryId, second_party_id: $account['id'], due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 
         return false;
     }
 
-    public function jouranlEntry(array $data, $groupId = null)
+    public function jouranlEntry(array $data, $groupId = null, $system = 1)
     {
         if (!isset($groupId)) {
             $groupId = ModelGroup::create()->id;
@@ -309,7 +308,7 @@ class LedgerService extends MainService
         $EntryService = new EntryService();
         $AccountService = new AccountService();
 
-        $ledger = $this->store(groupId: $groupId, amount: $data['amount'], currency_id: $data['currency_id'], due: $data['due'], note: $data['note'], user_id: $data['responsible'], system: 0);
+        $ledger = $this->store(groupId: $groupId, amount: $data['amount'], currency_id: $data['currency_id'], due: $data['due'], note: $data['note'], user_id: $data['responsible'], system: $system);
 
         foreach ($data['accounts'] as $account) {
             if ($account['c_amount']) {
@@ -333,7 +332,7 @@ class LedgerService extends MainService
         $TransactionService = new TransactionService();
         $AccountService = new AccountService();
 
-        $ledger = $this->store(groupId: $groupId, amount: $grossTotal + $tax, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+        $ledger = $this->store(groupId: $groupId, amount: $grossTotal + $tax, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: 1);
 //            dd($ledger);
         $EntryService->createDebitEntry(amount: $grossTotal, account_id: $warehouseAcc->id, ledger_id: $ledger->id, cost_center_id: $warehouseAcc->cost_centet_id);
         $AccountService->updateBalance(account_id: $warehouseAcc->id);
@@ -373,13 +372,13 @@ class LedgerService extends MainService
         $AccountService->updateBalance(account_id: $clientAcc->id);
 
         if ($discount) {
-            $discountAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'SD'))->value('id');
+            $discountAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'SD'))->value('id');
             $EntryService->createDebitEntry(amount: $discount, account_id: $discountAccountId, ledger_id: $ledger->id);
             $AccountService->updateBalance(account_id: $discountAccountId);
         }
 
-        $salesAccountId =  Account::whereHas('type', fn($q) => $q->where('code', 'S'))->value('id');
-        $EntryService->createCreditEntry(amount: $grossTotal, account_id: $salesAccountId, ledger_id: $ledger->id,cost_center_id:  $warehouseAcc->cost_center_id);
+        $salesAccountId = Account::whereHas('type', fn($q) => $q->where('code', 'S'))->value('id');
+        $EntryService->createCreditEntry(amount: $grossTotal, account_id: $salesAccountId, ledger_id: $ledger->id, cost_center_id: $warehouseAcc->cost_center_id);
         $AccountService->updateBalance(account_id: $salesAccountId);
 
         if ($tax) {
@@ -396,23 +395,23 @@ class LedgerService extends MainService
         return false;
     }
 
-    public function COGS($groupId,$warehouseAcc ,$amount,$currencyId,$date, $note = null, $paperRef = null, $responsible = null, $system = 1)
+    public function COGS($groupId, $warehouseAcc, $amount, $currencyId, $date, $note = null, $paperRef = null, $responsible = null, $system = 1)
     {
 
         $EntryService = new EntryService();
         $TransactionService = new TransactionService();
         $AccountService = new AccountService();
 
-        $ledger = $this->store(groupId: $groupId, amount:$amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
-        $cogsAccount =  Account::whereHas('type', fn($q) => $q->where('code', 'COG'))->first();
-        $EntryService->createCreditEntry(amount: $amount, account_id: $cogsAccount->id, ledger_id: $ledger->id,cost_center_id:  $cogsAccount->cost_center_id);
+        $ledger = $this->store(groupId: $groupId, amount: $amount, currency_id: $currencyId, due: $date, note: $note, user_id: $responsible, system: $system);
+        $cogsAccount = Account::whereHas('type', fn($q) => $q->where('code', 'COG'))->first();
+        $EntryService->createCreditEntry(amount: $amount, account_id: $cogsAccount->id, ledger_id: $ledger->id, cost_center_id: $cogsAccount->cost_center_id);
         $AccountService->updateBalance(account_id: $cogsAccount->id);
 
         $EntryService->createDebitEntry(amount: $amount, account_id: $warehouseAcc->id, ledger_id: $ledger->id, cost_center_id: $warehouseAcc->cost_centet_id);
         $AccountService->updateBalance(account_id: $warehouseAcc->id);
 
 
-        $TransactionService->createType(type: 'COGS',groupId: $groupId, amount: $ledger->amount, ledger_id: $ledger->id, first_party_id: $warehouseAcc->id, second_party_id: $cogsAccount->id, due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
+        $TransactionService->createType(type: 'COGS', groupId: $groupId, amount: $ledger->amount, ledger_id: $ledger->id, first_party_id: $warehouseAcc->id, second_party_id: $cogsAccount->id, due: $date, note: $note, user_id: $responsible, paper_ref: $paperRef, system: $system);
 
         return false;
     }

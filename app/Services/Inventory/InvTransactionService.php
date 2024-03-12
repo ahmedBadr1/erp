@@ -256,15 +256,15 @@ class InvTransactionService extends MainService
         }
 
         if (!empty($data['suppliers'])) {
-            $query->whereIn('supplier_id', $data['suppliers']);
+            $query->whereIntegerInRaw('supplier_id', $data['suppliers']);
         }
 
         if (!empty($data['clients'])) {
-            $query->whereIn('client_id', $data['clients']);
+            $query->whereIntegerInRaw('client_id', $data['clients']);
         }
 
         if (!empty($data['users'])) {
-            $query->whereIn('created_by', $data['users']);
+            $query->whereIntegerInRaw('created_by', $data['users']);
 //            foreach ($data['sellers'] as $type) {
 //                $dataset[] = 'sellers ' . $type->name;
 //            }

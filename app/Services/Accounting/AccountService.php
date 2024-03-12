@@ -30,7 +30,7 @@ class AccountService extends MainService
         if (!empty($node_id)) {
             $node = Node::active()->with('descendants')->whereId($node_id)->first();
             $nodeIds = collect([$node->id, ...$node->descendants->pluck('id')]);
-            $query->whereIn('node_id', $nodeIds);
+            $query->whereIntegerInRaw('node_id', $nodeIds);
         }
 
         if ($type_id) {

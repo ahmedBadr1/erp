@@ -35,7 +35,7 @@ class Posting extends BasicTable
 
     public function save(){
 //        dd($this->checks);
-        Transaction::whereIn('id',array_keys($this->checks))->update(['posted'=>true]);
+        Transaction::whereIntegerInRaw('id',array_keys($this->checks))->update(['posted'=>true]);
         $this->toast(__("Transaction Has Been Posted"));
         return ;
     }

@@ -142,7 +142,7 @@ class EntryService extends MainService
 //            $query->with('ledger.firstTransaction.currency');
         }
 
-        $query->whereIn('account_id', $accounts);
+        $query->whereIntegerInRaw('account_id', $accounts);
 
 
         $accounts = Account::whereIn('id', $accounts)

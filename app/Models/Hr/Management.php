@@ -83,7 +83,7 @@ class Management extends MainModelSoft
     public function scopeNumberOfEmps() {
 
         $departments = Department::where('management_id', $this->id)->pluck('id')->toArray();
-        $emp_of_all_deps = WorkAt::whereIn('workable_id', $departments)->where('workable_type', 'departments')->count();
+        $emp_of_all_deps = WorkAt::whereIntegerInRaw('workable_id', $departments)->where('workable_type', 'departments')->count();
 
         return $emp_of_all_deps + count($this->workers);
     }
