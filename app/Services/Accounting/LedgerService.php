@@ -11,6 +11,7 @@ use App\Models\Accounting\Transaction;
 use App\Models\System\ModelGroup;
 use App\Services\ClientsExport;
 use App\Services\MainService;
+use App\Services\System\ModelGroupService;
 use Exception;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -119,7 +120,7 @@ class LedgerService extends MainService
         $dataset[] = $data['posted'] ? 'Posted' : 'Un Posted';
 
 
-        $query->with(['firstTransaction']);
+        $query->with(['firstTransaction', 'group.firstInvTransaction']);
 
 //        if (isset($columns['responsible']) && $columns['responsible']) {
         $query->with('responsible');
@@ -229,6 +230,42 @@ class LedgerService extends MainService
         ]);
     }
 
+    public function storeType(array $data, $code = null)
+    {
+        if ($code) {
+            if ($data['type'] == 'JE') {
+                if (preg_match('/^JE-(\d+)/', $code, $matches)) {
+                    $id = $matches[1];
+                    $transaction = Ledger::with('entries')->find($id);
+                } else {
+                    throw new  \RuntimeException('Code Not Valid');
+                }
+            } else {
+                $transaction = Transaction::where('code', $code)->firstOrFail();
+            }
+            $groupId = $transaction->group_id;
+            match ($data['type']) {
+                'CI' => $this->cashin(groupId: $groupId, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0),
+                'CO' => $this->cashout(groupId: $groupId, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0),
+                'JE' => $this->jouranlEntry(data: $data, groupId: $groupId, system: 0 ,ledger: $transaction),
+                default => throw  new \RuntimeException('Un Valid Type'),
+            };
+
+        } else {
+            $groupId = (new ModelGroupService)->store()->id;
+            match ($data['type']) {
+                'CI' => $this->cashin(groupId: $groupId, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note:  $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0),
+                'CO' => $this->cashout(groupId: $groupId, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0),
+                'JE' => $this->jouranlEntry(data: $data, groupId: $groupId, system: 0),
+                default => throw  new \RuntimeException('Un Valid Type'),
+            };
+        }
+
+
+
+        return true ;
+    }
+
     public function post(array $ids, $post = true)
     {
         Ledger::whereIn('id', $ids)->update(['posted' => $post]);
@@ -300,15 +337,29 @@ class LedgerService extends MainService
         return false;
     }
 
-    public function jouranlEntry(array $data, $groupId = null, $system = 1)
+    public function jouranlEntry(array $data, $groupId = null, $system = 1 ,Ledger $ledger = null)
     {
         if (!isset($groupId)) {
-            $groupId = ModelGroup::create()->id;
+            $groupId = (new ModelGroupService)->store()->id;
         }
         $EntryService = new EntryService();
         $AccountService = new AccountService();
+        $accounts = [] ;
+        if(!$ledger){
+            $ledger = $this->store(groupId: $groupId, amount: $data['amount'], currency_id: $data['currency_id'], due: $data['due'], note: $data['note'] ?? null, user_id: $data['responsible'], system: $system);
+        }else{
+            $ledger->update([
+                    'amount' => $data['amount'],
+                    'due' => $data['due']  ?? null,
+                    'note' => $data['note'] ?? null,
+                    'responsible_id' => $data['responsible_id'] ?? auth()->id(),
+                    'edited_by' => auth()->id(),
+                ]) ;
 
-        $ledger = $this->store(groupId: $groupId, amount: $data['amount'], currency_id: $data['currency_id'], due: $data['due'], note: $data['note'], user_id: $data['responsible'], system: $system);
+            $accounts = array_merge($accounts,$ledger->entries->pluck('account_id')->toArray());
+            $ledger->entries->each->delete();
+        }
+
 
         foreach ($data['accounts'] as $account) {
             if ($account['c_amount']) {
@@ -316,9 +367,9 @@ class LedgerService extends MainService
             } else {
                 $EntryService->createDebitEntry(amount: $account['d_amount'], account_id: $account['id'], ledger_id: $ledger->id, cost_center_id: $account['cost_center_id'], comment: $account['comment'] ?? null);
             }
-            $AccountService->updateBalance(account_id: $account['id']);
+            array_push($accounts,$account['id']);
         }
-
+        $AccountService->updateBalance(account_id: array_unique($accounts));
         return false;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Accounting;
 
+use App\Http\Resources\Inventory\InvTransactionResource;
 use App\Http\Resources\NameResource;
 use App\Http\Resources\System\ModelGroupResource;
 use Illuminate\Http\Request;
@@ -22,10 +23,12 @@ class LedgerResource extends JsonResource
             'amount' => $this->whenNotNull($this->amount),
             'note' => $this->whenNotNull($this->note),
             'paper_ref' => $this->whenNotNull($this->paper_ref),
+            'currency_id' => $this->whenNotNull($this->currency_id),
             'system' => $this->system,
             'posted' =>$this->posted,
             'locked' =>$this->locked,
-            'created_at' => $this->whenNotNull($this->due)  ,
+            'due' => $this->whenNotNull($this->due)  ,
+            'created_at' => $this->whenNotNull($this->created_at)  ,
             'responsible' => new NameResource($this->whenLoaded('responsible')),
             'creator' => new NameResource ($this->whenLoaded('creator')),
             'editor' => new NameResource ($this->whenLoaded('editor')),
@@ -40,6 +43,7 @@ class LedgerResource extends JsonResource
             'firstTransaction' => new TransactionResource($this->whenLoaded('firstTransaction')),
             'lastTransaction' => new TransactionResource($this->whenLoaded('lastTransaction')),
             'firstCiTransaction' => new TransactionResource($this->whenLoaded('firstCiTransaction')),
+            'firstInvTransaction' => new InvTransactionResource($this->whenLoaded('firstInvTransaction')),
 
         ];
     }

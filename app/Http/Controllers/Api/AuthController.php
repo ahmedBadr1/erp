@@ -26,6 +26,7 @@ class AuthController extends ApiController
 
     public function login(Request $request)
     {
+//        dd(123);
         $valid = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string'

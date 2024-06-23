@@ -134,11 +134,9 @@ class AccountService extends MainService
     public function updateBalance($account_id)
     {
         $accountIds = is_array($account_id) ? $account_id : [$account_id];
-
         foreach ($accountIds as $id) {
             $this->updateAccountBalance($id);
         }
-
         return true;
     }
 

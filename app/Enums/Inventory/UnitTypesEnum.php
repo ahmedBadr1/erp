@@ -1,14 +1,18 @@
 <?php
-namespace App\Enums;
+namespace App\Enums\Inventory;
 
 use App\Traits\EnumOptions;
 use App\Traits\EnumValues;
 
-enum OtherPartyType :string
+enum UnitTypesEnum :int
 {
     use EnumValues , EnumOptions ;
-    case IN = "in" ;
-    case OUT = "out" ; 
+
+    case primary = 1 ;
+
+    case smaller = 2 ;
+
+    case bigger = 3;
 
     /**
      * Retrieve a map of enum keys and values.

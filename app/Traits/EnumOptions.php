@@ -22,4 +22,13 @@ trait EnumOptions
         }
         return $options;
     }
+
+    public static function get($value): string
+    {
+        return match ($value) {
+            self::primary->value => self::primary->name,
+            self::smaller->value => self::smaller->name,
+            self::bigger->value => self::bigger->name,
+        };
+    }
 }

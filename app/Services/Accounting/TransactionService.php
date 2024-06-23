@@ -7,6 +7,7 @@ use App\Exports\UsersExport;
 use App\Models\Accounting\Transaction;
 use App\Services\ClientsExport;
 use App\Services\MainService;
+use App\Services\System\ModelGroupService;
 use Exception;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -171,6 +172,18 @@ class TransactionService extends MainService
     public function createType(string $type ,int $groupId, float $amount, int $ledger_id, int $first_party_id, int $second_party_id, $due = null, string $note = null, $user_id = null, $paper_ref = null, $system = 1)
     {
         return $this->createTransaction( type: $type,groupId:  $groupId,amount:  $amount,ledger_id:  $ledger_id,first_party_id:  $first_party_id,second_party_id:  $second_party_id,due:  $due,note:  $note,user_id:  $user_id,paper_ref:  $paper_ref,system:  $system);
+    }
+
+    public function storeType(array $data)
+    {
+        $group = (new ModelGroupService)->store();
+        if ($data['type'] === 'CI') {
+            $this->service->cashin(groupId: $group->id, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
+        } elseif ($data['type'] === 'CO') {
+            $this->service->cashout(groupId: $group->id, treasuryId:  $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
+        } else {
+            $this->service->jouranlEntry(data: $data, groupId: $group->id,system: 0);
+        }
     }
 
     public function update($transaction, array $data)

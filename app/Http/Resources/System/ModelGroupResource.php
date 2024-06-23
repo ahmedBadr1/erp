@@ -21,6 +21,7 @@ class ModelGroupResource extends JsonResource
 //            'entries' => EntryResource::collection($this->whenLoaded('entries')),
             'transactions' => NameResource::collection($this->whenLoaded('transactions')),
             'invTransactions' => NameResource::collection($this->whenLoaded('invTransactions')),
+            'firstInvTransaction' => new NameResource ($this->whenLoaded('firstInvTransaction')),
 
             'ledgers' => NameResource::collection($this->whenLoaded('ledgers')),
 //            'accounts' => AccountResource::collection($this->whenLoaded('accounts')),

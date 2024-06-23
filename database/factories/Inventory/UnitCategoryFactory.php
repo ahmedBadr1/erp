@@ -5,9 +5,9 @@ namespace Database\Factories\Inventory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Inventory\UnitGroup>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Inventory\UnitCategory>
  */
-class UnitGroupFactory extends Factory
+class UnitCategoryFactory extends Factory
 {
     /**
      * Define the model's default state.

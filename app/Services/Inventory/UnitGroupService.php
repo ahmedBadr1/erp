@@ -4,7 +4,7 @@ namespace App\Services\Inventory;
 
 use App\Exports\Inventory\ProductsExport;
 use App\Exports\UsersExport;
-use App\Models\Inventory\UnitGroup;
+use App\Models\Inventory\UnitCategory;
 use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Unit;
 use App\Services\ClientsExport;
@@ -17,9 +17,9 @@ class UnitGroupService extends MainService
 
     public function all($fields = null,$active= true)
     {
-        $data = $fields ?? (new UnitGroup())->getFillable();
+        $data = $fields ?? (new UnitCategory())->getFillable();
 
-        return UnitGroup::active($active)->get($data);
+        return UnitCategory::active($active)->get($data);
     }
 
 

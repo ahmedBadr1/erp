@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Accounting\PostingRequest;
 use App\Http\Requests\Accounting\StoreTransactionRequest;
 use App\Http\Requests\Accounting\StoreTransactionTypeRequest;
+use App\Http\Requests\Accounting\UpdateTransactionRequest;
 use App\Http\Requests\ListRequest;
 use App\Http\Resources\Accounting\LedgerResource;
 use App\Http\Resources\Accounting\TransactionResource;
@@ -14,6 +15,7 @@ use App\Models\Accounting\CostCenter;
 use App\Models\Accounting\Ledger;
 use App\Models\Accounting\Transaction;
 use App\Services\Accounting\LedgerService;
+use App\Services\Accounting\TransactionService;
 use App\Services\System\ModelGroupService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +52,7 @@ class TransactionController extends ApiController
 
     public function posting(PostingRequest $request)
     {
-        $this->service->post($request->get('ids'), $request->get('posting'));
+       $this->service->post($request->get('ids'), $request->get('posting'));
         return $this->successResponse(null, __(($request->get('posting') ? '' : 'Un ') . 'Posted Successfully'));
     }
 
@@ -72,47 +74,36 @@ class TransactionController extends ApiController
         }
     }
 
-    public function store(StoreTransactionRequest $request)
+    public function store(StoreTransactionRequest $request,$code = null)
     {
         $data = $request->validated();
-//        return $data['accounts'];
+
         DB::beginTransaction();
         try {
-            $group = (new ModelGroupService)->store();
-            if ($data['type'] === 'CI') {
-                $this->service->cashin(groupId: $group->id, treasuryId: $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
-            } elseif ($data['type'] === 'CO') {
-                $this->service->cashout(groupId: $group->id, treasuryId:  $data['treasury'], accounts: $data['accounts'], amount: $data['amount'], currencyId: $data['currency_id'], date: $data['due'] ?? null, note: $data['note'] ?? null, paperRef: $data['paper_ref'] ?? null, responsible: $data['responsible'] ?? auth('api')->id(), system: 0);
-            } else {
-                $this->service->jouranlEntry(data: $data, groupId: $group->id,system: 0);
-            }
+            $this->service->storeType($data, $code);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->errorResponse($e->getMessage(), 409);
+        }
+        DB::commit();
+            $message = __('message.' . ($code ? 'updated' : 'created' ), ['model' => __('Transaction')]);
+        return $this->successResponse(null, $message, 201);
+    }
+
+    public function update(StoreTransactionRequest $request)
+    {
+        $data = $request->validated();
+        dd($data);
+        DB::beginTransaction();
+        try {
+            $this->service->storeType($data);
         } catch (\Exception $e) {
             DB::rollBack();
             return $this->errorResponse($e->getMessage(), 409);
         }
         DB::commit();
 
-        return $this->successResponse(null, __('message.created', ['model' => __('Transaction')]), 201);
-    }
-
-    public function storeType(StoreTransactionTypeRequest $request)
-    {
-        $data = $request->validated();
-
-        $credit_account = Account::where('code', $data['credit_account'])->value('id');
-        $debit_account = Account::where('code', $data['debit_account'])->value('id');
-        $costCenter = CostCenter::where('code', $data['cost_center'])->value('id');
-
-        if (!$credit_account || !$debit_account) {
-            return $this->errorResponse('Accounts Not Found', 404);
-        }
-
-        $e = (new LedgerService())->cashin($debit_account, $credit_account, $data["amount"], $costCenter, $data['due'] ?? now(), $data["description"], $data['user_id'] ?? null);
-        if (is_string($e)) {
-            return $this->errorResponse($e);
-        }
-
-        return $this->successResponse([], 'Transaction created successfully', 201);
+        return $this->successResponse(null, __('message.updated', ['model' => __('Transaction')]), 201);
     }
 
 }

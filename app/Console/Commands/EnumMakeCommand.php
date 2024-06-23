@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 
 class EnumMakeCommand extends GeneratorCommand
@@ -61,6 +63,29 @@ class EnumMakeCommand extends GeneratorCommand
 
     protected function replaceClass($stub, $name)
     {
+        $nameArg = $this->argument('name');
+
+        if (Str::contains($nameArg, '/')) {
+            // The argument contains a folder name along with the class name
+            $folder = Str::beforeLast($nameArg, '/');
+            $className = Str::afterLast($nameArg, '/');
+
+            $folderExists = File::exists(app_path($folder));
+
+            if ($folderExists) {
+                $namespace = "App\\$folder";
+            } else {
+                $namespace = "App";
+            }
+        } else {
+            // The argument contains only the class name
+            $namespace = "App";
+            $className = $nameArg;
+        }
+
+        $stub = str_replace('{{namespace}}', $namespace, $stub);
+        $stub = str_replace('{{className}}', $className, $stub);
+
         $valuesArg = $this->argument('values');
         $values = array_map(function ($value) {
             return '    case ' . strtoupper($value) . ' = "' . $value . '" ;';

@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->nullable();
-            $table->string('type')->nullable();
             $table->string('comment')->nullable();
             $table->tinyInteger('order')->nullable();
-            $table->double('conversion_factor');
-            $table->foreignIdFor(\App\Models\Inventory\UnitGroup::class)->nullable();
-            $table->boolean('primary')->default(false);
+            $table->double('ratio',15,5);
+            $table->foreignIdFor(\App\Models\Inventory\UnitCategory::class,'category_id');
+            $table->tinyInteger('type')->default(false);
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

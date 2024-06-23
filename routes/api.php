@@ -31,25 +31,30 @@ Route::group(['middleware' => ['json.response']], function () {
 
     Route::group(['middleware' => ['auth:api', 'active']], function () {
 
+        Route::group(['prefix' => 'dashboard'], function () {
+            Route::post('/', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'index']);
+            Route::post('widget/{name}', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'widget']);
+        });
+
         Route::post('invite', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invite'])->name('invite');
         Route::post('invitations', [\App\Http\Controllers\Api\Hr\UsersController::class, 'invitations'])->name('invitations');
         Route::delete('invitations/{id}', [\App\Http\Controllers\Api\Hr\UsersController::class, 'deleteInvitation'])->name('invitations.delete');
 
 
-        Route::post('logout', [\App\Http\Controllers\Api\DashboardController::class, 'logout']);
+        Route::post('logout', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'logout']);
 
-        Route::post('profile/', [\App\Http\Controllers\Api\DashboardController::class, 'profile'])->name('profile');
-        Route::post('profile/update', [\App\Http\Controllers\Api\DashboardController::class, 'profileUpdate'])->name('profile-update');
+        Route::post('profile/', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'profile'])->name('profile');
+        Route::post('profile/update', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'profileUpdate'])->name('profile-update');
 
-        Route::post('search/', [\App\Http\Controllers\Api\DashboardController::class, 'search'])->name('search');
+        Route::post('search/', [\App\Http\Controllers\Api\Dashboard\DashboardController::class, 'search'])->name('search');
 
 
         Route::group(['prefix' => 'notifications'], function () {
-            Route::post('/', [\App\Http\Controllers\Api\DashboardController::class, 'notifications']);
-            Route::post('read', [\App\Http\Controllers\Api\DashboardController::class, 'markAllAsRead']);
-            Route::post('unread', [\App\Http\Controllers\Api\DashboardController::class, 'unreadNotifications']);
-            Route::post('count', [\App\Http\Controllers\Api\DashboardController::class, 'count']);
-            Route::post('read/{id}', [\App\Http\Controllers\Api\DashboardController::class, 'markAsRead']);
+            Route::post('/', [\App\Http\Controllers\Api\Dashboard\NotificationController::class, 'index']);
+            Route::post('read', [\App\Http\Controllers\Api\Dashboard\NotificationController::class, 'markAllAsRead']);
+            Route::post('unread', [\App\Http\Controllers\Api\Dashboard\NotificationController::class, 'unreadNotifications']);
+            Route::post('count', [\App\Http\Controllers\Api\Dashboard\NotificationController::class, 'count']);
+            Route::post('read/{id}', [\App\Http\Controllers\Api\Dashboard\NotificationController::class, 'markAsRead']);
 
         });
 
@@ -140,10 +145,11 @@ Route::group(['middleware' => ['json.response']], function () {
                 Route::post('/posting', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'posting'])->name('index');
 
                 Route::post('/create', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'create'])->name('create');
-                Route::post('/store', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
-                Route::post('/store/type', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'storeType'])->name('storeType');
+                Route::post('/store/{code?}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'store'])->name('store');
                 Route::post('/edit/{id}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'edit'])->name('edit');
                 Route::post('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'show'])->name('show');
+                Route::patch('/{code}', [\App\Http\Controllers\Api\Accounting\TransactionController::class, 'update'])->name('update');
+
             });
 
 
@@ -284,6 +290,22 @@ Route::group(['middleware' => ['json.response']], function () {
                 Route::patch('{id}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'update'])->name('update');
                 Route::delete('/{warehouse}', [\App\Http\Controllers\Api\Inventory\WarehousesController::class, 'destroy'])->name('destroy');
             });
+
+
+            Route::group([
+                'prefix' => 'units',
+                'as' => 'units.',
+            ], function () {
+                Route::post('/categories', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'categories'])->name('index');
+                Route::post('/', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'index'])->name('index');
+                Route::post('/list', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'list'])->name('list');
+                Route::post('/create', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'create'])->name('create');
+                Route::post('/store', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'store'])->name('store');
+                Route::post('/{id}', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'show'])->name('show');
+                Route::patch('{id}', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'update'])->name('update');
+                Route::delete('/{unit}', [\App\Http\Controllers\Api\Inventory\UnitsController::class, 'destroy'])->name('destroy');
+            });
+
 
             Route::group([
                 'prefix' => 'transactions',

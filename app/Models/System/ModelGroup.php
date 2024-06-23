@@ -29,6 +29,11 @@ class ModelGroup extends MainModel
         return $this->hasMany(InvTransaction::class,'group_id');
     }
 
+    public function firstInvTransaction()
+    {
+        return $this->hasOne(InvTransaction::class,'group_id')->latestOfMany();
+    }
+
 
     public function po()
     {
@@ -50,11 +55,6 @@ class ModelGroup extends MainModel
         return $this->hasOne(Transaction::class,'group_id')->latestOfMany();
     }
 
-
-    public function firstInvTransaction()
-    {
-        return $this->hasOne(InvTransaction::class,'group_id')->oldestOfMany();
-    }
 
     public function ciTransactions()
     {

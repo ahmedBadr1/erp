@@ -4,6 +4,7 @@ namespace Database\Factories\Inventory;
 
 use App\Models\Accounting\Tax;
 use App\Models\Inventory\Brand;
+use App\Models\Inventory\Product;
 use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Unit;
 use App\Models\Inventory\Warehouse;
@@ -24,7 +25,7 @@ class ProductFactory extends Factory
         $price = rand(10, 500);
         $d_price = $price - $this->faker->numberBetween(1, $price);
         return [
-            'name' => $this->faker->name(),
+            'name' => 'product ' .Product::count() + 1,
             'short_name' => $this->faker->firstName(),
             'part_number' => $this->faker->unique()->randomNumber(6),
             'origin_number' => $this->faker->numerify(),

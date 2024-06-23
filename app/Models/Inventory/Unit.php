@@ -3,20 +3,20 @@
 namespace App\Models\Inventory;
 
 use App\Models\MainModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Unit extends MainModel
 {
 
-    protected $fillable = ['name', 'type', 'group', 'conversion_factor'];
+    protected $fillable = ['name','code', 'comment', 'order', 'type', 'category_id', 'ratio'];
 
-    public static array $GROUPS= ['weight', 'length', 'liquid', 'packing', 'time', 'volume'];
-
-    public function group()
+    public function category(): BelongsTo
     {
-        return $this->belongsTo(UnitGroup::class);
+        return $this->belongsTo(UnitCategory::class,'category_id');
     }
 
-    public function products()
+    public function products() : HasMany
     {
         return $this->hasMany(Product::class);
     }

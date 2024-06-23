@@ -7,6 +7,7 @@ use App\Models\Inventory\OtherParty;
 use App\Models\Inventory\Product;
 use App\Models\Inventory\ProductCategory;
 use App\Models\Inventory\Unit;
+use App\Models\Inventory\UnitCategory;
 use App\Models\Inventory\Warehouse;
 use Illuminate\Database\Seeder;
 
@@ -19,7 +20,7 @@ class InventorySeeder extends Seeder
     {
 
         Warehouse::factory()->create([
-            'name'=> 'مخزن 1'
+            'name' => 'مخزن 1'
         ]); // ACCOUNT WILL not CREATE IT
 
         ProductCategory::factory()->create([
@@ -30,7 +31,9 @@ class InventorySeeder extends Seeder
 
         $this->seedOtherParties();
 
-        Product::factory(1)->create();
+        for ($i = 0; $i < 10; $i++) {
+            Product::factory(1)->create();
+        }
 
     }
 
@@ -39,104 +42,227 @@ class InventorySeeder extends Seeder
      */
     public function seedUnits(): void
     {
-        $weightUnits = [
-            'milligram' => 0.000001,
-            'gram' => 0.001,
-            'kilogram' => 1,
-            'ounce' => 0.0283495,
-            'pound' => 0.453592,
-            'stone' => 6.35029,
-            'tonne' => 1000,
-        ];
-        foreach ($weightUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'weight'
-            ]);
-        }
-        $distanceUnits = [
-            'millimeter' => 0.001,
-            'centimeter' => 0.01,
-            'meter' => 1,
-            'inch' => 0.0254,
-            'feet' => 0.3048,
-            'yard' => 0.9144,
-            'mile' => 1609.34,
-        ];
-        foreach ($distanceUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'length'
-            ]);
-        }
-        $liquidUnits = [
-            'milliliter' => 0.001,
-            'centiliter' => 0.01,
-            'liter' => 1,
-            'fluid ounce' => 0.0295735,
-            'pint' => 0.473176,
-            'quart' => 0.946353,
-            'gallon' => 3.78541,
-        ];
-        foreach ($liquidUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'liquid'
-            ]);
-        }
-        $packingUnits = [
-            'piece' => 1,
-            'pack' => 6,
-            'dozen' => 12,
-            'case' => 24,
-        ];
-        foreach ($packingUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'packing'
-            ]);
-        }
+        $unitCategories = [];
 
-        $timeUnits = [
-            'second' => 1,
-            'minute' => 60,
-            'hour' => 3600,
-            'day' => 86400,
-            'week' => 604800,
-            'month' => 2592000,
-            'year' => 31536000,
-        ];
-        foreach ($timeUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'time'
-            ]);
-        }
+        $unitCategories['Unit'] = [
+            [
+                'name' => 'Unit',
+                'code' => 'unit',
 
-        $volumeUnits = [
-            'cubic_millimeter' => 1,
-            'cubic_centimeter' => 1000,
-            'milliliter' => 1,
-            'liter' => 1000,
-            'cubic_meter' => 1000000,
-            'gallon' => 3785.411784,
-            'quart' => 946.352946,
-            'pint' => 473.176473,
-            'fluid_ounce' => 29.5735296,
-            'tablespoon' => 14.7867648,
-            'teaspoon' => 4.9289216,
+                'type' => 1,
+                'ratio' => 1,
+            ],
+            [
+                'name' => 'Dozen',
+                'code' => 'dozen',
+                'type' => 3,
+                'ratio' => 12.0000,
+            ],
         ];
-        foreach ($volumeUnits as $key => $unit) {
-            Unit::factory()->create([
-                'name' => $key,
-                'conversion_factor' => $unit,
-                'type' => 'volume'
-            ]);
+
+        $unitCategories['Weight'] = [
+            [
+                'name' => 'milligram',
+                'code' => 'mg',
+                'type' => 2,
+                'ratio' => 1000000,
+            ],
+            [
+                'name' => 'gram',
+                'code' => 'g',
+                'type' => 2,
+                'ratio' => 1000,
+            ],
+            [
+                'name' => 'ounce',
+                'code' => 'o',
+                'type' => 2,
+                'ratio' => 35.274,
+            ],
+
+            [
+                'name' => 'pound',
+                'code' => 'lb',
+                'type' => 2,
+                'ratio' => 2.20462
+            ],
+            [
+                'name' => 'kilogram',
+                'code' => 'kg',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+
+            [
+                'name' => 'tonne',
+                'code' => 't',
+                'type' => 3,
+                'ratio' => 1000,
+            ],
+        ];
+
+        $unitCategories['Working Hours'] = [
+
+            [
+                'name' => 'Hour',
+                'code' => 'hour',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+            [
+                'name' => 'Day',
+                'code' => 'working day',
+                'type' => 3,
+                'ratio' => 8.0000,
+            ],
+
+        ];
+
+        $unitCategories['Time'] = [
+
+            [
+                'name' => 'Second',
+                'code' => 's',
+                'type' => 2,
+                'ratio' => 3600,
+            ],
+            [
+                'name' => 'Minute',
+                'code' => 'm',
+                'type' => 2,
+                'ratio' => 60,
+            ],
+            [
+                'name' => 'Hour',
+                'code' => 'hour',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+            [
+                'name' => 'Day',
+                'code' => 'day',
+                'type' => 3,
+                'ratio' => 24,
+            ],
+            [
+                'name' => 'Month',
+                'code' => 'month',
+                'type' => 3,
+                'ratio' => 720,
+            ],
+            [
+                'name' => 'Year',
+                'code' => 'year',
+                'type' => 3,
+                'ratio' => 8640,
+            ],
+
+        ];
+
+        $unitCategories['Distance'] = [
+
+            [
+                'name' => 'millimeter',
+                'code' => 'mm',
+                'type' => 2,
+                'ratio' => 1000,
+            ],
+            [
+                'name' => 'centimeter',
+                'code' => 'cm',
+                'type' => 2,
+                'ratio' => 100,
+            ],
+            [
+                'name' => 'Inch',
+                'code' => 'in',
+                'type' => 2,
+                'ratio' => 39.3701,
+            ],
+            [
+                'name' => 'Foot',
+                'code' => 'ft',
+                'type' => 2,
+                'ratio' => 3.28084,
+            ],
+            [
+                'name' => 'Yard',
+                'code' => 'yd',
+                'type' => 2,
+                'ratio' => 1.09361,
+            ],
+            [
+                'name' => 'Meter',
+                'code' => 'm',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+            [
+                'name' => 'kilometer',
+                'code' => 'km',
+                'type' => 3,
+                'ratio' => 1000,
+            ],
+            [
+                'name' => 'mile',
+                'code' => 'mi',
+                'type' => 3,
+                'ratio' => 1609.34,
+            ],
+
+        ];
+
+        $unitCategories['Surface'] = [
+
+            [
+                'name' => 'foot square',
+                'code' => 'ft²',
+                'type' => 2,
+                'ratio' => 10.76391,
+            ],
+            [
+                'name' => 'meter square',
+                'code' => 'm²',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+
+        ];
+
+        $unitCategories['Volume'] = [
+            [
+                'name' => 'inch',
+                'code' => 'in³',
+                'type' => 2,
+                'ratio' => 61.02370,
+            ],
+            [
+                'name' => 'Liter',
+                'code' => 'L',
+                'type' => 1,
+                'ratio' => 1,
+            ],
+            [
+                'name' => 'Gallon',
+                'code' => 'gal',
+                'type' => 3,
+                'ratio' => 3.78541,
+            ],
+            [
+                'name' => 'meter',
+                'code' => 'm³',
+                'type' => 3,
+                'ratio' => 1000,
+            ],
+
+        ];
+
+
+        foreach ($unitCategories as $name => $units) {
+            $cat = UnitCategory::create(['name' => $name]);
+            foreach ($units as $unit) {
+                Unit::create([...$unit, 'category_id' => $cat->id]);
+            }
         }
     }
 
@@ -155,7 +281,7 @@ class InventorySeeder extends Seeder
         foreach ($inOthers as $inOther) {
             OtherParty::create([
                 'name' => $inOther,
-                'type' =>  OtherPartyType::IN
+                'type' => OtherPartyType::IN
             ]);
         }
 

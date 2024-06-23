@@ -11,7 +11,8 @@ class Ledger extends MainModelSoft
 {
 //    use  LogsActivity;
 
-    protected $fillable = ['group_id','amount', 'note','due','created_by','edited_by','responsible_id', 'posted', 'locked', 'system'];
+    protected $fillable = ['group_id','amount', 'note','due','created_by','edited_by','responsible_id',
+        'currency_id','ex_rate','currency_total','posted', 'locked', 'system'];
 
     protected $casts = ['due' => 'datetime'];
 
@@ -66,6 +67,7 @@ class Ledger extends MainModelSoft
     {
         return $this->hasOne(Transaction::class)->where('type','CO');
     }
+
     public function entries()
     {
         return $this->hasMany(Entry::class);
